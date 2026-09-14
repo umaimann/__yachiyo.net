@@ -1,0 +1,2777 @@
+<html lang="ja"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>髫慕浹繧医￠</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      height: 100%;
+    }
+    body {
+      margin: 0; padding: 0;
+      background: #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      overflow: hidden;
+      touch-action: none;
+    }
+    #gameWrap {
+      position: relative;
+      display: inline-block;
+      /* 嶹罷ｩｴ�� �� �ｨ�� ��惠 ��� */
+      width:  min(480px, 100vw, calc(100svh * 0.6), calc(100vh * 0.6));
+      height: min(800px, calc(min(480px, 100vw, calc(100svh * 0.6), calc(100vh * 0.6)) * 800 / 480));
+    }
+    #gameCanvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      image-rendering: pixelated;
+    }
+    #langBar {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 100;
+    }
+    #rankingBtnWrap {
+      position: absolute;
+      bottom: 8px; right: 8px;
+      display: flex; gap: 4px;
+      pointer-events: auto;
+    }
+    .lbtn {
+      background: rgba(30,20,40,0.8);
+      color: #aaa;
+      border: 1px solid rgba(94,82,84,0.4);
+      border-radius: 4px;
+      padding: 3px 8px;
+      cursor: pointer;
+      font-size: 11px;
+      font-family: sans-serif;
+      touch-action: manipulation;  /* ��款 夋ｭ �罹�溢擽 �懋ｱｰ */
+    }
+    .lbtn.on { color: #eaeaea; border-color: #5E5254; background: rgba(94,82,84,0.5); }
+    #rankingBtn { color: #bb99ff; border-color: rgba(136,85,204,0.5); }
+    #nameInputOverlay {
+      display: none;
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 76%;
+      background: rgba(8,4,20,0.95);
+      border: 1px solid rgba(94,82,84,0.55);
+      border-radius: 14px;
+      padding: 22px 20px 18px;
+      z-index: 210;
+      flex-direction: column;
+      gap: 12px;
+      font-family: sans-serif;
+    }
+    #nameInputTime {
+      text-align: center;
+      color: #9988cc;
+      font-size: 22px;
+      font-weight: bold;
+      letter-spacing: 0.05em;
+    }
+    #nameInput {
+      background: rgba(20,12,36,0.9);
+      color: #eaeaea;
+      border: 1px solid rgba(94,82,84,0.6);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 15px;
+      font-family: sans-serif;
+      outline: none;
+      text-align: center;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    #nameInput:focus { border-color: #9988cc; }
+    #nameInputTier {
+      display: none;
+      text-align: center;
+      font-size: 12px;
+      font-weight: bold;
+      letter-spacing: 0.12em;
+      margin-top: -4px;
+    }
+    #nameInputTier.tier-gm {
+      background: linear-gradient(90deg,#ff6644,#ffcc00,#44ff88,#4488ff,#cc44ff,#ff6644);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    #nameInputBtns { display: flex; gap: 10px; }
+    .pauseActionBtn.secondary {
+      background: rgba(30,22,46,0.8);
+      color: #888899;
+      border-color: rgba(94,82,84,0.4);
+    }
+    #pauseOverlay {
+      display: none;
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 72%;
+      background: rgba(8,4,20,0.93);
+      border: 1px solid rgba(94,82,84,0.5);
+      border-radius: 12px;
+      padding: 22px 20px 18px;
+      z-index: 200;
+      flex-direction: column;
+      gap: 14px;
+      font-family: sans-serif;
+    }
+    #pauseTitle {
+      text-align: center;
+      color: #ddd;
+      font-size: 15px;
+      font-weight: bold;
+      letter-spacing: 0.08em;
+      margin-bottom: 4px;
+    }
+    .pauseRow {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .pauseLabel {
+      color: #aaa;
+      font-size: 12px;
+      width: 44px;
+      flex-shrink: 0;
+    }
+    .pauseMuteBtn {
+      background: rgba(30,20,40,0.8);
+      color: #ccc;
+      border: 1px solid rgba(94,82,84,0.4);
+      border-radius: 4px;
+      padding: 2px 7px;
+      cursor: pointer;
+      font-size: 12px;
+      flex-shrink: 0;
+      touch-action: manipulation;
+    }
+    .pauseSlider {
+      flex: 1;
+      height: 4px;
+      cursor: pointer;
+      accent-color: #9988cc;
+    }
+    #pauseBtns {
+      display: flex;
+      gap: 10px;
+      margin-top: 4px;
+    }
+    .pauseActionBtn {
+      flex: 1;
+      background: rgba(60,48,76,0.8);
+      color: #eaeaea;
+      border: 1px solid #5E5254;
+      border-radius: 8px;
+      padding: 9px 0;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: bold;
+      font-family: sans-serif;
+      touch-action: manipulation;
+    }
+    .pauseActionBtn:active { background: rgba(94,72,110,0.9); }
+  </style>
+<style type="text/css">.eruda-search-highlight-block{display:inline}.eruda-search-highlight-block .eruda-keyword{background:#fffbe5;color:#5c5c00}</style><style type="text/css">@font-face{font-family:eruda-icon;src:url('data:application/x-font-woff;charset=utf-8;base64,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') format('woff')}[class*=' eruda-icon-'],[class^='eruda-icon-']{display:inline-block;font-family:eruda-icon!important;font-size:16px;font-style:normal;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}.eruda-icon-arrow-left:before{content:'\f101'}.eruda-icon-arrow-right:before{content:'\f102'}.eruda-icon-caret-down:before{content:'\f103'}.eruda-icon-caret-right:before{content:'\f104'}.eruda-icon-clear:before{content:'\f105'}.eruda-icon-compress:before{content:'\f106'}.eruda-icon-copy:before{content:'\f107'}.eruda-icon-delete:before{content:'\f108'}.eruda-icon-error:before{content:'\f109'}.eruda-icon-expand:before{content:'\f10a'}.eruda-icon-eye:before{content:'\f10b'}.eruda-icon-filter:before{content:'\f10c'}.eruda-icon-play:before{content:'\f10d'}.eruda-icon-record:before{content:'\f10e'}.eruda-icon-refresh:before{content:'\f10f'}.eruda-icon-reset:before{content:'\f110'}.eruda-icon-search:before{content:'\f111'}.eruda-icon-select:before{content:'\f112'}.eruda-icon-tool:before{content:'\f113'}.eruda-icon-warn:before{content:'\f114'}@font-face{font-family:luna-console-icon;src:url('data:application/x-font-woff;charset=utf-8;base64,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') format('woff')}[class*=' luna-console-icon-'],[class^=luna-console-icon-]{display:inline-block;font-family:luna-console-icon!important;font-size:16px;font-style:normal;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}.luna-console-icon-caret-down:before{content:'\f101'}.luna-console-icon-caret-right:before{content:'\f102'}.luna-console-icon-warn:before{content:'\f103'}.luna-console-icon-error:before{content:'\f104'}.luna-console-icon-input:before{content:'\f105'}.luna-console-icon-output:before{content:'\f106'}.luna-console{background:#fff;overflow-y:auto;-webkit-overflow-scrolling:touch;height:100%;position:relative;will-change:scroll-position;cursor:default;font-size:12px;font-family:ui-monospace,SFMono-Regular,SF Mono,Menlo,Consolas,Liberation Mono,monospace}.luna-console.luna-console-theme-dark{background-color:#141414}.luna-console-hidden{display:none}.luna-console-fake-logs{position:absolute;left:0;top:0;pointer-events:none;visibility:hidden;width:100%}.luna-console-logs{padding-top:1px;position:absolute;width:100%}.luna-console-log-container{box-sizing:content-box}.luna-console-log-container.luna-console-selected .luna-console-log-item{background:#ecf1f8}.luna-console-log-container.luna-console-selected .luna-console-log-item:not(.luna-console-error):not(.luna-console-warn){border-color:#ccdef5}.luna-console-header{white-space:nowrap;display:flex;font-size:11px;color:#545454;border-top:1px solid transparent;border-bottom:1px solid #ccc}.luna-console-header .luna-console-time-from-container{overflow-x:auto;-webkit-overflow-scrolling:touch;padding:3px 10px}.luna-console-nesting-level{width:14px;flex-shrink:0;margin-top:-1px;margin-bottom:-1px;position:relative;border-right:1px solid #ccc}.luna-console-nesting-level.luna-console-group-closed::before{content:""}.luna-console-nesting-level::before{border-bottom:1px solid #ccc;position:absolute;top:0;left:0;margin-left:100%;width:5px;height:100%;box-sizing:border-box}.luna-console-log-item{position:relative;display:flex;border-top:1px solid transparent;border-bottom:1px solid #ccc;margin-top:-1px;color:#333}.luna-console-log-item:after{content:"";display:block;clear:both}.luna-console-log-item .luna-console-code{display:inline;font-family:ui-monospace,SFMono-Regular,SF Mono,Menlo,Consolas,Liberation Mono,monospace}.luna-console-log-item .luna-console-code .luna-console-keyword{color:#881280}.luna-console-log-item .luna-console-code .luna-console-number{color:#1c00cf}.luna-console-log-item .luna-console-code .luna-console-operator{color:gray}.luna-console-log-item .luna-console-code .luna-console-comment{color:#236e25}.luna-console-log-item .luna-console-code .luna-console-string{color:#1a1aa6}.luna-console-log-item a{color:#15c!important}.luna-console-log-item .luna-console-icon-container{margin:0 -6px 0 10px}.luna-console-log-item .luna-console-icon-container .luna-console-icon{line-height:20px;font-size:12px;color:#333;position:relative}.luna-console-log-item .luna-console-icon-container .luna-console-icon-caret-down,.luna-console-log-item .luna-console-icon-container .luna-console-icon-caret-right{top:0;left:-2px}.luna-console-log-item .luna-console-icon-container .luna-console-icon-error{top:0;color:#ef3842}.luna-console-log-item .luna-console-icon-container .luna-console-icon-warn{top:0;color:#e8a400}.luna-console-log-item .luna-console-count{background:#8097bd;color:#fff;padding:2px 4px;border-radius:10px;font-size:12px;float:left;margin:1px -6px 0 10px}.luna-console-log-item .luna-console-log-content-wrapper{flex:1;overflow:hidden}.luna-console-log-item .luna-console-log-content{padding:3px 0;margin:0 10px;overflow-x:auto;-webkit-overflow-scrolling:touch;white-space:pre-wrap;-webkit-user-select:text;-moz-user-select:text;-ms-user-select:text;user-select:text}.luna-console-log-item .luna-console-log-content *{-webkit-user-select:text;-moz-user-select:text;-ms-user-select:text;user-select:text}.luna-console-log-item .luna-console-log-content>*{vertical-align:top}.luna-console-log-item .luna-console-log-content .luna-console-null,.luna-console-log-item .luna-console-log-content .luna-console-undefined{color:#5e5e5e}.luna-console-log-item .luna-console-log-content .luna-console-number{color:#1c00cf}.luna-console-log-item .luna-console-log-content .luna-console-boolean{color:#0d22aa}.luna-console-log-item .luna-console-log-content .luna-console-regexp,.luna-console-log-item .luna-console-log-content .luna-console-symbol{color:#881391}.luna-console-log-item .luna-console-data-grid,.luna-console-log-item .luna-console-dom-viewer{white-space:initial}.luna-console-log-item.luna-console-error{z-index:50;background:#fff0f0;color:red;border-top:1px solid #ffd6d6;border-bottom:1px solid #ffd6d6}.luna-console-log-item.luna-console-error .luna-console-stack{padding-left:1.2em;white-space:nowrap}.luna-console-log-item.luna-console-error .luna-console-count{background:red}.luna-console-log-item.luna-console-debug{z-index:20}.luna-console-log-item.luna-console-input{border-bottom-color:transparent}.luna-console-log-item.luna-console-warn{z-index:40;color:#5c5c00;background:#fffbe5;border-top:1px solid #fff5c2;border-bottom:1px solid #fff5c2}.luna-console-log-item.luna-console-warn .luna-console-count{background:#e8a400}.luna-console-log-item.luna-console-info{z-index:30}.luna-console-log-item.luna-console-group,.luna-console-log-item.luna-console-groupCollapsed{font-weight:700}.luna-console-preview{display:inline-block}.luna-console-preview .luna-console-preview-container{display:flex;align-items:center}.luna-console-preview .luna-console-json{overflow-x:auto;-webkit-overflow-scrolling:touch;padding-left:12px}.luna-console-preview .luna-console-preview-icon-container{display:block}.luna-console-preview .luna-console-preview-icon-container .luna-console-icon{position:relative;font-size:12px}.luna-console-preview .luna-console-preview-icon-container .luna-console-icon-caret-down{top:2px}.luna-console-preview .luna-console-preview-icon-container .luna-console-icon-caret-right{top:1px}.luna-console-preview .luna-console-preview-content-container{word-break:break-all}.luna-console-preview .luna-console-descriptor,.luna-console-preview .luna-console-object-preview{font-style:italic}.luna-console-preview .luna-console-key{color:#881391}.luna-console-preview .luna-console-number{color:#1c00cf}.luna-console-preview .luna-console-null{color:#5e5e5e}.luna-console-preview .luna-console-string{color:#c41a16}.luna-console-preview .luna-console-boolean{color:#0d22aa}.luna-console-preview .luna-console-special{color:#5e5e5e}.luna-console-theme-dark{color-scheme:dark}.luna-console-theme-dark .luna-console-log-container.luna-console-selected .luna-console-log-item{background:#29323d}.luna-console-theme-dark .luna-console-log-container.luna-console-selected .luna-console-log-item:not(.luna-console-error):not(.luna-console-warn){border-color:#4173b4}.luna-console-theme-dark .luna-console-log-item{color:#a5a5a5;border-bottom-color:#3d3d3d}.luna-console-theme-dark .luna-console-log-item .luna-console-code .luna-console-keyword{color:#e36eec}.luna-console-theme-dark .luna-console-log-item .luna-console-code .luna-console-number{color:#9980ff}.luna-console-theme-dark .luna-console-log-item .luna-console-code .luna-console-operator{color:#7f7f7f}.luna-console-theme-dark .luna-console-log-item .luna-console-code .luna-console-comment{color:#747474}.luna-console-theme-dark .luna-console-log-item .luna-console-code .luna-console-string{color:#f29766}.luna-console-theme-dark .luna-console-log-item.luna-console-error{background:#290000;color:#ff8080;border-top-color:#5c0000;border-bottom-color:#5c0000}.luna-console-theme-dark .luna-console-log-item.luna-console-error .luna-console-count{background:#ff8080}.luna-console-theme-dark .luna-console-log-item.luna-console-warn{color:#ffcb6b;background:#332a00;border-top-color:#650;border-bottom-color:#650}.luna-console-theme-dark .luna-console-log-item .luna-console-count{background:#42597f;color:#949494}.luna-console-theme-dark .luna-console-log-item .luna-console-log-content .luna-console-null,.luna-console-theme-dark .luna-console-log-item .luna-console-log-content .luna-console-undefined{color:#7f7f7f}.luna-console-theme-dark .luna-console-log-item .luna-console-log-content .luna-console-boolean,.luna-console-theme-dark .luna-console-log-item .luna-console-log-content .luna-console-number{color:#9980ff}.luna-console-theme-dark .luna-console-log-item .luna-console-log-content .luna-console-regexp,.luna-console-theme-dark .luna-console-log-item .luna-console-log-content .luna-console-symbol{color:#e36eec}.luna-console-theme-dark .luna-console-icon-container .luna-console-icon-caret-down,.luna-console-theme-dark .luna-console-icon-container .luna-console-icon-caret-right{color:#9aa0a6}.luna-console-theme-dark .luna-console-header{border-bottom-color:#3d3d3d}.luna-console-theme-dark .luna-console-nesting-level{border-right-color:#3d3d3d}.luna-console-theme-dark .luna-console-nesting-level::before{border-bottom-color:#3d3d3d}.luna-console-theme-dark .luna-console-preview .luna-console-key{color:#e36eec}.luna-console-theme-dark .luna-console-preview .luna-console-number{color:#9980ff}.luna-console-theme-dark .luna-console-preview .luna-console-null{color:#7f7f7f}.luna-console-theme-dark .luna-console-preview .luna-console-string{color:#f29766}.luna-console-theme-dark .luna-console-preview .luna-console-boolean{color:#9980ff}.luna-console-theme-dark .luna-console-preview .luna-console-special{color:#7f7f7f}@font-face{font-family:luna-object-viewer-icon;src:url('data:application/x-font-woff;charset=utf-8;base64,d09GRgABAAAAAAS8AAsAAAAAB7QAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAABHU1VCAAABCAAAAGEAAACMISgl+k9TLzIAAAFsAAAAPQAAAFZLxUkWY21hcAAAAawAAADWAAACdBU42qdnbHlmAAAChAAAAC4AAAAwabU7V2hlYWQAAAK0AAAALwAAADZzjr4faGhlYQAAAuQAAAAYAAAAJAFyANlobXR4AAAC/AAAABAAAABAAZAAAGxvY2EAAAMMAAAAEAAAACIAtACobWF4cAAAAxwAAAAfAAAAIAEbAA9uYW1lAAADPAAAASkAAAIWm5e+CnBvc3QAAARoAAAAUwAAAHZW8MNZeJxNjTsOQFAQRc/z/+sV1mABohKV0gZeJRJR2X9cT4RJZu7nFIMBMjoGvHGaF6rdngcNAc/c/O/Nvq2W5E1igdNE2zv1iGh1c5FQPlYXUlJRyxt9+/pUKadQa/AveGEGZQAAAHicY2BkkGScwMDKwMBQx9ADJGWgdAIDJ4MxAwMTAyszA1YQkOaawnCAQfcjE8MJIFcITDIwMIIIAFqDCGkAAAB4nM2STQ4BQRCFv54ZP8MwFhYW4gQcShBsSERi50BWDuFCcwJedddKRGKnOt8k9aanqudVAy0gF3NRQLgTsLhJDVHP6UW94Kp8zEhKwYIlG/YcOXHm0mTPp96aumLLwdUQ1fcIqmJrwpSZL+iqak5JmyE1Ayr1bdGhr/2ZPmp/qPQtuj/uJzqQl+pfDyypesQD6AT/ElV8PjyrMccT9rdLR3PUFBI227VTio1jbm6dodg5VnPvmAsHxzofHfmi+Sbs/pwdWcXFkWdNSNg9arIE2QufuSCyAAB4nGNgZACBlQzTGZgYGMyVxVc2O073AIpAxHsYloHFRc2dPZY2OTIwAACmEQesAAB4nGNgZGBgAOINe2b6x/PbfGXgZjgBFIjifLyvAUEDwUqGZUCSg4EJxAEAUn4LLAB4nGNgZGBgOMHAACdXMjAyoAIBADizAkx4nGNgAIITUEwGAABZUAGReJxjYAACHgYJ3BAAE94BXXicY2BkYGAQYGBmANEMDExAzAWEDAz/wXwGAApcASsAeJxlkD1uwkAUhMdgSAJSghQpKbNVCiKZn5IDQE9Bl8KYtTGyvdZ6QaLLCXKEHCGniHKCHChj82hgLT9/M2/e7soABviFh3p5uG1qvVq4oTpxm/Qg7JOfhTvo40W4S38o3MMbpsJ9POKdO3j+HZ0BSuEW7vEh3Kb/KeyTv4Q7eMK3cJf+j3APK/wJ9/HqDdPIFLEp3FIn+yy0Z3n+rrStUlOoSTA+WwtdaBs6vVHro6oOydS5WMXW5GrOrs4yo0prdjpywda5cjYaxeIHkcmRIoJBgbipDktoJNgjQwh71b3UK6YtKvq1VpggwPgqtWCqaJIhlcaGyTWOrBUOPG1K1zGt+FrO5KS5zGreJCMr/u+6t6MT0Q+wbaZKzDDiE1/kg+YO+T89EV6oAAAAeJxdxjkOgCAUANE/uOOGB+FQBIjaaEJIuL6FsfE1M6Lk9fXPoKioaWjp6BnQjEzMLKwYNtHepZhtuMs1vpvO/ch4HIlIxhK4KVyc7BwiD8nvDlkA') format('woff')}[class*=' luna-object-viewer-icon-'],[class^=luna-object-viewer-icon-]{display:inline-block;font-family:luna-object-viewer-icon!important;font-size:16px;font-style:normal;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}.luna-object-viewer-icon-caret-down:before{content:'\f101'}.luna-object-viewer-icon-caret-right:before{content:'\f102'}.luna-object-viewer{overflow-x:auto;-webkit-overflow-scrolling:touch;overflow-y:hidden;cursor:default;font-family:ui-monospace,SFMono-Regular,SF Mono,Menlo,Consolas,Liberation Mono,monospace;font-size:12px;line-height:1.2;min-height:100%;color:#333;list-style:none!important}.luna-object-viewer ul{list-style:none!important;padding:0!important;padding-left:12px!important;margin:0!important}.luna-object-viewer li{position:relative;white-space:nowrap;line-height:16px;min-height:16px}.luna-object-viewer>li>.luna-object-viewer-key{display:none}.luna-object-viewer span{position:static!important}.luna-object-viewer li .luna-object-viewer-collapsed~.luna-object-viewer-close:before{color:#999}.luna-object-viewer-array .luna-object-viewer-object .luna-object-viewer-key{display:inline}.luna-object-viewer-null{color:#5e5e5e}.luna-object-viewer-regexp,.luna-object-viewer-string{color:#c41a16}.luna-object-viewer-number{color:#1c00cf}.luna-object-viewer-boolean{color:#0d22aa}.luna-object-viewer-special{color:#5e5e5e}.luna-object-viewer-key,.luna-object-viewer-key-lighter{color:#881391}.luna-object-viewer-key-lighter{opacity:.6}.luna-object-viewer-key-special{color:#5e5e5e}.luna-object-viewer-collapsed .luna-object-viewer-icon,.luna-object-viewer-expanded .luna-object-viewer-icon{position:absolute!important;left:-12px;color:#727272;font-size:12px}.luna-object-viewer-icon-caret-right{top:0}.luna-object-viewer-icon-caret-down{top:1px}.luna-object-viewer-expanded>.luna-object-viewer-icon-caret-down{display:inline}.luna-object-viewer-expanded>.luna-object-viewer-icon-caret-right{display:none}.luna-object-viewer-collapsed>.luna-object-viewer-icon-caret-down{display:none}.luna-object-viewer-collapsed>.luna-object-viewer-icon-caret-right{display:inline}.luna-object-viewer-hidden~ul{display:none}.luna-object-viewer-theme-dark{color:#fff}.luna-object-viewer-theme-dark .luna-object-viewer-null,.luna-object-viewer-theme-dark .luna-object-viewer-special{color:#a1a1a1}.luna-object-viewer-theme-dark .luna-object-viewer-regexp,.luna-object-viewer-theme-dark .luna-object-viewer-string{color:#f28b54}.luna-object-viewer-theme-dark .luna-object-viewer-boolean,.luna-object-viewer-theme-dark .luna-object-viewer-number{color:#9980ff}.luna-object-viewer-theme-dark .luna-object-viewer-key,.luna-object-viewer-theme-dark .luna-object-viewer-key-lighter{color:#5db0d7}@font-face{font-family:luna-dom-viewer-icon;src:url('data:application/x-font-woff;charset=utf-8;base64,d09GRgABAAAAAAS8AAsAAAAAB7QAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAABHU1VCAAABCAAAAGEAAACMISgl+k9TLzIAAAFsAAAAPQAAAFZLxUkWY21hcAAAAawAAADWAAACdBU42qdnbHlmAAAChAAAAC4AAAAwabU7V2hlYWQAAAK0AAAALwAAADZzjr4faGhlYQAAAuQAAAAYAAAAJAFyANlobXR4AAAC/AAAABAAAABAAZAAAGxvY2EAAAMMAAAAEAAAACIAtACobWF4cAAAAxwAAAAfAAAAIAEbAA9uYW1lAAADPAAAASkAAAIWm5e+CnBvc3QAAARoAAAAUwAAAHZW8MNZeJxNjTsOQFAQRc/z/+sV1mABohKV0gZeJRJR2X9cT4RJZu7nFIMBMjoGvHGaF6rdngcNAc/c/O/Nvq2W5E1igdNE2zv1iGh1c5FQPlYXUlJRyxt9+/pUKadQa/AveGEGZQAAAHicY2BkkGScwMDKwMBQx9ADJGWgdAIDJ4MxAwMTAyszA1YQkOaawnCAQfcjE8MJIFcITDIwMIIIAFqDCGkAAAB4nM2STQ4BQRCFv54ZP8MwFhYW4gQcShBsSERi50BWDuFCcwJedddKRGKnOt8k9aanqudVAy0gF3NRQLgTsLhJDVHP6UW94Kp8zEhKwYIlG/YcOXHm0mTPp96aumLLwdUQ1fcIqmJrwpSZL+iqak5JmyE1Ayr1bdGhr/2ZPmp/qPQtuj/uJzqQl+pfDyypesQD6AT/ElV8PjyrMccT9rdLR3PUFBI227VTio1jbm6dodg5VnPvmAsHxzofHfmi+Sbs/pwdWcXFkWdNSNg9arIE2QufuSCyAAB4nGNgZACBlQzTGZgYGMyVxVc2O073AIpAxHsYloHFRc2dPZY2OTIwAACmEQesAAB4nGNgZGBgAOINe2b6x/PbfGXgZjgBFIjifLyvAUEDwUqGZUCSg4EJxAEAUn4LLAB4nGNgZGBgOMHAACdXMjAyoAIBADizAkx4nGNgAIITUEwGAABZUAGReJxjYAACHgYJ3BAAE94BXXicY2BkYGAQYGBmANEMDExAzAWEDAz/wXwGAApcASsAeJxlkD1uwkAUhMdgSAJSghQpKbNVCiKZn5IDQE9Bl8KYtTGyvdZ6QaLLCXKEHCGniHKCHChj82hgLT9/M2/e7soABviFh3p5uG1qvVq4oTpxm/Qg7JOfhTvo40W4S38o3MMbpsJ9POKdO3j+HZ0BSuEW7vEh3Kb/KeyTv4Q7eMK3cJf+j3APK/wJ9/HqDdPIFLEp3FIn+yy0Z3n+rrStUlOoSTA+WwtdaBs6vVHro6oOydS5WMXW5GrOrs4yo0prdjpywda5cjYaxeIHkcmRIoJBgbipDktoJNgjQwh71b3UK6YtKvq1VpggwPgqtWCqaJIhlcaGyTWOrBUOPG1K1zGt+FrO5KS5zGreJCMr/u+6t6MT0Q+wbaZKzDDiE1/kg+YO+T89EV6oAAAAeJxdxjkOgCAUANE/uOOGB+FQBIjaaEJIuL6FsfE1M6Lk9fXPoKioaWjp6BnQjEzMLKwYNtHepZhtuMs1vpvO/ch4HIlIxhK4KVyc7BwiD8nvDlkA') format('woff')}[class*=' luna-dom-viewer-icon-'],[class^=luna-dom-viewer-icon-]{display:inline-block;font-family:luna-dom-viewer-icon!important;font-size:16px;font-style:normal;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}.luna-dom-viewer-icon-caret-down:before{content:'\f101'}.luna-dom-viewer-icon-caret-right:before{content:'\f102'}.luna-dom-viewer{padding:0 0 0 12px;cursor:default;list-style:none;min-width:100%;color:rgba(0,0,0,.88);color:var(--luna-color-text,rgba(0,0,0,.88));background-color:rgba(0,0,0,0);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";font-family:var(--luna-font-family, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji");box-sizing:border-box;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;font-size:14px}.luna-dom-viewer .luna-dom-viewer-hidden,.luna-dom-viewer.luna-dom-viewer-hidden{display:none}.luna-dom-viewer .luna-dom-viewer-invisible,.luna-dom-viewer.luna-dom-viewer-invisible{visibility:hidden}.luna-dom-viewer *{box-sizing:border-box}.luna-dom-viewer.luna-dom-viewer-theme-dark{color-scheme:dark;color:hsla(0,0%,100%,.85);color:var(--luna-color-text-dark,rgba(255,255,255,.85));background-color:rgba(0,0,0,0)}.luna-dom-viewer{font-size:12px;font-family:ui-monospace,SFMono-Regular,SF Mono,Menlo,Consolas,Liberation Mono,monospace}.luna-dom-viewer ul{display:inline-block}.luna-dom-viewer-toggle{min-width:12px;margin-left:-12px}.luna-dom-viewer-icon-caret-down,.luna-dom-viewer-icon-caret-right{position:absolute!important;font-size:12px!important}.luna-dom-viewer-tree-item{min-width:200px;line-height:16px;min-height:16px;position:relative;z-index:10;outline:0}.luna-dom-viewer-tree-item.luna-dom-viewer-selected .luna-dom-viewer-selection,.luna-dom-viewer-tree-item:hover .luna-dom-viewer-selection{display:block}.luna-dom-viewer-tree-item .luna-dom-viewer-icon-caret-down{display:none}.luna-dom-viewer-tree-item.luna-dom-viewer-expanded .luna-dom-viewer-icon-caret-down{display:inline-block}.luna-dom-viewer-tree-item.luna-dom-viewer-expanded .luna-dom-viewer-icon-caret-right{display:none}.luna-dom-viewer-attribute-value{word-break:break-all}.luna-dom-viewer-attribute-value.luna-dom-viewer-attribute-underline{text-decoration:underline}.luna-dom-viewer-selection{position:absolute;display:none;left:-10000px;right:0;top:0;bottom:0;z-index:-1}.luna-dom-viewer-children{margin:0;overflow-x:visible;overflow-y:visible;padding-left:15px}.luna-dom-viewer-theme-light .luna-dom-viewer-icon-caret-down,.luna-dom-viewer-theme-light .luna-dom-viewer-icon-caret-right{color:#9aa0a6}.luna-dom-viewer-theme-light .luna-dom-viewer-html-tag,.luna-dom-viewer-theme-light .luna-dom-viewer-tag-name{color:#881280}.luna-dom-viewer-theme-light .luna-dom-viewer-attribute-name{color:#994500}.luna-dom-viewer-theme-light .luna-dom-viewer-attribute-value{color:#1a1aa6}.luna-dom-viewer-theme-light .luna-dom-viewer-html-comment{color:#236e25}.luna-dom-viewer-theme-light .luna-dom-viewer-tree-item:hover .luna-dom-viewer-selection{background:#e8eaed}.luna-dom-viewer-theme-light .luna-dom-viewer-tree-item.luna-dom-viewer-selected .luna-dom-viewer-selection{background:#e0e0e0}.luna-dom-viewer-theme-light .luna-dom-viewer-tree-item.luna-dom-viewer-selected:focus .luna-dom-viewer-selection{background:#cfe8fc}.luna-dom-viewer-theme-light .luna-dom-viewer-text-node{word-break:break-all}.luna-dom-viewer-theme-light .luna-dom-viewer-text-node .luna-dom-viewer-keyword{color:#881280}.luna-dom-viewer-theme-light .luna-dom-viewer-text-node .luna-dom-viewer-number{color:#1c00cf}.luna-dom-viewer-theme-light .luna-dom-viewer-text-node .luna-dom-viewer-operator{color:gray}.luna-dom-viewer-theme-light .luna-dom-viewer-text-node .luna-dom-viewer-comment{color:#236e25}.luna-dom-viewer-theme-light .luna-dom-viewer-text-node .luna-dom-viewer-string{color:#1a1aa6}.luna-dom-viewer-theme-dark{color:#e8eaed}.luna-dom-viewer-theme-dark .luna-dom-viewer-icon-caret-down,.luna-dom-viewer-theme-dark .luna-dom-viewer-icon-caret-right{color:#9aa0a6}.luna-dom-viewer-theme-dark .luna-dom-viewer-html-tag,.luna-dom-viewer-theme-dark .luna-dom-viewer-tag-name{color:#5db0d7}.luna-dom-viewer-theme-dark .luna-dom-viewer-attribute-name{color:#9bbbdc}.luna-dom-viewer-theme-dark .luna-dom-viewer-attribute-value{color:#f29766}.luna-dom-viewer-theme-dark .luna-dom-viewer-html-comment{color:#898989}.luna-dom-viewer-theme-dark .luna-dom-viewer-tree-item:hover .luna-dom-viewer-selection{background:#083c69}.luna-dom-viewer-theme-dark .luna-dom-viewer-tree-item.luna-dom-viewer-selected .luna-dom-viewer-selection{background:#454545}.luna-dom-viewer-theme-dark .luna-dom-viewer-tree-item.luna-dom-viewer-selected:focus .luna-dom-viewer-selection{background:#073d69}.luna-dom-viewer-theme-dark .luna-dom-viewer-text-node{word-break:break-all}.luna-dom-viewer-theme-dark .luna-dom-viewer-text-node .luna-dom-viewer-keyword{color:#e36eec}.luna-dom-viewer-theme-dark .luna-dom-viewer-text-node .luna-dom-viewer-number{color:#9980ff}.luna-dom-viewer-theme-dark .luna-dom-viewer-text-node .luna-dom-viewer-operator{color:#7f7f7f}.luna-dom-viewer-theme-dark .luna-dom-viewer-text-node .luna-dom-viewer-comment{color:#747474}.luna-dom-viewer-theme-dark .luna-dom-viewer-text-node .luna-dom-viewer-string{color:#f29766}@font-face{font-family:luna-text-viewer-icon;src:url('data:application/x-font-woff;charset=utf-8;base64,d09GRgABAAAAAAS0AAsAAAAAB2QAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAABHU1VCAAABCAAAAFQAAAB0INElr09TLzIAAAFcAAAAPQAAAFZL+0klY21hcAAAAZwAAACfAAACEAEewxRnbHlmAAACPAAAAIYAAACkNSDggmhlYWQAAALEAAAALgAAADZzrb4oaGhlYQAAAvQAAAAWAAAAJAGRANNobXR4AAADDAAAABAAAAAoAZAAAGxvY2EAAAMcAAAAEAAAABYBWgFIbWF4cAAAAywAAAAdAAAAIAEXADtuYW1lAAADTAAAASkAAAIWm5e+CnBvc3QAAAR4AAAAOwAAAFJIWdOleJxjYGRgYOBiMGCwY2BycfMJYeDLSSzJY5BiYGGAAJA8MpsxJzM9kYEDxgPKsYBpDiBWAdNMDGwMQkAWK1CGlYEZyGMCstiBMpxAUUYGZgDbGgXDeJxjYGTQYJzAwMrAwFDH0AMkZaB0AgMngzEDAxMDKzMDVhCQ5prCcIAh+SMTwwkgVwhMMjAwgggAY84IrgAAAHicvZFLCsMwDERHzsdJ6aL0HD1VQiDQRbIN9Axd9aI+QTpjq5Bdd5F4Bo1lybIBNAAq8iA1YB8YZG+qlvUKl6zXGBjf6MofMWHGEyu2FPb9oCxULCtHs3yy+J2urg1rtojo0HM/MKnFGabOGlbdYvdT+1N6/7drXl8e6Vajo3efHP3b7HAUvntBMy1OJKujMTeHNZMV9McpFBC+tLgY4QB4nGNgZACBEwzrGdgZGOwZxdnVDdXNPfKEGlhchO0KhZtZ3IQYmMFq1jCsZpBi0GLQY2AwNzGzZjQSk2UUYdNmVFID8UyVRUXYlNRMlVGlTM1FjU3tmZkTmVhYmFRBhHwoCyuzKgtTIjMzWJg3ZClIGMRlZQmVB7GhMixM0aGhQIsB52sTqgAAeJxjYGRgYADi2JNxkvH8Nl8ZuBlOAAWiOB/va0DQQHCCYT2Q5GBgAnEANJ0KnQAAeJxjYGRgYDjBwIBEMjKgAi4AOvoCZQAAeJxjYACCE1CMBwAAM7gBkXicY2AAAiGGIFQIABXIAqN4nGNgZGBg4GLQZ2BmAAEmMI8LSP4H8xkADjQBUwAAAHicZZA9bsJAFITHYEgCUoIUKSmzVQoimZ+SA0BPQZfCmLUxsr3WekGiywlyhBwhp4hyghwoY/NoYC0/fzNv3u7KAAb4hYd6ebhtar1auKE6cZv0IOyTn4U76ONFuEt/KNzDG6bCfTzinTt4/h2dAUrhFu7xIdym/ynsk7+EO3jCt3CX/o9wDyv8Cffx6g3TyBSxKdxSJ/sstGd5/q60rVJTqEkwPlsLXWgbOr1R66OqDsnUuVjF1uRqzq7OMqNKa3Y6csHWuXI2GsXiB5HJkSKCQYG4qQ5LaCTYI0MIe9W91CumLSr6tVaYIMD4KrVgqmiSIZXGhsk1jqwVDjxtStcxrfhazuSkucxq3iQjK/7vurejE9EPsG2mSsww4hNf5IPmDvk/PRFeqAAAAHicXcU7CsAgFEXBe4x/l/kQBAtt3X0KSZNpRk7X91/F8eAJRBKZQqUp2Og2va19MAadyWJzpBd4kgcWAA==') format('woff')}[class*=' luna-text-viewer-icon-'],[class^=luna-text-viewer-icon-]{display:inline-block;font-family:luna-text-viewer-icon!important;font-size:16px;font-style:normal;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}.luna-text-viewer-icon-check:before{content:'\f101'}.luna-text-viewer-icon-copy:before{content:'\f102'}.luna-text-viewer{color:#333;background-color:#fff;font-family:Arial,Helvetica,sans-serif;box-sizing:border-box;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;font-size:14px;padding:0;unicode-bidi:embed;position:relative;overflow:auto;border:1px solid #ccc}.luna-text-viewer.luna-text-viewer-platform-windows{font-family:'Segoe UI',Tahoma,sans-serif}.luna-text-viewer.luna-text-viewer-platform-linux{font-family:Roboto,Ubuntu,Arial,sans-serif}.luna-text-viewer .luna-text-viewer-hidden,.luna-text-viewer.luna-text-viewer-hidden{display:none}.luna-text-viewer .luna-text-viewer-invisible,.luna-text-viewer.luna-text-viewer-invisible{visibility:hidden}.luna-text-viewer *{box-sizing:border-box}.luna-text-viewer.luna-text-viewer-theme-dark{color:#d9d9d9;border-color:#3d3d3d;background:#242424}.luna-text-viewer:hover .luna-text-viewer-copy{opacity:1}.luna-text-viewer-table{display:table}.luna-text-viewer-table .luna-text-viewer-line-number,.luna-text-viewer-table .luna-text-viewer-line-text{padding:0}.luna-text-viewer-table-row{display:table-row}.luna-text-viewer-line-number{display:table-cell;padding:0 3px 0 8px!important;text-align:right;vertical-align:top;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;border-right:1px solid #ccc}.luna-text-viewer-line-text{display:table-cell;padding-left:4px!important;-webkit-user-select:text;-moz-user-select:text;-ms-user-select:text;user-select:text}.luna-text-viewer-copy{background:#fff;opacity:0;position:absolute;right:5px;top:5px;border:1px solid #ccc;border-radius:4px;width:25px;height:25px;text-align:center;line-height:25px;cursor:pointer;transition:opacity .3s,top .3s}.luna-text-viewer-copy .luna-text-viewer-icon-check{color:#188037}.luna-text-viewer-text{padding:4px;font-size:12px;font-family:ui-monospace,SFMono-Regular,SF Mono,Menlo,Consolas,Liberation Mono,monospace;box-sizing:border-box;white-space:pre;display:block}.luna-text-viewer-text.luna-text-viewer-line-numbers{padding:0}.luna-text-viewer-text.luna-text-viewer-wrap-long-lines{white-space:pre-wrap}.luna-text-viewer-text.luna-text-viewer-wrap-long-lines .luna-text-viewer-line-text{word-break:break-all}.luna-text-viewer-theme-dark{color-scheme:dark}.luna-text-viewer-theme-dark .luna-text-viewer-copy,.luna-text-viewer-theme-dark .luna-text-viewer-line-number{border-color:#3d3d3d}.luna-text-viewer-theme-dark .luna-text-viewer-copy .luna-text-viewer-icon-check{color:#81c995}.luna-text-viewer-theme-dark .luna-text-viewer-copy{background-color:#242424}@font-face{font-family:luna-notification-icon;src:url('data:application/x-font-woff;charset=utf-8;base64,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') format('woff')}[class*=' luna-notification-icon-'],[class^=luna-notification-icon-]{display:inline-block;font-family:luna-notification-icon!important;font-size:16px;font-style:normal;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}.luna-notification-icon-info:before{content:'\f101'}.luna-notification-icon-check:before{content:'\f102'}.luna-notification-icon-warn:before{content:'\f103'}.luna-notification-icon-error:before{content:'\f104'}.luna-notification{position:relative;padding:20px;pointer-events:none;display:flex;flex-direction:column;overflow:hidden;color:rgba(0,0,0,.88);color:var(--luna-color-text,rgba(0,0,0,.88));background-color:rgba(0,0,0,0);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";font-family:var(--luna-font-family, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji");box-sizing:border-box;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;font-size:14px}.luna-notification .luna-notification-hidden,.luna-notification.luna-notification-hidden{display:none}.luna-notification .luna-notification-invisible,.luna-notification.luna-notification-invisible{visibility:hidden}.luna-notification *{box-sizing:border-box}.luna-notification.luna-notification-theme-dark{color-scheme:dark;color:hsla(0,0%,100%,.85);color:var(--luna-color-text-dark,rgba(255,255,255,.85));background-color:rgba(0,0,0,0)}.luna-notification.luna-notification-full{position:fixed;top:0;left:0;width:100%;height:100%}.luna-notification-item{display:flex;border:1px solid;padding:10px 16px;align-items:center}.luna-notification-lower{margin-top:16px}.luna-notification-upper{margin-bottom:16px}.luna-notification-icon-container{margin-right:8px;color:#fff;border-radius:50%;width:16px;height:16px;text-align:center;line-height:16px}.luna-notification-icon-container.luna-notification-info .luna-notification-icon{position:relative;top:-2px;font-size:12px}.luna-notification-icon-container.luna-notification-success .luna-notification-icon{position:relative;top:-1px;font-size:12px}.luna-notification-icon-container.luna-notification-warning{position:relative;top:-2px}.luna-notification-icon-container.luna-notification-warning .luna-notification-icon{font-size:14px}.luna-notification-icon-container.luna-notification-error{position:relative;top:-1px}.luna-notification-icon-container.luna-notification-error .luna-notification-icon{font-size:14px}.luna-notification-theme-light .luna-notification-item{border-color:#d9d9d9;border-color:var(--luna-color-border,#d9d9d9);box-shadow:0 6px 16px 0 rgba(0,0,0,.08),0 3px 6px -4px rgba(0,0,0,.12),0 9px 28px 8px rgba(0,0,0,.05);box-shadow:var(--luna-box-shadow,0 6px 16px 0 rgba(0,0,0,.08),0 3px 6px -4px rgba(0,0,0,.12),0 9px 28px 8px rgba(0,0,0,.05));color:rgba(0,0,0,.88);color:var(--luna-color-text,rgba(0,0,0,.88));background-color:#fff;background-color:var(--luna-color-bg-container,#fff)}.luna-notification-theme-light .luna-notification-icon-container.luna-notification-info{background-color:#1677ff;background-color:var(--luna-color-info,#1677ff)}.luna-notification-theme-light .luna-notification-icon-container.luna-notification-success{background-color:#52c41a;background-color:var(--luna-color-success,#52c41a)}.luna-notification-theme-light .luna-notification-icon-container.luna-notification-warning{color:#faad14;color:var(--luna-color-warning,#faad14)}.luna-notification-theme-light .luna-notification-icon-container.luna-notification-error{color:#ff4d4f;color:var(--luna-color-error,#ff4d4f)}.luna-notification-theme-dark .luna-notification-item{border-color:#424242;border-color:var(--luna-color-border,#424242);box-shadow:0 6px 16px 0 rgba(0,0,0,.08),0 3px 6px -4px rgba(0,0,0,.12),0 9px 28px 8px rgba(0,0,0,.05);box-shadow:var(--luna-box-shadow,0 6px 16px 0 rgba(0,0,0,.08),0 3px 6px -4px rgba(0,0,0,.12),0 9px 28px 8px rgba(0,0,0,.05));color:hsla(0,0%,100%,.85);color:var(--luna-color-text,rgba(255,255,255,.85));background-color:#141414;background-color:var(--luna-color-bg-container,#141414)}.luna-notification-theme-dark .luna-notification-icon-container.luna-notification-info{background-color:#1668dc;background-color:var(--luna-color-info,#1668dc)}.luna-notification-theme-dark .luna-notification-icon-container.luna-notification-success{background-color:#49aa19;background-color:var(--luna-color-success,#49aa19)}.luna-notification-theme-dark .luna-notification-icon-container.luna-notification-warning{color:#d89614;color:var(--luna-color-warning,#d89614)}.luna-notification-theme-dark .luna-notification-icon-container.luna-notification-error{color:#dc4446;color:var(--luna-color-error,#dc4446)}</style></head>
+<body>
+<div id="gameWrap">
+  <canvas id="gameCanvas" width="480" height="800"></canvas>
+  <div id="nameInputOverlay">
+    <div id="nameInputTime"></div>
+    <div id="nameInputTier"></div>
+    <input type="text" id="nameInput" maxlength="10" autocomplete="off" spellcheck="false">
+    <div id="nameInputBtns">
+      <button class="pauseActionBtn" id="nameSubmitBtn"></button>
+      <button class="pauseActionBtn secondary" id="nameSkipBtn"></button>
+    </div>
+  </div>
+  <div id="pauseOverlay">
+    <div id="pauseTitle"></div>
+    <div class="pauseRow">
+      <span class="pauseLabel" id="pauseBgmLabel"></span>
+      <button class="pauseMuteBtn" id="pauseBgmMute"></button>
+      <input type="range" class="pauseSlider" id="pauseBgmSlider" min="0" max="100" step="1">
+    </div>
+    <div class="pauseRow">
+      <span class="pauseLabel" id="pauseSfxLabel"></span>
+      <button class="pauseMuteBtn" id="pauseSfxMute"></button>
+      <input type="range" class="pauseSlider" id="pauseSfxSlider" min="0" max="100" step="1">
+    </div>
+    <div id="pauseBtns">
+      <button class="pauseActionBtn" id="pauseResumeBtn"></button>
+      <button class="pauseActionBtn" id="pauseMenuBtn"></button>
+    </div>
+  </div>
+  <div id="langBar" style="display: block;">
+    <div id="rankingBtnWrap">
+      <button class="lbtn" id="rankingBtn">繝ｩ繝ｳ繧ｭ繝ｳ繧ｰ</button>
+      <button class="lbtn" data-l="ko">KO</button>
+      <button class="lbtn on" data-l="ja">JA</button>
+      <button class="lbtn" data-l="en">EN</button>
+    </div>
+  </div>
+</div>
+<script>
+'use strict';
+
+// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// I18N
+// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+const I18N = {
+  ko: {
+    start:        '�ｸ��共�ｴ �ｴ�ｬ�ｼ �､�� 﨑罹ｲ�!',
+    phase2:       '�ｴ�晤豆�ｴ �川�� �珠符��� �溢牟...',
+    phase4:       '﨑ｭ�� �語ｳ��ｬ�� �誤蕩�� ��ｵｬ�ｼ!?',
+    phase4b:      '��...�懋ｰ?',
+    death:        '�語ｳｼ �ｩ�醐紛 ��ｦｬ�� �川葺�ｴ��.. (縺｣笊･_笊･)縺｣',
+    clear80:      '增ｴ�ｬ�ｴ!',
+    clear80b:     '﨑ｴ嵓ｼ�罷畠�護ｧ �ｰ�､� �ｼ���ｴ?',
+    endless_msg:  '�ｰ�ｬ�� �ｸ �､巐護乱�� �霊牟�� �� ��来�ｴ��.',
+    restart:      '�ｸ��共�ｴ �ｴ�ｬ�ｼ �､�� 﨑罹ｲ�!',
+    ach_name:     '�呷捩 �､巐誤･ｼ �俯ｳｵ﨑俾ｳ� �溢牟',
+    ach_desc:     '夋�ｧ� �逸桁�川� 80�壱･ｼ ����､',
+    title:        '�ｴ�晨半﨑俾ｸｰ',
+    subtitle:     '�ｬ�� ��~ 奛醐〓��懍ｧ�� �懋ｰ�巡 �ｰ�ｴ�俯株�ｵ�壱共.',
+    mode_normal:  '�ｴ�懦葺�専ｲ� �護符��ｰ',
+    mode_endless: '�罷糖�ｬ�､ �ｨ��',
+    mode_locked:  '�ｸ� �ｨ�罹･ｼ 增ｴ�ｬ�ｴ﨑俯ｩｴ 﨑ｴ�壱松��',
+    time_label:        '�晧｡ｴ �懋ｰ�',
+    best_label:        '�懋ｳ� �ｰ��',
+    retry:             '�､�� �懍梠',
+    menu:              '�罷俺��',
+    tap_start:         '增ｴ�ｭ �尖株 夋ｭ�ｼ�� �懍梠',
+    unlocked:          '﨑ｴ��!',
+    color_label:       '�ｰ�ｴ �餓メ',
+    key_hint:          '�ｴ��: WASD / �ｩ嵂･墲､   |   �ｼ�懍�菩ｧ: ESC',
+    pause_title:       '�ｼ�懍�菩ｧ',
+    pause_resume:      '���﨑俾ｸｰ',
+    bgm_label:         '�ｰ�ｽ��',
+    sfx_label:         '巐ｨ�ｼ��',
+    rank_1st_msg:      '1�ｱ�ｴ�ｼ!! �ｭ�� �ｰ�ｬ 甯醐敢�� �懋ｳ��ｼ!! 笨ｨ',
+    rank_top3_msg:     '��ｨ﨑ｴ! 夋� 3�ｴ�ｼ! 脂',
+    rank_top10_msg:    '�ｭ墲ｹ�� �ｬ�川牟! �駆ｧ�ｱｸ~ 嫌',
+    rank_out_msg:      '�､�護濫 �ｭ TOP 10�ｴ�ｼ! �卓寳﨑��護囈 笙ｪ',
+    name_placeholder:  '�雅└�� ���･ (�罹劇 10��)',
+    name_submit:       '�ｱ��',
+    name_skip:         '�ｴ�壱峅�ｰ',
+    ranking_btn:       '�ｭ墲ｹ',
+    ranking_title:     '笨ｦ �罷糖�ｬ�､ �ｭ墲ｹ 笨ｦ',
+    ranking_close:     '�ｫ�ｰ',
+    ranking_empty:     '��ｧ� �ｰ�晧擽 ��牟��',
+    ranking_loading:   '�壱洳�､�� ��...',
+  },
+  ja: {
+    start:        '縺ｪ繧峨�縺九＄繧�√ｂ縺�ｸ蠎ｦ��',
+    phase2:       '髫慕浹縺後←繧薙←繧灘｢励∴縺ｦ縺�ｋ窶ｦ',
+    phase4:       '闊ｪ豕輔い繝ｫ繧ｴ繝ｪ繧ｺ繝�菴懊▲縺溘�隱ｰ繧�!?',
+    phase4b:      '縺�...遘√°?',
+    death:        '遏ｳ縺ｫ縺ｶ縺､縺九▲縺ｦ縺励∪縺�∪縺励◆窶ｦ (縺｣笊･_笊･)縺｣',
+    clear80:      '繧ｯ繝ｪ繧｢��',
+    clear80b:     '繝上ャ繝斐�繧ｨ繝ｳ繝峨∪縺ｧ騾｣繧後※陦後▲縺ｦ縺上ｌ繧具ｼ�',
+    endless_msg:  '遘√◆縺｡縺ｯ縺昴�霈ｪ蟒ｻ縺九ｉ騾�ｌ繧九％縺ｨ縺後〒縺阪↑縺九▲縺溘�',
+    restart:      '縺ｪ繧峨�縺九＄繧�√ｂ縺�ｸ蠎ｦ��',
+    ach_name:     '蜷後§霈ｪ蟒ｻ繧堤ｹｰ繧願ｿ斐＠縺ｦ縺�ｋ',
+    ach_desc:     '蠑ｾ蟷輔す繝･繝ｼ繝�ぅ繝ｳ繧ｰ縺ｧ80遘堤函縺榊ｻｶ縺ｳ縺�',
+    title:        '髫慕浹繧医￠',
+    subtitle:     '譛医�雜�ユ繧ｯ繝弱Ο繧ｸ繝ｼ縺ｯ譎る俣繧偵ｂ雜�∴繧九ｓ縺ｧ縺吶�',
+    mode_normal:  '縺�ｍ縺ｯ縺ｮ蜈�∈蟶ｰ繧�',
+    mode_endless: '繧ｨ繝ｳ繝峨Ξ繧ｹ繝｢繝ｼ繝�',
+    mode_locked:  '繝弱�繝槭Ν繝｢繝ｼ繝峨ｒ繧ｯ繝ｪ繧｢縺吶ｋ縺ｨ隗｣謾ｾ縺輔ｌ縺ｾ縺�',
+    time_label:        '逕溷ｭ俶凾髢�',
+    best_label:        '繝吶せ繝郁ｨ倬鹸',
+    retry:             '繧ゅ≧荳蠎ｦ',
+    menu:              '繝｡繝九Η繝ｼ縺ｸ',
+    tap_start:         '繧ｯ繝ｪ繝�け縺ｾ縺溘�繧ｿ繝��縺ｧ髢句ｧ�',
+    unlocked:          '隗｣謾ｾ��',
+    color_label:       '讖滉ｽ薙�濶ｲ',
+    key_hint:          '遘ｻ蜍�: WASD / 遏｢蜊ｰ繧ｭ繝ｼ   |   荳譎ょ●豁｢: ESC',
+    pause_title:       '荳譎ょ●豁｢',
+    pause_resume:      '蜀埼幕',
+    bgm_label:         'BGM',
+    sfx_label:         'SE',
+    rank_1st_msg:      '1菴阪□!! 縺輔☆縺檎ｧ√�繝代�繝医リ繝ｼ譛鬮�!! 笨ｨ',
+    rank_top3_msg:     '縺吶＃縺�! 繝医ャ繝�3縺�繧�! 脂',
+    rank_top10_msg:    '繝ｩ繝ｳ繧ｯ繧､繝ｳ縺励◆繧�! 邏�謨ｵ縺�縺ｭ~ 嫌',
+    rank_out_msg:      '谺｡縺ｯ縺阪▲縺ｨTOP10! 蠢懈抄縺励※繧九ｈ 笙ｪ',
+    name_placeholder:  '繝九ャ繧ｯ繝阪�繝�蜈･蜉� (譛螟ｧ10譁�ｭ�)',
+    name_submit:       '逋ｻ骭ｲ',
+    name_skip:         '繧ｹ繧ｭ繝��',
+    ranking_btn:       '繝ｩ繝ｳ繧ｭ繝ｳ繧ｰ',
+    ranking_title:     '笨ｦ 繧ｨ繝ｳ繝峨Ξ繧ｹ繝ｩ繝ｳ繧ｭ繝ｳ繧ｰ 笨ｦ',
+    ranking_close:     '髢峨§繧�',
+    ranking_empty:     '縺ｾ縺�險倬鹸縺後≠繧翫∪縺帙ｓ',
+    ranking_loading:   '隱ｭ縺ｿ霎ｼ縺ｿ荳ｭ...',
+  },
+  en: {
+    start:        'Then, Kaguya 窶� one more time!',
+    phase2:       'The meteors are getting more and more...',
+    phase4:       'Who built this nav algorithm!?',
+    phase4b:      'Oh... was it me?',
+    death:        'Crashed into a rock... (縺｣笊･_笊･)縺｣',
+    clear80:      'Clear!',
+    clear80b:     'Will you take me to the happy ending?',
+    endless_msg:  'We could not escape from the cycle of reincarnation.',
+    restart:      'Then, Kaguya 窶� one more time!',
+    ach_name:     'Repeating the Same Reincarnation',
+    ach_desc:     'Survived 80 seconds in the bullet shooter',
+    title:        'Meteor Dodge',
+    subtitle:     "The moon's super-technology transcends even time.",
+    mode_normal:  'Return to Iroha',
+    mode_endless: 'Endless Mode',
+    mode_locked:  'Clear Normal Mode to unlock',
+    time_label:        'Survival Time',
+    best_label:        'Best Record',
+    retry:             'Retry',
+    menu:              'Menu',
+    tap_start:         'Click or tap to start',
+    unlocked:          'Unlocked!',
+    color_label:       'Ship Color',
+    key_hint:          'Move: WASD / Arrow keys   |   Pause: ESC',
+    pause_title:       'Paused',
+    pause_resume:      'Resume',
+    bgm_label:         'BGM',
+    sfx_label:         'SFX',
+    rank_1st_msg:      '1st place!! Our partner is the best!! 笨ｨ',
+    rank_top3_msg:     'Amazing! Top 3! 脂',
+    rank_top10_msg:    'You made the ranking! So cool~ 嫌',
+    rank_out_msg:      'Next time you\'ll hit TOP 10! Rooting for you 笙ｪ',
+    name_placeholder:  'Enter nickname (max 10 chars)',
+    name_submit:       'Submit',
+    name_skip:         'Skip',
+    ranking_btn:       'RANKING',
+    ranking_title:     '笨ｦ Endless Ranking 笨ｦ',
+    ranking_close:     'Close',
+    ranking_empty:     'No records yet',
+    ranking_loading:   'Loading...',
+  },
+};
+
+// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// CANVAS / RESIZE
+// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+const CW = 480, CH = 800;
+const canvas = document.getElementById('gameCanvas');
+const ctx    = canvas.getContext('2d');
+canvas.width  = CW;
+canvas.height = CH;
+
+const earthImg = new Image();
+earthImg.src = 'earth.png';
+
+let _canvasScale = 1;
+function resize() {
+  _canvasScale = document.getElementById('gameWrap').offsetWidth / CW;
+}
+window.addEventListener('resize', resize);
+resize();
+
+// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// CONFIG
+// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+const CFG = {
+  SHIP_SPEED:      3.0,
+  HITBOX_R:        4,
+  NORMAL_SEC:      80,
+  METEOR_START:    75,   // forced meteor appears at this second
+  METEOR_R:        340,  // radius (~680px diameter)
+  NORMAL_KEY:      'kaguya_normal_cleared',
+  BEST_KEY:        'kaguya_endless_best',
+  ACH_KEY:         'tuku_ach_kaguya_normal',
+  FINALE_SEC:      80,   // 嵓ｼ���� �懍梠 (夋�ｧ� �瀧卿, ��ｬ �ｱ�･)
+  FINALE_METEOR:   10,   // 嵓ｼ���� �懍梠 弡� �� �溢乱 �ｴ�� �ｱ�･ (=90��)
+};
+
+// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// SHIP COLOR PRESETS
+// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+const SHIP_COLORS = [
+  { id: 'default', body: '#2B2839', stroke: '#5E5254', stripe: '#5C3A1E' },
+  { id: 'blue',    body: '#1a2038', stroke: '#5a8ad8', stripe: '#2a3a60' },
+  { id: 'teal',    body: '#0f2220', stroke: '#3aaa80', stripe: '#1a4a36' },
+  { id: 'red',     body: '#280f0f', stroke: '#cc4444', stripe: '#601818' },
+  { id: 'gold',    body: '#261a06', stroke: '#cc9933', stripe: '#5a3e10' },
+  { id: 'purple',  body: '#1e0e2e', stroke: '#9a55cc', stripe: '#4a2060' },
+];
+let shipColorId = localStorage.getItem('kaguya_ship_color') || 'default';
+function getShipColor() { return SHIP_COLORS.find(c => c.id === shipColorId) || SHIP_COLORS[0]; }
+
+const SWATCH_R  = 10;
+const SWATCH_SP = 27;
+function _getSwatchY() {
+  const s = _canvasScale;
+  const gwH = CH * Math.min(1, s);   // gameWrap CSS height (CH ��復)
+  const lbTop = (gwH - 34) / s;      // langBar top�� �罷ｲ�侃 �醐像�� �嶹�
+  return Math.floor(lbTop - 12 - SWATCH_R);
+}
+
+// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// SHIP GHOST TRAIL
+// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+const shipTrail = [];   // { x, y, age }
+const TRAIL_MAX    = 7;   // �肥メ �罹劇 �懍�
+const TRAIL_LIFE   = 380;  // ms 窶� �肥メ 﨑� �川攪 �俯ｪ�
+const TRAIL_ALPHA  = 0.23; // ��･ �懋ｷｼ �肥メ�� �罹劇 �逸握��巡
+const TRAIL_SKIP   = 2;    // N嵓��溢桷�壱共 �肥メ 1�･ (�廷擽 增ｴ�俯｡� ��ｲｩ �南搆)
+let   _trailFrame  = 0;
+
+function pushTrail(x, y) {
+  _trailFrame++;
+  if (_trailFrame < TRAIL_SKIP) return;
+  _trailFrame = 0;
+  shipTrail.push({ x, y, age: 0 });
+  if (shipTrail.length > TRAIL_MAX) shipTrail.shift();
+}
+
+function tickTrail(dt) {
+  for (let i = shipTrail.length - 1; i >= 0; i--) {
+    shipTrail[i].age += dt;
+    if (shipTrail[i].age >= TRAIL_LIFE) shipTrail.splice(i, 1);
+  }
+}
+
+function drawTrail() {
+  for (let i = 0; i < shipTrail.length; i++) {
+    const t = shipTrail[i];
+    // �懍侠�ｼ�俯｡� �ｸ�ｱ�､� 增ｬ�� �逸握��
+    const frac  = 1 - t.age / TRAIL_LIFE;          // 1竊�0 (�晧｡ｴ ��惠)
+    const order = (i + 1) / shipTrail.length;       // 0竊�1 (�ｰ�ｴ �ｴ �懍�)
+    const alpha = frac * order * TRAIL_ALPHA;
+    if (alpha < 0.005) continue;
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.translate(t.x, t.y);
+    _drawShipShape(18);
+    ctx.restore();
+  }
+}
+
+// ���ｴ ����� �ｸ�ｬ�ｰ (globalAlphaﾂｷtransform� 嶸ｸ�懍梵� �､��)
+function _drawShipShape(s, col) {
+  col = col || getShipColor();
+  ctx.beginPath();
+  ctx.moveTo(0, -s); ctx.lineTo(-s * 0.55, s * 0.68); ctx.lineTo(s * 0.55, s * 0.68);
+  ctx.closePath(); ctx.fillStyle = col.body; ctx.fill();
+  ctx.strokeStyle = col.stroke; ctx.lineWidth = Math.max(1, s * 0.085); ctx.stroke();
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(0, -s); ctx.lineTo(-s * 0.55, s * 0.68); ctx.lineTo(s * 0.55, s * 0.68);
+  ctx.closePath(); ctx.clip();
+  ctx.strokeStyle = col.stripe; ctx.lineWidth = Math.max(0.8, s * 0.072);
+  const bands = [-s * 0.48, -s * 0.20, s * 0.10, s * 0.40, s * 0.64];
+  bands.forEach(ly => {
+    ctx.beginPath();
+    ctx.moveTo(-s * 0.75, ly + s * 0.14);
+    ctx.lineTo( s * 0.75, ly - s * 0.07);
+    ctx.stroke();
+  });
+  ctx.restore();
+}
+
+// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// LANGUAGE
+// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+let lang = localStorage.getItem('kaguya_lang') || 'ko';
+if (!I18N[lang]) lang = 'ko';
+let T    = I18N[lang];
+document.title = T.title;
+
+document.querySelectorAll('.lbtn').forEach(b => {
+  if (b.dataset.l === lang) b.classList.add('on');
+  b.addEventListener('click', e => {
+    e.stopPropagation();
+    if (!b.dataset.l) return;
+    lang = b.dataset.l;
+    T    = I18N[lang];
+    localStorage.setItem('kaguya_lang', lang);
+    document.title = T.title;
+    document.querySelectorAll('.lbtn').forEach(x => x.classList.toggle('on', x.dataset.l === lang));
+    if (document.getElementById('rankingBtn')) document.getElementById('rankingBtn').textContent = T.ranking_btn;
+  });
+});
+document.getElementById('langBar').addEventListener('touchstart', e => {
+  e.stopPropagation();
+}, { passive: false });
+
+// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// RANKING VIEW BUTTON
+// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+const _rankingBtn = document.getElementById('rankingBtn');
+
+const RANKING_FALLBACK = [
+  {rank:1, name:'CometGirl', score:40.0, country:'KR'},
+  {rank:2, name:'Tsukiko',   score:35.2, country:'JP'},
+  {rank:3, name:'StarDust',  score:31.8, country:'US'},
+  {rank:4, name:'Iroha',     score:28.4, country:'KR'},
+  {rank:5, name:'Yukine',    score:25.9, country:'JP'},
+  {rank:6, name:'MoonChild', score:22.0, country:'TW'},
+  {rank:7, name:'Kagura',    score:19.3, country:'JP'},
+  {rank:8, name:'NovaStar',  score:17.1, country:'US'},
+  {rank:9, name:'Celeste',   score:14.8, country:'FR'},
+  {rank:10,name:'Yachiyoo',  score:12.5, country:'KR'},
+];
+
+function goRankingView(scores) {
+  // scores�� isPlayer ��搆 窶� �懍� �ｰ�ｴ �ｨ��
+  const ranked = scores.map((s, i) => ({...s, rank: s.rank || i + 1}));
+  lbState = {
+    t: 0,
+    scores: ranked,
+    playerRank:     999,   // 嵓誤�溢擽�ｴ 嵂� ��搆
+    playerName:     null,
+    playerRowIdx:   -1,
+    playerRevealed: false,
+    playerRevealT:  0,
+    flashAlpha:     0,
+    glowPulse:      0,
+    btnAlpha:       0,
+    viewOnly:       true,  // �､�懋ｰ�ｰ ��款�� 岺懍亨
+  };
+  bubble = null; parts.length = 0;
+  goState('leaderboard');
+}
+
+async function showRankingView() {
+  try {
+    const data = await fetch('/api/kaguya/scores').then(r => { if (!r.ok) throw 0; return r.json(); });
+    goRankingView(data.scores && data.scores.length ? data.scores : RANKING_FALLBACK);
+  } catch (_) {
+    goRankingView(RANKING_FALLBACK);
+  }
+}
+
+_rankingBtn.textContent = T.ranking_btn;
+_rankingBtn.addEventListener('click', e => { e.stopPropagation(); showRankingView(); });
+
+// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// INPUT
+// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+const keys = {};
+document.addEventListener('keydown', e => {
+  keys[e.code] = true;
+  if (e.code === 'Escape' && scene === 'game' && gs.alive) {
+    gs.paused ? resumeGame() : pauseGame();
+    return;
+  }
+  if ((e.code === 'Space' || e.code === 'Enter') && scene !== 'game') onTap(CW/2, CH/2);
+});
+document.addEventListener('keyup', e => { keys[e.code] = false; });
+
+const touch = { on: false, ox: 0, oy: 0, cx: 0, cy: 0 };
+function toCanvas(clientX, clientY) {
+  const r = canvas.getBoundingClientRect();
+  return { x: (clientX - r.left) * CW / r.width, y: (clientY - r.top) * CH / r.height };
+}
+let _audioUnlocked = false;
+canvas.addEventListener('touchstart', e => {
+  e.preventDefault();
+  // iOS �､�肥丶 �ｸ�ｽ 窶� �懍ｴ� 1巐誤ｧ�
+  if (!_audioUnlocked) {
+    _audioUnlocked = true;
+    getAC(); ensureDecoded();
+    Object.values(bgm).forEach(a => { a.play().then(() => a.pause()).catch(() => {}); });
+    meteorAudio.play().then(() => meteorAudio.pause()).catch(() => {});
+  }
+
+  const p = toCanvas(e.touches[0].clientX, e.touches[0].clientY);
+  touch.on = true; touch.ox = p.x; touch.oy = p.y; touch.cx = p.x; touch.cy = p.y;
+  if (scene !== 'game') onTap(p.x, p.y);
+}, { passive: false });
+canvas.addEventListener('touchmove', e => {
+  e.preventDefault();
+  const p = toCanvas(e.touches[0].clientX, e.touches[0].clientY);
+  touch.cx = p.x; touch.cy = p.y;
+}, { passive: false });
+canvas.addEventListener('touchend', e => { e.preventDefault(); touch.on = false; }, { passive: false });
+canvas.addEventListener('click', e => {
+  if (e.target !== canvas) return;   // langBar ��款 增ｴ�ｭ�ｴ �罷ｲ�侃�護ｧ ��血�們ｧ �危巡��
+  const p = toCanvas(e.clientX, e.clientY);
+  onTap(p.x, p.y);
+});
+
+// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// AUDIO / SFX  (OGG 甯護攵 �ｰ��, �ｼ�ｨ 20%)
+// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+let audioCtx = null;
+let muted = localStorage.getItem('kaguya_mute') !== '0';  // �ｰ�ｸ��: �､孖ｸ
+
+let sfxVolume = parseFloat(localStorage.getItem('kaguya_sfx_vol') ?? '0.20');
+
+// sfx/ 尞ｴ�� OGG 甯護攵 �ｩ��
+const SFX_FILES = {
+  death:         'sfx/death.ogg',
+  laserWarn:     'sfx/laser_warn.ogg',
+  laserFire:     'sfx/laser_fire.ogg',
+  burst:         'sfx/burst.ogg',
+  clear:         'sfx/clear.ogg',
+  homing:        'sfx/homing.ogg',
+  surroundWarn:  'sfx/surround_warn.ogg',
+  surroundBurst: 'sfx/surround_burst.ogg',
+  spiral:        'sfx/spiral.ogg',
+  scatterWhite:  'sfx/scatter_white.ogg',
+  scatterBlue:   'sfx/scatter_blue.ogg',
+  warp:          'sfx/warp.ogg',
+  // meteor_appear�� �ｨ嵓� �ｬ�� 窶� SFX_FILES ��旧 ��巡 Audio �晧ｲｴ �ｬ�ｩ
+};
+
+// 笏笏 BGM 笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏
+let bgmVolume = parseFloat(localStorage.getItem('kaguya_bgm_vol') ?? '0.40');
+let bgmMuted = localStorage.getItem('kaguya_bgm_mute') === '1';
+const bgm = {
+  normal:  Object.assign(new Audio('sfx/reply_maingame.ogg'), { loop: true }),
+  endless: Object.assign(new Audio('sfx/reply_endless.ogg'),  { loop: true }),
+};
+let activeBgm = null;
+
+// 嵓ｼ���� �ｴ�� �ｱ�･ �ｨ嵓� �ｬ�ｴ��
+const meteorAudio = Object.assign(new Audio('sfx/meteor_appear.ogg'), { loop: true });
+function playMeteorSound() {
+  if (muted) return;
+  meteorAudio.volume = sfxVolume;
+  meteorAudio.currentTime = 0;
+  meteorAudio.play().catch(() => {});
+}
+function stopMeteorSound() {
+  meteorAudio.pause();
+  meteorAudio.currentTime = 0;
+}
+
+function playBGM(key) {
+  stopBGM();
+  const a = bgm[key]; if (!a) return;
+  a.volume = bgmMuted ? 0 : bgmVolume;
+  a.currentTime = 0;
+  a.play().catch(() => {});
+  activeBgm = a;
+}
+function stopBGM() {
+  if (!activeBgm) return;
+  activeBgm.pause(); activeBgm.currentTime = 0; activeBgm = null;
+}
+
+const _sfxRaw = {};   // 嵓�ｦｬ甯ｨ�俯頗 ArrayBuffer
+const sfxBuf  = {};   // �肥ｽ罷畠�� AudioBuffer
+let _sfxDecoding = false, _sfxDecoded = false;
+
+// 寬們擽� �罹糖 �� OGG �肥擽孖ｸ �ｸ�ｬ �幀ｸｰ (AudioContext ��擽 ��･)
+(async function prefetchSfx() {
+  await Promise.all(Object.entries(SFX_FILES).map(async ([key, url]) => {
+    try {
+      const r = await fetch(url);
+      if (r.ok) _sfxRaw[key] = await r.arrayBuffer();
+    } catch {}
+  }));
+})();
+
+function getAC() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+  return audioCtx;
+}
+
+// �ｫ �ｬ�� �肥ｲｭ �� AudioBuffer �肥ｽ罷畠 (user gesture �ｴ弡�)
+async function ensureDecoded() {
+  if (_sfxDecoded || _sfxDecoding) return;
+  _sfxDecoding = true;
+  const ac = getAC();
+  await Promise.all(Object.entries(_sfxRaw).map(async ([key, raw]) => {
+    try { sfxBuf[key] = await ac.decodeAudioData(raw.slice()); } catch {}
+  }));
+  _sfxDecoded = true;
+}
+
+function playSfx(key) {
+  if (muted) return;
+  ensureDecoded().then(() => {
+    if (!sfxBuf[key]) return;
+    const ac  = getAC();
+    const src = ac.createBufferSource();
+    src.buffer = sfxBuf[key];
+    const g = ac.createGain();
+    g.gain.value = sfxVolume;
+    src.connect(g); g.connect(ac.destination);
+    src.start();
+  });
+}
+
+
+// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// PAUSE OVERLAY
+// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+const _pauseOverlay    = document.getElementById('pauseOverlay');
+const _pauseTitle      = document.getElementById('pauseTitle');
+const _pauseBgmLabel   = document.getElementById('pauseBgmLabel');
+const _pauseSfxLabel   = document.getElementById('pauseSfxLabel');
+const _pauseBgmMute    = document.getElementById('pauseBgmMute');
+const _pauseSfxMute    = document.getElementById('pauseSfxMute');
+const _pauseBgmSlider  = document.getElementById('pauseBgmSlider');
+const _pauseSfxSlider  = document.getElementById('pauseSfxSlider');
+const _pauseResumeBtn  = document.getElementById('pauseResumeBtn');
+const _pauseMenuBtn    = document.getElementById('pauseMenuBtn');
+
+function _syncPauseUI() {
+  _pauseTitle.textContent     = T.pause_title;
+  _pauseBgmLabel.textContent  = T.bgm_label;
+  _pauseSfxLabel.textContent  = T.sfx_label;
+  _pauseResumeBtn.textContent = T.pause_resume;
+  _pauseMenuBtn.textContent   = T.menu;
+  _pauseBgmMute.textContent   = bgmMuted ? '這' : '七';
+  _pauseSfxMute.textContent   = muted    ? '這' : '矧';
+  _pauseBgmMute.style.opacity = bgmMuted ? '0.45' : '1';
+  _pauseSfxMute.style.opacity = muted    ? '0.45' : '1';
+  _pauseBgmSlider.value       = Math.round(bgmVolume * 100);
+  _pauseSfxSlider.value       = Math.round(sfxVolume * 100);
+}
+
+function pauseGame() {
+  if (!gs.paused) {
+    gs.paused = true;
+    if (activeBgm) activeBgm.pause();
+    meteorAudio.pause();
+    _syncPauseUI();
+    _pauseOverlay.style.display = 'flex';
+  }
+}
+function resumeGame() {
+  if (gs.paused) {
+    gs.paused = false;
+    _pauseOverlay.style.display = 'none';
+    if (activeBgm) activeBgm.play().catch(() => {});
+    // meteorAudio�� 嵓ｼ���� �ｬ��乱�罹ｧ� �ｬ�� 窶� ��� �ｸ��� ��
+  }
+}
+
+_pauseBgmMute.addEventListener('click', e => {
+  e.stopPropagation();
+  bgmMuted = !bgmMuted;
+  localStorage.setItem('kaguya_bgm_mute', bgmMuted ? '1' : '0');
+  _pauseBgmMute.textContent   = bgmMuted ? '這' : '七';
+  _pauseBgmMute.style.opacity = bgmMuted ? '0.45' : '1';
+  if (activeBgm) activeBgm.volume = bgmMuted ? 0 : bgmVolume;
+});
+_pauseSfxMute.addEventListener('click', e => {
+  e.stopPropagation();
+  muted = !muted;
+  localStorage.setItem('kaguya_mute', muted ? '1' : '0');
+  _pauseSfxMute.textContent   = muted ? '這' : '矧';
+  _pauseSfxMute.style.opacity = muted ? '0.45' : '1';
+  meteorAudio.volume = muted ? 0 : sfxVolume;
+});
+_pauseBgmSlider.addEventListener('input', e => {
+  e.stopPropagation();
+  bgmVolume = _pauseBgmSlider.value / 100;
+  localStorage.setItem('kaguya_bgm_vol', bgmVolume.toFixed(2));
+  if (activeBgm && !bgmMuted) activeBgm.volume = bgmVolume;
+});
+_pauseSfxSlider.addEventListener('input', e => {
+  e.stopPropagation();
+  sfxVolume = _pauseSfxSlider.value / 100;
+  localStorage.setItem('kaguya_sfx_vol', sfxVolume.toFixed(2));
+  if (!muted) meteorAudio.volume = sfxVolume;
+});
+[_pauseBgmSlider, _pauseSfxSlider].forEach(sl => {
+  sl.addEventListener('touchstart', e => e.stopPropagation(), { passive: false });
+  sl.addEventListener('mousedown',  e => e.stopPropagation());
+});
+_pauseResumeBtn.addEventListener('click', e => { e.stopPropagation(); resumeGame(); });
+_pauseMenuBtn.addEventListener('click', e => {
+  e.stopPropagation();
+  resumeGame();
+  stopBGM(); stopMeteorSound();
+  goState('modeSelect'); msAlpha = 0; bubble = null;
+});
+_pauseOverlay.addEventListener('touchstart', e => e.stopPropagation(), { passive: false });
+
+// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// LEADERBOARD UTILS
+// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+function countryFlag(code) {
+  if (!code || code.length !== 2) return '倹';
+  const c0 = code.charCodeAt(0), c1 = code.charCodeAt(1);
+  if (c0 < 65 || c0 > 90 || c1 < 65 || c1 > 90) return '倹';
+  const b = 0x1F1E6 - 65;
+  return String.fromCodePoint(b + c0, b + c1);
+}
+function fmtScore(sec) {
+  const m = Math.floor(sec / 60);
+  const s = (sec % 60).toFixed(1);
+  return m > 0 ? m + ':' + String(s).padStart(4, '0') : s + 's';
+}
+function getRankMsg(rank) {
+  if (rank === 1) return T.rank_1st_msg;
+  if (rank <= 3)  return T.rank_top3_msg;
+  if (rank <= 10) return T.rank_top10_msg;
+  return T.rank_out_msg;
+}
+function _hexToRgb(hex) {
+  return parseInt(hex.slice(1,3),16)+','+parseInt(hex.slice(3,5),16)+','+parseInt(hex.slice(5,7),16);
+}
+
+// 笏笏 �ｱ�� �懍侃奛� 笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏
+const LB_TIERS = [
+  { key:'gm',       min:240, label:'GM',   col:'#ffffff', glow:'#ff44aa', bg:'#0a0010', border:'#cc44ff', rainbow:true  },
+  { key:'diamond',  min:150, label:'DIA',  col:'#7ec8e3', glow:'#2a90b8', bg:'#001828', border:'#2a6888', rainbow:false },
+  { key:'platinum', min:90,  label:'PLAT', col:'#00e5cc', glow:'#009a88', bg:'#003030', border:'#007a70', rainbow:false },
+  { key:'gold',     min:60,  label:'GOLD', col:'#ffd84a', glow:'#b87800', bg:'#1a1000', border:'#b87800', rainbow:false },
+  { key:'silver',   min:40,  label:'SILV', col:'#c0d0e0', glow:'#6a8a9a', bg:'#10202a', border:'#5a7a9a', rainbow:false },
+  { key:'bronze',   min:20,  label:'BRZ',  col:'#e09040', glow:'#7a3800', bg:'#1a0e04', border:'#7a4010', rainbow:false },
+];
+function getScoreTier(sec) {
+  for (const tier of LB_TIERS) if (sec >= tier.min) return tier;
+  return null;
+}
+function getRankTier(rank) {
+  if (rank === 1) return LB_TIERS[0]; // GM
+  if (rank <= 3)  return LB_TIERS[1]; // Diamond
+  if (rank <= 5)  return LB_TIERS[2]; // Platinum
+  if (rank <= 7)  return LB_TIERS[3]; // Gold
+  if (rank <= 9)  return LB_TIERS[4]; // Silver
+  return LB_TIERS[5];                 // Bronze
+}
+function _drawTierBadge(tier, x, y) {
+  if (!tier) return;
+  ctx.save();
+  ctx.font = 'bold 8px sans-serif';
+  const tw = ctx.measureText(tier.label).width;
+  const pw = tw + 8, ph = 11;
+  roundRect(ctx, x, y - ph / 2, pw, ph, 3);
+  if (tier.rainbow) {
+    const p = ((lbState?.t || 0) * 0.0008) % 1;
+    const g = ctx.createLinearGradient(x, 0, x + pw, 0);
+    g.addColorStop(0,    `hsl(${(p*360)     % 360},100%,65%)`);
+    g.addColorStop(0.33, `hsl(${(p*360+120) % 360},100%,65%)`);
+    g.addColorStop(0.66, `hsl(${(p*360+240) % 360},100%,65%)`);
+    g.addColorStop(1,    `hsl(${(p*360+360) % 360},100%,65%)`);
+    ctx.fillStyle = g;
+  } else {
+    ctx.fillStyle = tier.bg;
+  }
+  ctx.fill();
+  ctx.strokeStyle = tier.border; ctx.lineWidth = 0.8; ctx.stroke();
+  ctx.fillStyle = tier.col;
+  ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+  ctx.fillText(tier.label, x + 4, y);
+  ctx.textBaseline = 'alphabetic';
+  ctx.restore();
+}
+function _gmName(text, x, y, t) {
+  const tw = ctx.measureText(text).width;
+  const p  = (t * 0.0008) % 1;
+  const g  = ctx.createLinearGradient(x, 0, x + tw, 0);
+  g.addColorStop(0,    `hsl(${(p*360)     % 360},100%,72%)`);
+  g.addColorStop(0.25, `hsl(${(p*360+90)  % 360},100%,76%)`);
+  g.addColorStop(0.5,  `hsl(${(p*360+180) % 360},100%,72%)`);
+  g.addColorStop(0.75, `hsl(${(p*360+270) % 360},100%,76%)`);
+  g.addColorStop(1,    `hsl(${(p*360+360) % 360},100%,72%)`);
+  ctx.shadowColor = '#ff88ff'; ctx.shadowBlur = 20;
+  ctx.fillStyle = g; ctx.fillText(text, x, y);
+  ctx.shadowBlur = 0;
+}
+function _diamondName(text, x, y, t) {
+  // �､�ｴ��ｪｬ��: �們梔�們梔 �ｴ�� 﨑們擽�ｼ�ｴ孖ｸ
+  const tw = ctx.measureText(text).width;
+  // ���ｴ�､ �被ヨ�ｭ �ｭ巐護ラ
+  const base = ctx.createLinearGradient(x, 0, x + tw, 0);
+  base.addColorStop(0,    '#6ab8d0');
+  base.addColorStop(0.5,  '#c8eaf8');
+  base.addColorStop(1,    '#6ab8d0');
+  ctx.shadowColor = '#44ccff'; ctx.shadowBlur = 14;
+  ctx.fillStyle = base; ctx.fillText(text, x, y);
+  // �們ｧ晧桷 �､���溢擽 (�ｴ�呰葺�� �晧捩 �､甯�)
+  const sp = ((t * 0.0018) % 1.4) - 0.2; // -0.2 ~ 1.2 cycle
+  const sx = x + sp * tw;
+  const hw = tw * 0.18;
+  const sg = ctx.createLinearGradient(sx - hw, 0, sx + hw, 0);
+  sg.addColorStop(0,   'rgba(220,248,255,0)');
+  sg.addColorStop(0.5, 'rgba(255,255,255,0.88)');
+  sg.addColorStop(1,   'rgba(220,248,255,0)');
+  ctx.fillStyle = sg; ctx.fillText(text, x, y);
+  ctx.shadowBlur = 0;
+}
+function _emeraldDiamondName(text, x, y, t) {
+  // �尖ｩ罷桷��+�､�ｴ��ｪｬ��: �壱｡�-�ｭ�� �溢� ��徐
+  const tw = ctx.measureText(text).width;
+  const p  = (Math.sin(t * 0.0025) + 1) / 2; // 0~1 ��徐
+  const g  = ctx.createLinearGradient(x, 0, x + tw, 0);
+  g.addColorStop(0,    `rgb(${Math.round(20+p*30)},${Math.round(170+p*40)},${Math.round(120+p*60)})`);
+  g.addColorStop(0.3,  `rgb(${Math.round(140+p*80)},${Math.round(220+p*35)},${Math.round(200+p*55)})`);
+  g.addColorStop(0.6,  `rgb(${Math.round(40+p*60)},${Math.round(200+p*55)},${Math.round(180+p*50)})`);
+  g.addColorStop(1,    `rgb(${Math.round(20+p*30)},${Math.round(160+p*40)},${Math.round(100+p*60)})`);
+  ctx.shadowColor = '#00ffaa'; ctx.shadowBlur = 12;
+  ctx.fillStyle = g; ctx.fillText(text, x, y);
+  ctx.shadowBlur = 0;
+}
+
+// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// NAME INPUT OVERLAY
+// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+const _nameInputOverlay = document.getElementById('nameInputOverlay');
+const _nameInput        = document.getElementById('nameInput');
+const _nameInputTime    = document.getElementById('nameInputTime');
+const _nameInputTier    = document.getElementById('nameInputTier');
+const _nameSubmitBtn    = document.getElementById('nameSubmitBtn');
+const _nameSkipBtn      = document.getElementById('nameSkipBtn');
+
+function showNameInput(timeSec) {
+  _nameInputTime.textContent = fmtScore(timeSec);
+  // �ｱ�� 岺懍亨
+  const tier = getScoreTier(timeSec);
+  if (tier) {
+    _nameInputTier.textContent = '笨ｦ ' + tier.label + ' 笨ｦ';
+    _nameInputTier.className   = tier.rainbow ? 'tier-gm' : '';
+    _nameInputTier.style.color = tier.rainbow ? '' : tier.col;
+    _nameInputTier.style.display = 'block';
+  } else {
+    _nameInputTier.style.display = 'none';
+  }
+  _nameInput.value           = localStorage.getItem('kaguya_player_name') || '';
+  _nameInput.placeholder     = T.name_placeholder;
+  _nameSubmitBtn.textContent = T.name_submit;
+  _nameSkipBtn.textContent   = T.name_skip;
+  _nameInputOverlay.style.display = 'flex';
+  setTimeout(() => _nameInput.focus(), 80);
+}
+function hideNameInput() {
+  _nameInputOverlay.style.display = 'none';
+}
+async function _submitScore(name) {
+  hideNameInput();
+  if (name) localStorage.setItem('kaguya_player_name', name);
+  const playerName = name || 'YOU';
+  try {
+    const {token, ts, sig} = _sessionToken || await fetch('/api/kaguya/token')
+      .then(r => { if (!r.ok) throw 0; return r.json(); });
+    const data = await fetch('/api/kaguya/score', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({token, ts, sig, name: playerName, score: gs.time}),
+    }).then(r => { if (!r.ok) throw 0; return r.json(); });
+    if (!data.ok) throw 0;
+    goLeaderboard(data.scores, data.rank, playerName);
+  } catch (_) {
+    // API �ｸ�ｰ�ｰ �� �ｩ�� 尞ｴ�ｱ
+    const mockBase = [
+      {name:'CometGirl', score:40.0, country:'KR'},
+      {name:'Tsukiko',   score:35.2, country:'JP'},
+      {name:'StarDust',  score:31.8, country:'US'},
+      {name:'Iroha',     score:28.4, country:'KR'},
+      {name:'Yukine',    score:25.9, country:'JP'},
+      {name:'MoonChild', score:22.0, country:'TW'},
+      {name:'Himari',    score:19.7, country:'KR'},
+      {name:'NovaBurst', score:17.3, country:'US'},
+      {name:'Selene',    score:14.6, country:'FR'},
+      {name:'AkaNebula', score:12.1, country:'JP'},
+    ];
+    const playerEntry = {name: playerName, score: gs.time, country: '??', isPlayer: true};
+    const all = [...mockBase, playerEntry].sort((a,b) => b.score - a.score);
+    const scores = all.map((r,i) => ({...r, rank: i+1}));
+    goLeaderboard(scores, scores.findIndex(r => r.isPlayer)+1, playerName);
+  }
+}
+_nameSubmitBtn.addEventListener('click', e => { e.stopPropagation(); _submitScore(_nameInput.value.trim()); });
+_nameSkipBtn.addEventListener('click',   e => { e.stopPropagation(); _submitScore(''); });
+_nameInput.addEventListener('keydown', e => {
+  if (e.code === 'Enter') { e.preventDefault(); _submitScore(_nameInput.value.trim()); }
+  e.stopPropagation();
+});
+_nameInputOverlay.addEventListener('touchstart', e => e.stopPropagation(), {passive:false});
+_nameInputOverlay.addEventListener('click',      e => e.stopPropagation());
+
+// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// SCENE: LEADERBOARD
+// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+const LB_ROW_Y0    = 126;
+const LB_ROW_H     = 46;
+const LB_TITLE_DUR = 500;
+const LB_ROW_START = 650;
+const LB_ROW_DT    = 120;
+const BTN_LB_RETRY = { x: 50,  y: 660, w: 160, h: 44 };
+const BTN_LB_MENU  = { x: 270, y: 660, w: 160, h: 44 };
+let lbState = null;
+
+function goLeaderboard(scores, playerRank, playerName) {
+  lbState = {
+    t: 0,
+    scores, playerRank, playerName,
+    playerRowIdx:   -1,
+    playerRevealed: false,
+    playerRevealT:  0,
+    flashAlpha:     0,
+    glowPulse:      0,
+    btnAlpha:       0,
+  };
+  bubble = null; parts.length = 0;
+  goState('leaderboard');
+}
+
+function _lbRows() {
+  if (!lbState) return [];
+  const {scores, playerRank, viewOnly} = lbState;
+  if (viewOnly) return scores.slice(0, 10);
+  if (playerRank <= 10) return scores.slice(0, 10);
+  return [...scores.slice(0, 9), {isSep:true}, scores.find(s => s.isPlayer)];
+}
+
+function tickLeaderboard(dt) {
+  if (!lbState) return;
+  lbState.t += dt;
+  tickParts(dt); tickStars(dt); tickLines(dt); tickBubble(dt);
+  const rows = _lbRows();
+  if (lbState.playerRowIdx < 0)
+    lbState.playerRowIdx = rows.findIndex(r => r && r.isPlayer);
+  const pIdx    = lbState.playerRowIdx;
+  const revealT = pIdx >= 0 ? LB_ROW_START + pIdx * LB_ROW_DT : 99999;
+  if (!lbState.playerRevealed && pIdx >= 0 && lbState.t > revealT) {
+    lbState.playerRevealed = true;
+    lbState.playerRevealT  = lbState.t;
+    const ry = LB_ROW_Y0 + pIdx * LB_ROW_H + LB_ROW_H / 2;
+    const sc = getShipColor();
+    spawn(CW/2, ry, 40, {c: sc.stroke,  spd:5,   dc:0.013});
+    spawn(CW/2, ry, 20, {c: '#ffffff',  spd:3,   r:1.5, dc:0.017});
+    spawn(CW/2, ry, 15, {c: '#cc88ff',  spd:4,   dc:0.015});
+    spawn(CW/2, ry, 12, {c: '#ffcc44',  spd:2.5, r:2,   dc:0.014});
+    setTimeout(() => showBubble(getRankMsg(lbState.playerRank), 5500), 500);
+  }
+  if (lbState.playerRevealed) {
+    const since       = lbState.t - lbState.playerRevealT;
+    lbState.flashAlpha = since < 300 ? (1 - since/300) * 0.75 : 0;
+    lbState.glowPulse  = (Math.sin(lbState.t * 0.005) + 1) / 2;
+  }
+  // viewOnly: ��ｲｴ 嵂� �ｵ�� 弡� ��款 岺懍亨 (�溢ｧ�� 嵂� + 600ms)
+  const lastRowT = LB_ROW_START + (_lbRows().length - 1) * LB_ROW_DT;
+  const btnT = lbState.viewOnly
+    ? lastRowT + 600
+    : lbState.playerRevealT > 0 ? lbState.playerRevealT + 1800 : 99999;
+  if (lbState.t > btnT)
+    lbState.btnAlpha = Math.min(1, lbState.btnAlpha + 0.025 * (dt/8.333));
+}
+
+function _rankBadge(rank, cx, cy, t) {
+  const r = rank === 1 ? 16 : rank === 2 ? 13 : rank === 3 ? 11 : 10;
+  ctx.save();
+
+  // 1�� ��圸: �緋ｹ･ 巐護�� ��
+  if (rank === 1 && t != null) {
+    const ang = (t * 0.0014) % (Math.PI * 2);
+    ctx.save(); ctx.translate(cx, cy);
+    ctx.rotate(ang);
+    ctx.beginPath(); ctx.arc(0, 0, r + 5, 0, Math.PI * 1.65);
+    ctx.strokeStyle = '#ffcc44'; ctx.lineWidth = 1.8;
+    ctx.globalAlpha = 0.75; ctx.stroke();
+    ctx.rotate(Math.PI);
+    ctx.beginPath(); ctx.arc(0, 0, r + 5, 0, Math.PI * 0.75);
+    ctx.strokeStyle = '#ff9900'; ctx.lineWidth = 1.2;
+    ctx.globalAlpha = 0.45; ctx.stroke();
+    ctx.restore();
+    ctx.globalAlpha = 1;
+  }
+
+  ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2);
+  if (rank === 1) {
+    const g = ctx.createRadialGradient(cx-4,cy-5,1,cx,cy,r);
+    g.addColorStop(0,'#fff4a0'); g.addColorStop(0.55,'#ffcc00'); g.addColorStop(1,'#9a5e00');
+    ctx.fillStyle = g;
+  } else if (rank === 2) {
+    const g = ctx.createRadialGradient(cx-3,cy-4,1,cx,cy,r);
+    g.addColorStop(0,'#eef4f8'); g.addColorStop(1,'#506070');
+    ctx.fillStyle = g;
+  } else if (rank === 3) {
+    const g = ctx.createRadialGradient(cx-3,cy-4,1,cx,cy,r);
+    g.addColorStop(0,'#f0b060'); g.addColorStop(1,'#6a2800');
+    ctx.fillStyle = g;
+  } else {
+    ctx.fillStyle = 'rgba(34,24,50,0.88)';
+  }
+  ctx.fill();
+  ctx.strokeStyle = rank === 1 ? 'rgba(255,220,100,0.55)' :
+                    rank <= 3  ? 'rgba(255,255,255,0.18)' : 'rgba(68,48,88,0.55)';
+  ctx.lineWidth = rank === 1 ? 1.5 : 1; ctx.stroke();
+
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.font = rank === 1 ? 'bold 13px sans-serif' :
+             rank === 2 ? 'bold 11px sans-serif' :
+             rank === 3 ? 'bold 10px sans-serif' : '9px sans-serif';
+  ctx.fillStyle = rank <= 3 ? '#1a0e08' : '#7777aa';
+  ctx.fillText(rank, cx, cy + 0.5);
+  ctx.textBaseline = 'alphabetic';
+  ctx.restore();
+}
+
+function _goldName(text, x, y, t) {
+  const tw = ctx.measureText(text).width;
+  const p  = (Math.sin(t * 0.0022) + 1) / 2;
+  const g  = ctx.createLinearGradient(x, 0, x + tw, 0);
+  g.addColorStop(0,                     '#d4900c');
+  g.addColorStop(Math.max(0, p - 0.22), '#d4900c');
+  g.addColorStop(p,                     '#fffaaa');
+  g.addColorStop(Math.min(1, p + 0.22), '#c88010');
+  g.addColorStop(1,                     '#e0a020');
+  ctx.shadowColor = '#ffcc00'; ctx.shadowBlur = 18;
+  ctx.fillStyle = g; ctx.fillText(text, x, y);
+  ctx.shadowBlur = 0;
+}
+function _silverName(text, x, y) {
+  const tw = ctx.measureText(text).width;
+  const g  = ctx.createLinearGradient(x, 0, x+tw, 0);
+  g.addColorStop(0,'#8aabb8'); g.addColorStop(0.45,'#eef4fa'); g.addColorStop(1,'#8aabb8');
+  ctx.shadowColor = '#b8d0e8'; ctx.shadowBlur = 10;
+  ctx.fillStyle = g; ctx.fillText(text, x, y);
+  ctx.shadowBlur = 0;
+}
+function _bronzeName(text, x, y) {
+  const tw = ctx.measureText(text).width;
+  const g  = ctx.createLinearGradient(x, 0, x+tw, 0);
+  g.addColorStop(0,'#8a4a08'); g.addColorStop(0.45,'#eea848'); g.addColorStop(1,'#8a4a08');
+  ctx.shadowColor = '#c06828'; ctx.shadowBlur = 8;
+  ctx.fillStyle = g; ctx.fillText(text, x, y);
+  ctx.shadowBlur = 0;
+}
+
+function drawLeaderboard() {
+  if (!lbState) return;
+  const t = lbState.t;
+
+  // �ｰ�ｽ
+  const bg = ctx.createLinearGradient(0,0,0,CH);
+  bg.addColorStop(0,'#04040f'); bg.addColorStop(1,'#080418');
+  ctx.fillStyle = bg; ctx.fillRect(0,0,CW,CH);
+  drawStars(); drawLines(); drawParts();
+
+  // 夋�ｴ寀
+  const titleA = Math.min(1, t / LB_TITLE_DUR);
+  ctx.save(); ctx.globalAlpha = titleA; ctx.textAlign = 'center';
+  if (Math.sin(t * 0.0031) > 0.87) {
+    ctx.globalAlpha = titleA * 0.5;
+    ctx.font = 'bold 24px sans-serif';
+    ctx.fillStyle = '#ff2244'; ctx.fillText('笨ｦ RANKING 笨ｦ', CW/2-2, 68);
+    ctx.fillStyle = '#22ffee'; ctx.fillText('笨ｦ RANKING 笨ｦ', CW/2+2, 68);
+    ctx.globalAlpha = titleA;
+  }
+  ctx.shadowColor = '#8855ff'; ctx.shadowBlur = 20;
+  ctx.font = 'bold 24px sans-serif'; ctx.fillStyle = '#e8e8fc';
+  ctx.fillText('笨ｦ RANKING 笨ｦ', CW/2, 68);
+  ctx.shadowBlur = 0;
+  ctx.font = '11px sans-serif'; ctx.fillStyle = '#55556e';
+  const best = parseFloat(localStorage.getItem(CFG.BEST_KEY) || 0);
+  if (best > 0) ctx.fillText(T.best_label + '  ' + fmtScore(best), CW/2, 90);
+  ctx.strokeStyle = 'rgba(94,82,130,0.35)'; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(20,104); ctx.lineTo(CW-20,104); ctx.stroke();
+  ctx.restore();
+
+  // 嵂� �誤鵠��
+  const rows = _lbRows();
+  rows.forEach((row, i) => {
+    const rowT  = LB_ROW_START + i * LB_ROW_DT;
+    if (t < rowT) return;
+    const age   = t - rowT;
+    const alpha = Math.min(1, age / 160);
+    const slide = Math.max(0, (1 - Math.min(1, age/200)) * 16);
+    const ry    = LB_ROW_Y0 + i * LB_ROW_H;
+    const rcy   = ry + LB_ROW_H/2 + slide;
+    const nameY = rcy + 2;       // �ｴ�� �ｰ��� (�ｽ�� ��)
+    const tierY = nameY + 13;    // �ｱ�� ��ｧ �ｰ��� (�ｴ�� �罷｡� ��椈)
+    const isP   = row.isPlayer;
+    // �ｬ�ｱ: �護垈 22px
+    const RX = 22, RW = CW - 44;
+
+    ctx.save(); ctx.globalAlpha = alpha;
+
+    // �ｬ��│
+    if (row.isSep) {
+      ctx.textAlign = 'center'; ctx.font = '12px sans-serif'; ctx.fillStyle = '#2a2a40';
+      ctx.fillText('ﾂｷ ﾂｷ ﾂｷ ﾂｷ ﾂｷ ﾂｷ ﾂｷ ﾂｷ ﾂｷ', CW/2, rcy + 5);
+      ctx.restore(); return;
+    }
+
+    const rowTier = getRankTier(row.rank);
+
+    // 嵂� �ｰ�ｽ
+    if (isP) {
+      const sc  = getShipColor();
+      const rgb = _hexToRgb(sc.stroke);
+      ctx.fillStyle = `rgba(${rgb},${0.10 + lbState.glowPulse * 0.09})`;
+      roundRect(ctx, RX, ry+4, RW, LB_ROW_H-8, 8); ctx.fill();
+      ctx.strokeStyle = sc.stroke; ctx.lineWidth = 1.3;
+      ctx.globalAlpha = alpha * (0.4 + lbState.glowPulse * 0.6);
+      roundRect(ctx, RX, ry+4, RW, LB_ROW_H-8, 8); ctx.stroke();
+      ctx.globalAlpha = alpha;
+      if (lbState.flashAlpha > 0) {
+        ctx.fillStyle = `rgba(255,255,255,${lbState.flashAlpha})`;
+        roundRect(ctx, RX, ry+4, RW, LB_ROW_H-8, 8); ctx.fill();
+        ctx.globalAlpha = alpha;
+      }
+    } else if (row.rank <= 3) {
+      const cols = ['200,168,28','172,188,200','156,106,46'];
+      ctx.fillStyle = `rgba(${cols[row.rank-1]},0.07)`;
+      roundRect(ctx, RX, ry+4, RW, LB_ROW_H-8, 8); ctx.fill();
+    }
+
+    // �懍怱 ��ｧ (cx=38)
+    _rankBadge(row.rank, 38, rcy + slide, t);
+
+    // �雅└�� (x=60)
+    ctx.textAlign = 'left';
+    ctx.font = row.rank===1 ? 'bold 15px sans-serif' :
+               row.rank<=3  ? 'bold 13px sans-serif' :
+               isP          ? 'bold 12px sans-serif' : '12px sans-serif';
+    if      (row.rank===1) _gmName            (row.name, 60, nameY, t);
+    else if (row.rank===2) _diamondName       (row.name, 60, nameY, t);
+    else if (row.rank===3) _emeraldDiamondName(row.name, 60, nameY, t);
+    else if (isP) {
+      const sc = getShipColor();
+      ctx.shadowColor = sc.stroke; ctx.shadowBlur = 10;
+      ctx.fillStyle = '#eeeeff'; ctx.fillText(row.name, 60, nameY);
+      ctx.shadowBlur = 0;
+    } else {
+      ctx.fillStyle = '#b8b9cc'; ctx.fillText(row.name, 60, nameY);
+    }
+
+    // YOU 夋懋ｷｸ
+    if (isP) {
+      const nw = ctx.measureText(row.name).width;
+      ctx.font = '9px sans-serif'; ctx.fillStyle = getShipColor().stroke;
+      ctx.fillText('笆ｶ YOU', 60 + nw + 6, nameY);
+    }
+
+    // �ｱ�� ��ｧ (�ｴ�� ��椈)
+    _drawTierBadge(rowTier, 60, tierY + slide);
+
+    // �川� (�ｰ�簿�ｬ, x=362)
+    ctx.textAlign = 'right';
+    ctx.font = row.rank<=3 ? 'bold 12px sans-serif' : '11px sans-serif';
+    if (row.rank === 1) {
+      const scoreText = fmtScore(row.score);
+      const stw = ctx.measureText(scoreText).width;
+      const sp  = (Math.sin(t * 0.0022) + 1) / 2;
+      const sg  = ctx.createLinearGradient(362 - stw, 0, 362, 0);
+      sg.addColorStop(0,                     '#d4900c');
+      sg.addColorStop(Math.max(0, sp-0.22),  '#d4900c');
+      sg.addColorStop(sp,                    '#fff8a0');
+      sg.addColorStop(Math.min(1, sp+0.22),  '#c88010');
+      sg.addColorStop(1,                     '#e0a020');
+      ctx.shadowColor = '#ffcc00'; ctx.shadowBlur = 12;
+      ctx.fillStyle = sg; ctx.fillText(scoreText, 362, nameY);
+      ctx.shadowBlur = 0;
+    } else if (row.rank === 2) {
+      const scoreText = fmtScore(row.score);
+      const stw = ctx.measureText(scoreText).width;
+      const sg  = ctx.createLinearGradient(362 - stw, 0, 362, 0);
+      sg.addColorStop(0, '#8aabb8'); sg.addColorStop(0.45, '#eef4fa'); sg.addColorStop(1, '#8aabb8');
+      ctx.shadowColor = '#b8d0e8'; ctx.shadowBlur = 8;
+      ctx.fillStyle = sg; ctx.fillText(scoreText, 362, nameY);
+      ctx.shadowBlur = 0;
+    } else if (row.rank === 3) {
+      const scoreText = fmtScore(row.score);
+      const stw = ctx.measureText(scoreText).width;
+      const sg  = ctx.createLinearGradient(362 - stw, 0, 362, 0);
+      sg.addColorStop(0, '#8a4a08'); sg.addColorStop(0.45, '#eea848'); sg.addColorStop(1, '#8a4a08');
+      ctx.shadowColor = '#c06828'; ctx.shadowBlur = 8;
+      ctx.fillStyle = sg; ctx.fillText(scoreText, 362, nameY);
+      ctx.shadowBlur = 0;
+    } else {
+      ctx.fillStyle = isP ? '#c8c8ff' : '#66667a';
+      ctx.fillText(fmtScore(row.score), 362, nameY);
+    }
+
+    // �ｭ� 嵓誤椈�ｸ (x=366)
+    ctx.textAlign = 'left'; ctx.font = '13px sans-serif';
+    ctx.fillText(countryFlag(row.country), 367, nameY);
+
+    ctx.restore();
+  });
+
+  // ��款
+  if (lbState.btnAlpha > 0) {
+    ctx.save(); ctx.globalAlpha = lbState.btnAlpha; ctx.textAlign = 'center';
+    if (lbState.viewOnly) {
+      // �ｰ�ｴ �ｨ��: ��ｴ�ｰ �罷俺 ��款��
+      drawBtn({x:160, y:660, w:160, h:44}, T.menu, false);
+    } else {
+      drawBtn(BTN_LB_RETRY, T.retry, false);
+      drawBtn(BTN_LB_MENU,  T.menu,  false);
+    }
+    ctx.restore();
+  }
+
+  // �ｸ�� ���ｴ + �ｼ�們囈 �戦注��
+  const shipAX = 52, shipAY = 630;
+  if (bubble) {
+    ctx.save(); ctx.translate(shipAX, shipAY); _drawShipShape(9); ctx.restore();
+  }
+  drawBubble(shipAX, shipAY - 9);
+}
+
+// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// SCENE STATE MACHINE
+// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// scenes: 'intro' | 'modeSelect' | 'startScene' | 'game' | 'gameover' | 'clear80' | 'quickRestart'
+let scene       = 'modeSelect';
+let gameMode    = 'normal';   // 'normal' | 'endless'
+let introTarget = 'modeSelect'; // where intro animation leads
+
+// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// STARS
+// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+const stars = [];
+function initStars() {
+  stars.length = 0;
+  for (let i = 0; i < 130; i++) stars.push({
+    x: Math.random() * CW, y: Math.random() * CH,
+    r: Math.random() * 1.1 + 0.2,
+    spd: Math.random() * 0.7 + 0.15,
+    a: Math.random() * 0.22 + 0.07,
+  });
+}
+initStars();
+function tickStars(dt) {
+  const dtN = dt / 8.333;
+  stars.forEach(s => { s.y += s.spd * dtN; if (s.y > CH) { s.y = 0; s.x = Math.random() * CW; } });
+}
+function drawStars() {
+  stars.forEach(s => {
+    ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+    ctx.fillStyle = `rgba(200,220,255,${s.a})`; ctx.fill();
+  });
+}
+
+// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// ENERGY LINES
+// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+const eLines = [];
+function mkLine() {
+  const angle = (Math.random() * 50 - 25) * Math.PI / 180;
+  const spd   = Math.random() * 3 + 2;
+  return {
+    x: Math.random() * CW, y: -Math.random() * CH,
+    len: Math.random() * 110 + 50,
+    vx: Math.sin(angle) * spd, vy: Math.cos(angle) * spd,
+    a: Math.random() * 0.15 + 0.04,
+    col: Math.random() < 0.6 ? '#00c8ff' : '#8866ff',
+    w: Math.random() * 1.1 + 0.3,
+  };
+}
+function initLines(n) { eLines.length = 0; for (let i = 0; i < n; i++) eLines.push(mkLine()); }
+initLines(12);
+function tickLines(dt) {
+  const dtN = dt / 8.333;
+  eLines.forEach((l, i) => {
+    l.x += l.vx * dtN; l.y += l.vy * dtN;
+    if (l.y > CH + l.len) eLines[i] = mkLine();
+  });
+}
+function drawLines() {
+  eLines.forEach(l => {
+    ctx.save();
+    ctx.globalAlpha = l.a;
+    ctx.strokeStyle = l.col; ctx.lineWidth = l.w;
+    ctx.beginPath();
+    ctx.moveTo(l.x, l.y);
+    ctx.lineTo(l.x - l.vx * l.len / l.vy, l.y - l.len);
+    ctx.stroke();
+    ctx.restore();
+  });
+}
+
+// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// PARTICLES
+// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+const parts = [];
+function spawn(x, y, n, opts) {
+  for (let i = 0; i < n; i++) {
+    const a   = Math.random() * Math.PI * 2;
+    const spd = (opts.spd || 3) * (Math.random() * 0.7 + 0.65);
+    parts.push({
+      x, y,
+      vx: Math.cos(a) * spd, vy: Math.sin(a) * spd,
+      r:  opts.r   || Math.random() * 2.5 + 0.8,
+      a:  1,
+      dc: opts.dc  || 0.022,
+      c:  opts.c   || '#ff6688',
+      g:  opts.g   || 0.04,
+    });
+  }
+}
+function tickParts(dt) {
+  const dtN = dt / 8.333;
+  for (let i = parts.length - 1; i >= 0; i--) {
+    const p = parts[i];
+    p.x += p.vx * dtN; p.y += p.vy * dtN; p.vy += p.g * dtN; p.a -= p.dc * dtN;
+    if (p.a <= 0) parts.splice(i, 1);
+  }
+}
+function drawParts() {
+  parts.forEach(p => {
+    ctx.save(); ctx.globalAlpha = p.a;
+    ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+    ctx.fillStyle = p.c; ctx.fill(); ctx.restore();
+  });
+}
+
+// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// SPEECH BUBBLE
+// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+let bubble = null;
+function showBubble(text, ms) {
+  bubble = { full: text, disp: '', ti: 0, tt: 0, a: 0, timer: ms, fin: false };
+}
+function tickBubble(dt) {
+  if (!bubble) return;
+  bubble.timer -= dt;
+  if (bubble.timer < 500) {
+    // 寬們擽�� ��寃 窶� 寬們擽�� �ｸ�ｴ�､ �ｰ��
+    bubble.a = Math.max(0, bubble.a - 0.055);
+    if (bubble.a <= 0) { bubble = null; return; }
+  } else {
+    bubble.a = Math.min(1, bubble.a + 0.1);
+  }
+  if (bubble.ti < bubble.full.length) {
+    bubble.tt += dt;
+    while (bubble.tt > 30 && bubble.ti < bubble.full.length) {
+      bubble.tt -= 30; bubble.disp += bubble.full[bubble.ti++];
+    }
+  }
+}
+function drawBubble(ax, ay) {
+  if (!bubble) return;
+  ctx.save(); ctx.globalAlpha = bubble.a;
+  const W = 240, pad = 11, lh = 17, r = 10;
+  ctx.font = '12px sans-serif';
+  const lines = wrapLines(bubble.disp, W - pad*2);
+  const H = lines.length * lh + pad * 2;
+  const bx = Math.max(8, Math.min(CW - W - 8, ax - W/2));
+  const by = ay - H - 20;
+
+  // Box
+  roundRect(ctx, bx, by, W, H, r);
+  ctx.fillStyle = 'rgba(20,12,28,0.93)'; ctx.fill();
+  ctx.strokeStyle = '#5E5254'; ctx.lineWidth = 1.5; ctx.stroke();
+
+  // Tail
+  ctx.beginPath();
+  ctx.moveTo(ax - 7, by + H); ctx.lineTo(ax, by + H + 13); ctx.lineTo(ax + 7, by + H);
+  ctx.fillStyle = 'rgba(20,12,28,0.93)'; ctx.fill();
+
+  // Text only (no name tag)
+  ctx.font = '12px sans-serif'; ctx.fillStyle = '#eaeaea';
+  lines.forEach((ln, i) => ctx.fillText(ln, bx + pad, by + pad + lh + i * lh - 2));
+
+  ctx.restore();
+}
+function wrapLines(text, maxW) {
+  const out = []; let line = '';
+  for (const ch of text) {
+    const test = line + ch;
+    if (ctx.measureText(test).width > maxW && line) { out.push(line); line = ch; }
+    else line = test;
+  }
+  if (line) out.push(line);
+  return out.length ? out : [''];
+}
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y); ctx.arcTo(x + w, y, x + w, y + r, r);
+  ctx.lineTo(x + w, y + h - r); ctx.arcTo(x + w, y + h, x + w - r, y + h, r);
+  ctx.lineTo(x + r, y + h); ctx.arcTo(x, y + h, x, y + h - r, r);
+  ctx.lineTo(x, y + r); ctx.arcTo(x, y, x + r, y, r);
+  ctx.closePath();
+}
+
+// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// DRAW SHIP
+// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+function drawShip(x, y, alpha) {
+  ctx.save(); ctx.globalAlpha = alpha ?? 1; ctx.translate(x, y);
+  _drawShipShape(18);
+  // Hitbox dot
+  ctx.beginPath(); ctx.arc(0, 0, CFG.HITBOX_R, 0, Math.PI*2);
+  ctx.fillStyle = 'rgba(255,255,255,0.85)'; ctx.fill();
+  ctx.restore();
+}
+
+// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// BULLET SYSTEM
+// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+const BCOL = {
+  basic:  '#4FC3F7', wave:  '#CE93D8', homing: '#FFCC02',
+  burst:  '#FF7043', meteor: '#A1887F', accel_homing: '#FF6D00',
+};
+const bullets = [];
+function mkBullet(type, x, y, vx, vy, opts) {
+  opts = opts || {};
+  const hspd = opts.hspd || 1.8;
+  return {
+    type, x, y, vx, vy,
+    r:    opts.r  || (type === 'meteor' ? 8 : 5),
+    col:  BCOL[type] || '#fff',
+    age:  0,
+    alive: true,
+    wAmp: opts.wAmp || 2,
+    wFrq: opts.wFrq || 0.08,
+    bvx: vx, bvy: vy,          // wave base velocity
+    burstAt: opts.burstAt || 0,
+    hspd,
+    hspdMax:   opts.hspdMax   || hspd,   // accel_homing �罹劇 �鷺巡
+    accelRate: opts.accelRate || 0,      // accel_homing �壱胸 ��鷺汢
+    warnMs: opts.warnMs || 0,   // �ｴ �懋ｰ� �呷譜 �懍梵�ｬ �ｽ�� 岺懍亨 弡� �ｴ�� �懍梠
+    rampMs: opts.rampMs || 0,   // �ｴ�� �懍梠 弡� �ｴ �懋ｰ� �呷譜 0竊�1 ��� (�ｩ嵂･ �一ｳ�)
+    tvx: vx, tvy: vy,           // ramp �ｰ� �ｩ岺� �鷺巡
+  };
+}
+function tickBullets(dt) {
+  const ship = gs.ship;
+  const dtN = dt / 8.333;  // 60fps �母ｷ懦剩 窶� �ｨ�� �ｴ�呷乱 ��圸
+  for (let i = bullets.length - 1; i >= 0; i--) {
+    const b = bullets[i]; if (!b.alive) { bullets.splice(i,1); continue; }
+    b.age += dt;
+    if (b.type === 'wave') {
+      const t = b.age * b.wFrq;
+      const len = Math.hypot(b.bvx, b.bvy) || 1;
+      const px = -b.bvy / len, py = b.bvx / len;
+      b.x += (b.bvx + px * Math.sin(t) * b.wAmp) * dtN;
+      b.y += (b.bvy + py * Math.sin(t) * b.wAmp) * dtN;
+    } else if (b.type === 'homing' || b.type === 'accel_homing') {
+      // accel_homing: hspd�ｼ �壱胸 accelRate�醐⊂ hspdMax�護ｧ ���
+      if (b.accelRate > 0) {
+        b.hspd = Math.min(b.hspdMax, b.hspd + b.accelRate * dt / 1000);
+      }
+      const dtN = dt / 8.333;
+      const trackDur  = b.type === 'accel_homing' ? 3200 : 2100;
+      const trackFade = 1400;
+      let steerBase = b.type === 'accel_homing' ? 0.022 : 0.028;
+      if (b.age > trackDur) {
+        const fade = Math.max(0, 1 - (b.age - trackDur) / trackFade);
+        steerBase *= fade;
+      }
+      // 嵓��溢桷�溢擽孖ｸ�� �樓ｲ� steer �ｴ��
+      const steer = steerBase > 0 ? 1 - Math.pow(1 - steerBase, dtN) : 0;
+      if (steer > 0) {
+        const dx = ship.x - b.x, dy = ship.y - b.y;
+        const d  = Math.hypot(dx, dy) || 1;
+        const targetVx = (dx / d) * b.hspd;
+        const targetVy = (dy / d) * b.hspd;
+        b.vx += (targetVx - b.vx) * steer;
+        b.vy += (targetVy - b.vy) * steer;
+      }
+      const spd = Math.hypot(b.vx, b.vy);
+      if (spd > b.hspd) { b.vx *= b.hspd / spd; b.vy *= b.hspd / spd; }
+      b.x += b.vx * dtN; b.y += b.vy * dtN;
+    } else if (b.type === 'burst') {
+      // warnMs �呷譜� �懍梵�ｬ ��ｰ 窶� �ｴ弡� �ｴ�� �懍梠
+      if (b.age >= b.warnMs) {
+        b.x += b.vx * dtN; b.y += b.vy * dtN;
+      }
+      if (b.burstAt > 0 && b.age > b.burstAt) {
+        for (let a = 0; a < 5; a++) {
+          const ang = (a / 5) * Math.PI * 2;
+          bullets.push(mkBullet('basic', b.x, b.y, Math.cos(ang)*2.2, Math.sin(ang)*2.2,
+            { rampMs: 420 }));  // �ｩ嵂･ �ｼ� �ｴ�ｴ�� �懍�德� ���
+        }
+        playSfx('surroundBurst');
+        bullets.splice(i, 1); continue;
+      }
+    } else {
+      if (b.rampMs > 0 && b.age < b.rampMs) {
+        const t = b.age / b.rampMs;
+        const scale = t * t;
+        b.x += b.tvx * scale * dtN;
+        b.y += b.tvy * scale * dtN;
+      } else {
+        b.x += b.vx * dtN; b.y += b.vy * dtN;
+      }
+    }
+    if (b.x < -30 || b.x > CW+30 || b.y < -30 || b.y > CH+30) { bullets.splice(i,1); }
+  }
+}
+function drawBullets() {
+  bullets.forEach(b => {
+    ctx.save();
+
+    // burst �ｽ�� 寬們擽��: 寬�侃 �� + �倆握�� �肥牟
+    if (b.type === 'burst' && b.warnMs > 0 && b.age < b.warnMs) {
+      const prog  = b.age / b.warnMs;                       // 0竊�1
+      const pulse = (Math.sin(b.age * 0.018) + 1) * 0.5;   // 0~1 ��徐
+      // �緋ｹ･ �� (�川�� �們ｶ倣葺�ｰ �懍ぎ �一ｳ�)
+      const ringR = b.r * (3.8 - prog * 2.2);
+      ctx.globalAlpha = 0.18 + pulse * 0.28;
+      ctx.strokeStyle = BCOL.burst;
+      ctx.lineWidth = 1.4;
+      ctx.beginPath(); ctx.arc(b.x, b.y, ringR, 0, Math.PI * 2); ctx.stroke();
+      // �肥牟 (�川�� �晧符��)
+      ctx.globalAlpha = 0.25 + prog * 0.55;
+      const grd = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, b.r * 2.0);
+      grd.addColorStop(0, BCOL.burst); grd.addColorStop(1, 'transparent');
+      ctx.beginPath(); ctx.arc(b.x, b.y, b.r * 2.0, 0, Math.PI * 2);
+      ctx.fillStyle = grd; ctx.fill();
+      ctx.restore();
+      return;
+    }
+
+    // �ｼ�� 夋� �誤鵠
+    const grd = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, b.r * 2.4);
+    grd.addColorStop(0, b.col); grd.addColorStop(1, 'transparent');
+    ctx.beginPath(); ctx.arc(b.x, b.y, b.r * 2.4, 0, Math.PI*2);
+    ctx.fillStyle = grd; ctx.fill();
+    ctx.beginPath(); ctx.arc(b.x, b.y, b.r * 0.55, 0, Math.PI*2);
+    ctx.fillStyle = '#fff'; ctx.fill();
+    ctx.restore();
+  });
+}
+
+// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// LASER SYSTEM
+// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+const lasers = [];
+function spawnLaser(x1, y1, x2, y2, warn) {
+  const fireMax = 1100;
+  playSfx('laserWarn');
+  lasers.push({ x1, y1, x2, y2, warn: warn || 950, fire: fireMax, fireMax, phase: 'warn' });
+}
+function tickLasers(dt) {
+  for (let i = lasers.length - 1; i >= 0; i--) {
+    const l = lasers[i];
+    if (l.phase === 'warn') { l.warn -= dt; if (l.warn <= 0) { l.phase = 'fire'; playSfx('laserFire'); } }
+    else { l.fire -= dt; if (l.fire <= 0) lasers.splice(i, 1); }
+  }
+}
+function drawLasers() {
+  lasers.forEach(l => {
+    ctx.save();
+    if (l.phase === 'warn') {
+      ctx.setLineDash([4, 6]);
+      ctx.strokeStyle = 'rgba(255,68,68,0.40)'; ctx.lineWidth = 1.0;
+      ctx.beginPath(); ctx.moveTo(l.x1, l.y1); ctx.lineTo(l.x2, l.y2); ctx.stroke();
+      ctx.setLineDash([]);
+    } else {
+      // �尖ц�尞ｬ �罷ｲｨ�懦売: elapsed �ｰ�
+      const elapsed  = l.fireMax - l.fire;       // �懍ぎ 弡� �ｽ�ｼ ms
+      const rampUp   = 160;                       // ����ｵ: 0~160ms
+      const sustain  = l.fireMax - rampUp - 380;  // �ｵ�ｰ ��� �ｬ��
+      const rampDown = 380;                       // �ｵ竊廷枚+寬們擽��: �溢ｧ�� 380ms
+      let lw, alpha;
+      if (elapsed < rampUp) {
+        const t = elapsed / rampUp;
+        lw    = 0.4 + t * t * 7.6;    // ��� �｡���ｼ�� ����ｵ
+        alpha = 0.5 + t * 0.5;
+      } else if (elapsed < rampUp + sustain) {
+        lw    = 8; alpha = 1;
+      } else {
+        const t = (elapsed - rampUp - sustain) / rampDown;
+        lw    = 8 * Math.pow(1 - t, 1.4);  // �懍�德� ��符��
+        alpha = 1 - t * t;                  // �醐血�� �懍�德� �川�
+      }
+      lw = Math.max(0.3, lw);
+      ctx.strokeStyle = `rgba(255,68,68,${alpha.toFixed(2)})`;
+      ctx.lineWidth   = lw;
+      ctx.shadowColor = '#FF4444';
+      ctx.shadowBlur  = 12 * alpha;
+      ctx.beginPath(); ctx.moveTo(l.x1, l.y1); ctx.lineTo(l.x2, l.y2); ctx.stroke();
+    }
+    ctx.restore();
+  });
+}
+function laserHit(sx, sy) {
+  for (const l of lasers) {
+    if (l.phase !== 'fire') continue;
+    const dx = l.x2 - l.x1, dy = l.y2 - l.y1;
+    const len2 = dx*dx + dy*dy; if (!len2) continue;
+    const t = Math.max(0, Math.min(1, ((sx-l.x1)*dx + (sy-l.y1)*dy) / len2));
+    if (Math.hypot(l.x1+t*dx-sx, l.y1+t*dy-sy) < CFG.HITBOX_R + 4) return true;
+  }
+  return false;
+}
+
+// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// PATTERNS
+// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+const PATTERN_SETS = [
+  ['debris_arc', 'debris_arc', 'radial_slow'],
+  ['debris_arc', 'radial_slow', 'scatter'],
+  ['spiral', 'wall', 'scatter', 'debris_arc'],
+  ['cross_laser', 'homing_rush', 'spiral', 'scatter'],
+  ['cross_laser', 'surround', 'homing_rush', 'spiral', 'scatter'],
+  ['surround', 'cross_laser', 'spiral', 'homing_rush', 'scatter'],
+  ['surround', 'cross_laser', 'homing_rush', 'wall'],
+  ['surround', 'cross_laser', 'homing_rush', 'radial_slow', 'scatter'],
+  ['surround', 'cross_laser', 'homing_rush', 'radial_slow', 'scatter', 'spiral', 'wall'],
+  // phase 9~: �簿ｰ�ｬ�ｩ 甯ｨ奓ｴ (168�� �ｴ弡�)
+  ['precision_homing', 'accel_homing', 'cross_laser', 'surround', 'scatter'],
+  ['precision_homing', 'accel_homing', 'surround', 'cross_laser', 'spiral', 'wall'],
+  ['precision_homing', 'accel_homing', 'precision_homing', 'surround', 'cross_laser', 'scatter'],
+];
+let patCycle = 0;
+let patTimer = 0;
+let debrisTimer = 0;
+let basicTimer = 0;   // �罷糖�ｬ�､ 120s~ �ｰ�ｸ夋� �ｰ尞ｬ 夋�ｴ�ｸ
+
+function patInterval(phase) { return Math.max(420, 1400 - phase * 90); }
+
+function firePat(phase) {
+  const set = PATTERN_SETS[Math.min(phase, PATTERN_SETS.length - 1)];
+  let name = set[patCycle % set.length]; patCycle++;
+  // wall� 20% 嶹簿･��罹ｧ� 窶� �俯ｨｸ��� scatter�� ��ｴ
+  if (name === 'wall' && Math.random() > 0.20) name = 'scatter';
+  execPat(name, phase);
+}
+
+function execPat(name, phase) {
+  const cx = CW / 2;
+  const spd  = 1.5 + phase * 0.22;
+  const bspd = spd * 0.80;   // 甯誤梳 basic 夋� ��圸 窶� �鷺巡 20% �ｮ�､
+  switch (name) {
+    // 笏笏 �壱ｰ� ��圸: �尖ｦｰ �ｴ�� �被紛 嶸ｸ(arc) 笏笏
+    case 'debris_arc': {
+      const n = 9 + phase;
+      const offset = Math.random() * Math.PI * 2;
+      for (let i = 0; i < n; i++) {
+        const a  = offset + (i / n) * Math.PI * 2;
+        const ox = cx + Math.cos(a) * (CW * 0.55);
+        const oy = -20 + Math.random() * 40;
+        const ds = 0.55 + Math.random() * 0.55;
+        const da = Math.PI / 2 + (Math.random() - 0.5) * 0.35;
+        bullets.push(mkBullet('meteor', ox, oy, Math.cos(da)*ds, Math.sin(da)*ds,
+          { r: 4 + Math.random() * 5 }));
+      }
+      break;
+    }
+    // 笏笏 �尖ｦｰ �ｩ�ｬ嶸� (�ｴ�� �被紛 �尖ｌ) 笏笏
+    case 'radial_slow': {
+      playSfx('scatterWhite');
+      const n = 12 + phase * 2;
+      const offset = Math.random() * Math.PI * 2;
+      for (let i = 0; i < n; i++) {
+        const a = offset + (i / n) * Math.PI * 2;
+        const s = 0.8 + Math.random() * 0.5;
+        bullets.push(mkBullet('meteor', cx, 80, Math.cos(a)*s, Math.sin(a)*s,
+          { r: 5 + Math.random() * 4 }));
+      }
+      break;
+    }
+    case 'radial': {
+      const n = 9 + phase;   // 12+phase*2 竊� 9+phase
+      for (let i = 0; i < n; i++) {
+        const a = (i / n) * Math.PI * 2;
+        bullets.push(mkBullet('basic', cx, -10, Math.cos(a)*bspd, Math.sin(a)*bspd));
+      }
+      break;
+    }
+    case 'scatter': {
+      playSfx('scatterBlue');
+      const n = 7 + phase * 2;   // 10+phase*3 竊� 7+phase*2
+      for (let i = 0; i < n; i++) {
+        const x = 30 + Math.random() * (CW - 60);
+        const a = Math.PI/2 + (Math.random()-0.5)*0.85;
+        const s = bspd + Math.random() * 0.35;
+        bullets.push(mkBullet('basic', x, -10, Math.cos(a)*s, Math.sin(a)*s));
+      }
+      break;
+    }
+    case 'spiral': {
+      playSfx('spiral');
+      const base = (Date.now() * 0.003) % (Math.PI * 2);
+      const arms = 3;
+      for (let arm = 0; arm < arms; arm++) {
+        for (let j = 0; j < 4; j++) {
+          const a = base + (arm/arms)*Math.PI*2 + j*0.18;
+          bullets.push(mkBullet('wave', cx, 60, Math.cos(a)*spd, Math.sin(a)*spd, { wAmp: 1.8, wFrq: 0.06 }));
+        }
+      }
+      break;
+    }
+    case 'wall': {
+      playSfx('scatterWhite');
+      const gap  = 70 + Math.random() * 80;
+      const gapX = 20 + Math.random() * (CW - gap - 40);
+      const cols = Math.ceil(CW / 26);
+      for (let c = 0; c < cols; c++) {
+        const bx = c * 26 + 13;
+        if (bx > gapX && bx < gapX + gap) continue;
+        bullets.push(mkBullet('meteor', bx, -10, 0, spd * 0.9));
+      }
+      break;
+    }
+    case 'cross_laser': {
+      const y1 = 160 + Math.random() * 300;
+      const y2 = 160 + Math.random() * 300;
+      spawnLaser(0, y1, CW, y1);
+      spawnLaser(CW * 0.3, 0, CW * 0.7, CH);
+      break;
+    }
+    case 'homing_rush': {
+      const n = Math.min(2 + Math.floor(phase * 0.6), 4);   // �罹劇 4��
+      for (let i = 0; i < n; i++) {
+        setTimeout(() => {
+          playSfx('homing');
+          bullets.push(mkBullet('homing', 30 + Math.random() * (CW - 60), -10, 0, 1, { hspd: 1.4 + phase * 0.15 }));
+        }, i * 320);   // 320ms ��ｲｩ
+      }
+      break;
+    }
+    case 'surround': {
+      playSfx('surroundWarn');
+      const { x: sx, y: sy } = gs.ship;
+      const n      = 6;
+      const d      = 340;
+      const ss     = spd * 0.50;          // �ｴ�� �鷺巡 50% �緋ｰ �逸売
+      const warnMs = 800;                 // 800ms �ｽ�� 岺懍亨 弡� �懍ぎ
+      const fuse   = Math.max(700, 1100 - phase * 30);  // �ｽ�� �晤� 弡� �ｴ�吮�尞ｭ�� �懋ｰ�
+      for (let i = 0; i < n; i++) {
+        const a = (i / n) * Math.PI * 2;
+        const ox = sx + Math.cos(a) * d, oy = sy + Math.sin(a) * d;
+        bullets.push(mkBullet('burst', ox, oy,
+          -Math.cos(a) * ss, -Math.sin(a) * ss,
+          { burstAt: warnMs + fuse, warnMs }));
+      }
+      break;
+    }
+    // 笏笏 �簿ｰ�ｬ�ｩ: ���ｸ ����ヤ �卓､� 笏笏
+    case 'precision_homing': {
+      const extra = phase - 9;
+      const n = Math.min(3 + Math.floor(extra * 0.5), 6);
+      const hspdVal = 2.6 + extra * 0.18;
+      for (let i = 0; i < n; i++) {
+        setTimeout(() => {
+          playSfx('homing');
+          bullets.push(mkBullet('homing',
+            30 + Math.random() * (CW - 60), -10, 0, 1,
+            { hspd: hspdVal }));
+        }, i * 180);
+      }
+      break;
+    }
+    // 笏笏 ��� ����ヤ: �尖ｦｬ�� �懍梠﨑ｴ�� �川�� �ｨ�ｼ�� 笏笏
+    case 'accel_homing': {
+      const extra = phase - 9;
+      const n = Math.min(2 + Math.floor(extra * 0.4), 4);
+      const maxSpd = 3.2 + extra * 0.15;
+      for (let i = 0; i < n; i++) {
+        setTimeout(() => {
+          playSfx('homing');
+          bullets.push(mkBullet('accel_homing',
+            30 + Math.random() * (CW - 60), -10, 0, 0.5,
+            { hspd: 0.5, hspdMax: maxSpd, accelRate: 0.9 + extra * 0.06 }));
+        }, i * 300);
+      }
+      break;
+    }
+  }
+}
+
+// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// GAME STATE
+// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+const gs = {
+  ship: { x: CW/2, y: 660 },
+  time: 0, phase: 0,
+  alive: true,
+  forcedM: null,
+  flash: 0,
+  finale: false,      // 嵓ｼ���� �ｬ�� (80s~)
+  finaleTime: 0,      // 嵓ｼ���� �ｽ�ｼ �懋ｰ�(��)
+  earthAlpha: 0,      // ��ｬ 妤ｬ��巡
+  precision: false,   // �簿ｰ�ｬ�ｩ �ｬ�� (180s~, �罷糖�ｬ�､ ��圸)
+  breathe: false,     // �ｨ ���ｴ�ｰ �ｬ�� �� �ｬ� (�罷糖�ｬ�､ ��圸)
+  breatheTimer: 0,    // �ｨ ���ｴ�ｰ �ｽ�ｼ ms
+  paused: false,
+};
+
+let _sessionToken = null; // �護桷 �懍梠 �� �ｸ�ｬ �懋ｸ雅ｰ幗捩 奝�增ｰ
+
+function initGame() {
+  gs.ship.x = CW/2; gs.ship.y = 660;
+  gs.time = 0; gs.phase = 0;
+  // �護桷 �懍梠 �懍�川乱 奝�增ｰ �懋ｸ� (�罹ｲ� ���: elapsed >= score)
+  _sessionToken = null;
+  fetch('/api/kaguya/token').then(r => r.ok ? r.json() : null).then(d => { _sessionToken = d; }).catch(() => {});
+  gs.alive = true; gs.forcedM = null; gs.flash = 0;
+  gs.finale = false; gs.finaleTime = 0; gs.earthAlpha = 0;
+  gs.precision = false; gs.breathe = false; gs.breatheTimer = 0; gs.paused = false;
+  gs._mile60 = false; gs._mile120 = false;
+  bullets.length = 0; lasers.length = 0; parts.length = 0; shipTrail.length = 0; _trailFrame = 0;
+  patCycle = 0; patTimer = 0; debrisTimer = 0; basicTimer = 0;
+  bubble = null;
+  initStars(); initLines(12);
+  playBGM(gameMode === 'endless' ? 'endless' : 'normal');
+  // �懍ｴ� 嵓誤�溢擽 �溢ｻ､ 窶� ���� "�､�懦復��!" 孖ｸ�ｬ�ｰ�ｩ
+  localStorage.setItem('tuku_kaguya_played', '1');
+  try {
+    if (window.parent && typeof window.parent.onKaguyaPlayed === 'function') {
+      window.parent.onKaguyaPlayed();
+    }
+  } catch (_) {}
+}
+
+function getPhase(t, mode) {
+  if (mode === 'endless') {
+    if (t < 60)  return Math.min(5, Math.floor(t / 12));
+    // 24�壱ｧ壱共 +1 (�ｰ�ｴ 18�� 竊� ��剩), �罹劇 8�� cap
+    if (t < 180) return Math.min(8, 5 + Math.floor((t - 60) / 24));
+    // 180��~: �簿ｰ�ｬ�ｩ 寬們擽�� (9�奓ｰ �懍梠, 25�壱ｧ壱共 +1)
+    return 9 + Math.floor((t - 180) / 25);
+  }
+  if (t < 15) return 0; if (t < 30) return 1; if (t < 45) return 2;
+  if (t < 60) return 3; if (t < 77) return 4; return 5;
+}
+
+function moveShip(dt) {
+  const dtN = dt / 8.333;
+  let dx = 0, dy = 0;
+  if (keys['ArrowLeft']  || keys['KeyA']) dx -= 1;
+  if (keys['ArrowRight'] || keys['KeyD']) dx += 1;
+  if (keys['ArrowUp']    || keys['KeyW']) dy -= 1;
+  if (keys['ArrowDown']  || keys['KeyS']) dy += 1;
+  if (touch.on) {
+    const tx = touch.cx - touch.ox, ty = touch.cy - touch.oy;
+    const tl = Math.hypot(tx, ty);
+    if (tl > 14) { dx += tx / tl; dy += ty / tl; }
+  }
+  const l = Math.hypot(dx, dy); if (l > 0) { dx /= l; dy /= l; }
+  if (l > 0) pushTrail(gs.ship.x, gs.ship.y);
+  gs.ship.x = Math.max(14, Math.min(CW-14, gs.ship.x + dx * CFG.SHIP_SPEED * dtN));
+  gs.ship.y = Math.max(14, Math.min(CH-14, gs.ship.y + dy * CFG.SHIP_SPEED * dtN));
+}
+
+function checkHit() {
+  if (!gs.alive) return;
+  const { x: sx, y: sy } = gs.ship;
+
+  // 嵓ｼ���� �卓濫 �ｼ�� 夋�/�溢擽� �ｴ�� 窶� �ｴ�晤ｧ� 甯川��
+  if (!gs.finale) {
+    for (const b of bullets) {
+      const d = Math.hypot(b.x - sx, b.y - sy);
+      if (d < CFG.HITBOX_R + b.r * 0.80) { doDie(); return; }
+    }
+    if (laserHit(sx, sy)) { doDie(); return; }
+  }
+
+  if (gs.forcedM) {
+    const m = gs.forcedM;
+    // �ｴ�� �｣� �ｰ� 嵓ｼ�ｩ (m.y + m.r�ｴ ���� y�ｼ ��們ｹ俯ｩｴ �ｩ��)
+    const dist = Math.hypot(m.x - sx, m.y - sy);
+    if (dist < m.r * 1.00 + CFG.HITBOX_R) {
+      if (gs.finale) { doClear80(); } else { doDie(); }
+      return;
+    }
+  }
+}
+
+function doDie() {
+  if (!gs.alive) return;
+  gs.alive = false;
+  stopBGM();
+  playSfx('death');
+  spawn(gs.ship.x, gs.ship.y, 45, { c: '#ff6688', spd: 6, dc: 0.014 });
+  spawn(gs.ship.x, gs.ship.y, 20, { c: '#cc44ff', spd: 4, r: 1.8, dc: 0.018 });
+  gs.flash = 1;
+  if (gameMode === 'endless') {
+    const best = parseFloat(localStorage.getItem(CFG.BEST_KEY) || 0);
+    if (gs.time > best) localStorage.setItem(CFG.BEST_KEY, gs.time.toFixed(2));
+  }
+  setTimeout(() => {
+    goState('gameover');
+    goState_gameoverInit();
+  }, 1100);
+}
+
+function doClear80() {
+  if (!gs.alive) return;
+  gs.alive = false;
+  c80Alpha = 0;
+  stopBGM();
+  stopMeteorSound();
+  playSfx('clear');
+  spawn(gs.ship.x, gs.ship.y, 60, { c: '#ff6688', spd: 5, dc: 0.011 });
+  gs.flash = 1;
+  localStorage.setItem(CFG.NORMAL_KEY, '1');
+  localStorage.setItem(CFG.ACH_KEY, '1');
+  localStorage.setItem('tuku_kaguya_endless_unlocked', '1');
+  try {
+    if (window.parent && typeof window.parent.unlockKaguyaArtifact === 'function') {
+      window.parent.unlockKaguyaArtifact();
+    }
+  } catch (_) {}
+  setTimeout(() => { goState('clear80'); }, 1400);
+}
+
+function tickGame(dt) {
+  if (!gs.alive) {
+    tickParts(dt); if (gs.flash > 0) gs.flash -= 0.05 * (dt/8.333); tickStars(dt); tickLines(dt);
+    return;
+  }
+  // 嵓ｼ���� �卓濫 �護桷 �懋ｰ� �晝ｰ �瀧卿 (夋�ｴ�ｸ 80.0�川� �溢ｶ､)
+  if (!gs.finale) gs.time += dt / 1000;
+
+  // Phase change
+  const np = getPhase(gs.time, gameMode);
+  if (np !== gs.phase) {
+    gs.phase = np;
+    if (np === 2) showBubble(T.phase2, 2800);
+    if (np === 4) {
+      showBubble(T.phase4, 2600);
+      setTimeout(() => showBubble(T.phase4b, 2400), 3200);
+    }
+  }
+
+  // 笏笏 �罷糖�ｬ�､ ��圸 �溢攵�､奝､ �ｰ�� 笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏
+  if (gameMode === 'endless') {
+    // 60s: 嶹罷ｩｴ �� 﨑懍､�ｸｰ 嵓誤椈��
+    if (gs.time >= 60 && !gs._mile60) {
+      gs._mile60 = true;
+      gs.flash = Math.max(gs.flash, 0.18);
+    }
+    // 120s: �� �鷺巡 1.6�ｰ (�ｰ�ｽ �ｴ�･��)
+    if (gs.time >= 120 && !gs._mile120) {
+      gs._mile120 = true;
+      stars.forEach(s => { s.spd *= 1.6; });
+    }
+    // �ｴ夋�� �溢攵�､奝､ (168��) 窶� ���� �溢ｻ､
+    if (gs.time >= 168 && !gs.precision) {
+      gs.precision = true;
+      try { localStorage.setItem('tuku_kaguya_newtype', '1'); } catch (_) {}
+      try {
+        if (window.parent && typeof window.parent.onKaguyaNewtype === 'function') {
+          window.parent.onKaguyaNewtype();
+        }
+      } catch (_) {}
+    }
+  }
+
+  // 笏笏 �罷糖�ｬ�､ �ｨ ���ｴ�ｰ (�､ 45�壱ｧ壱共 5�一ｰ� 甯ｨ奓ｴ �瀧卿) 笏笏
+  if (gameMode === 'endless' && !gs.finale) {
+    const cycle = 45000; // 45�� �ｼ�ｰ
+    const rest  =  5000; // 5�� 弴ｴ��
+    const phase_ms = (gs.time * 1000) % cycle;
+    gs.breathe = phase_ms < rest;
+    if (gs.breathe) {
+      gs.breatheTimer += dt;
+    } else {
+      gs.breatheTimer = 0;
+    }
+  }
+
+  // ��ｬ 窶� 60�壱ｶ奓ｰ �懍�德� 寬們擽�懍攤 (�ｸ� �ｨ��)
+  if (gameMode === 'normal' && gs.time >= 60) {
+    gs.earthAlpha = Math.min(0.85, (gs.time - 60) / 18);
+  }
+
+  // BGM 寬們擽�� ��寃 窶� 60�壱ｶ奓ｰ 80�溢乱 0�ｼ�� (�ｸ� �ｨ��)
+  if (gameMode === 'normal' && activeBgm && !bgmMuted && gs.time >= 60) {
+    const fadeRatio = Math.max(0, 1 - (gs.time - 60) / 20);
+    activeBgm.volume = bgmVolume * fadeRatio;
+  }
+
+  // 笏笏 嵓ｼ���� ��桿 (�ｸ� 80��) 笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏
+  if (gameMode === 'normal' && gs.time >= CFG.FINALE_SEC && !gs.finale) {
+    gs.finale = true;
+    // ���� �晧┳�� �瀧卿 窶� �ｰ�ｴ 夋�/�溢擽��� �川硫�､�ｽ�� 奣ｴ�･
+  }
+
+  if (gs.finale) {
+    gs.finaleTime += dt / 1000;
+    // 嵓ｼ﨑� �� ��株 �ｴ�� �ｱ�･ (finaleTime >= FINALE_METEOR)
+    if (gs.finaleTime >= CFG.FINALE_METEOR && !gs.forcedM) {
+      gs.forcedM = { x: CW/2, y: -(CFG.METEOR_R), r: CFG.METEOR_R, a: 0, vy: 65 };
+      playMeteorSound();
+    }
+  }
+
+  if (gs.forcedM) {
+    const m = gs.forcedM;
+    m.a = Math.min(1, m.a + 0.016);
+    m.y += m.vy * dt / 1000;
+  }
+
+  moveShip(dt);
+
+  // ��亨 �ｴ�� �被紛 窶� 嵓ｼ���� �卓濫 �晧┳ �瀧卿
+  if (!gs.finale) {
+    debrisTimer += dt;
+    // �壱ｰ�(phase 0~3): �被紛 峵作┳﨑俾ｲ� / phase 4+(�溢擽� �ｱ�･ �ｴ弡�): 弡ｨ�ｬ �ｸ﨑俾ｲ�
+    const debrisInterval = gs.phase < 4
+      ? Math.max(1000, 2400 - gs.phase * 220)
+      : 4200 + gs.phase * 300;
+    if (debrisTimer >= debrisInterval) {
+      debrisTimer = 0;
+      const roll = Math.random();
+      if (roll < 0.04) {
+        const r  = 38 + Math.random() * 17;
+        const x  = 30 + Math.random() * (CW - 60);
+        const ds = 0.18 + Math.random() * 0.14;
+        const da = Math.PI / 2 + (Math.random() - 0.5) * 0.15;
+        bullets.push(mkBullet('meteor', x, -(r + 5), Math.cos(da)*ds, Math.sin(da)*ds, { r }));
+      } else if (roll < 0.35) {
+        const r  = 10 + Math.random() * 8;
+        const x  = 20 + Math.random() * (CW - 40);
+        const ds = 0.45 + Math.random() * 0.4;
+        const da = Math.PI / 2 + (Math.random() - 0.5) * 0.25;
+        bullets.push(mkBullet('meteor', x, -(r + 4), Math.cos(da)*ds, Math.sin(da)*ds, { r }));
+      } else {
+        const count = Math.random() < 0.35 ? 2 : 1;
+        for (let i = 0; i < count; i++) {
+          const r  = 4 + Math.random() * 4;
+          const x  = 20 + Math.random() * (CW - 40);
+          const ds = 0.7 + Math.random() * 0.6;
+          const da = Math.PI / 2 + (Math.random() - 0.5) * 0.45;
+          bullets.push(mkBullet('meteor', x, -(r + 4), Math.cos(da)*ds, Math.sin(da)*ds, { r }));
+        }
+      }
+    }
+  }
+
+  // 甯ｨ奓ｴ �懍ぎ 窶� 嵓ｼ���� �瀧卿, �罷糖�ｬ�､ �ｨ ���ｴ�ｰ �ｬ��巡 �瀧卿
+  if (!gs.finale && !gs.breathe) {
+    patTimer += dt;
+    if (patTimer >= patInterval(gs.phase)) { patTimer = 0; firePat(gs.phase); }
+  }
+
+  // �罷糖�ｬ�､ 135��~: �ｰ�ｸ夋�(basic) �ｰ尞ｬ 窶� 甯ｨ奓ｴ�ｼ ��ｰ罹｡� �ｸ�德� �ｴ�､�ｴ
+  if (gameMode === 'endless' && gs.time >= 135 && !gs.finale && !gs.breathe) {
+    basicTimer += dt;
+    // 135s=2000ms ��ｲｩ 竊� �懋ｰ�擽 �溢��� ��符�� (�懍� 800ms)
+    const basicInterval = Math.max(800, 2000 - (gs.time - 135) * 7);
+    if (basicTimer >= basicInterval) {
+      basicTimer = 0;
+      const count = gs.time >= 180 ? 3 : 2;
+      const spd   = 1.4 + (gs.time - 135) * 0.008;
+      for (let i = 0; i < count; i++) {
+        const x = 30 + Math.random() * (CW - 60);
+        const a = Math.PI / 2 + (Math.random() - 0.5) * 0.6;
+        bullets.push(mkBullet('basic', x, -10, Math.cos(a) * spd, Math.sin(a) * spd));
+      }
+    }
+  }
+
+  tickBullets(dt); tickLasers(dt); tickParts(dt); tickStars(dt); tickLines(dt);
+  tickTrail(dt); tickBubble(dt); checkHit();
+
+  if (gs.flash > 0) gs.flash -= 0.05;
+}
+
+// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// DRAW EARTH (嵓ｼ���� �ｰ�ｽ)
+// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+function drawEarth(alpha) {
+  if (!earthImg.complete || !earthImg.naturalWidth) return;
+  const size = 72;                        // �滝ｲ� 窶� ��ｬ �壱株 �尖ｌ
+  const ex = CW / 2 - size / 2;
+  const ey = 36;                          // HUD �罷｡� ��椈 ��卿
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  // �戦� 增ｴ�ｽ�ｼ�� ��罹淇��
+  ctx.beginPath(); ctx.arc(ex + size/2, ey + size/2, size/2, 0, Math.PI*2); ctx.clip();
+  ctx.drawImage(earthImg, ex, ey, size, size);
+  ctx.restore();
+}
+
+// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// DRAW FORCED METEOR
+// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+function drawForcedMeteor(m) {
+  ctx.save(); ctx.globalAlpha = m.a;
+  // Dark shadow vignette
+  const sh = ctx.createRadialGradient(m.x, m.y, m.r * 0.5, m.x, m.y, m.r * 1.8);
+  sh.addColorStop(0, 'rgba(20,8,4,0.55)'); sh.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.beginPath(); ctx.arc(m.x, m.y, m.r * 1.8, 0, Math.PI*2);
+  ctx.fillStyle = sh; ctx.fill();
+  // Body
+  const grd = ctx.createRadialGradient(m.x - m.r*0.28, m.y - m.r*0.28, 0, m.x, m.y, m.r);
+  grd.addColorStop(0, '#8D6E63'); grd.addColorStop(0.5, '#5D4037'); grd.addColorStop(1, '#3E2723');
+  ctx.beginPath(); ctx.arc(m.x, m.y, m.r, 0, Math.PI*2);
+  ctx.fillStyle = grd; ctx.fill();
+  // Cracks
+  ctx.strokeStyle = '#BCAAA4'; ctx.lineWidth = 0.9; ctx.globalAlpha = m.a * 0.5;
+  for (let i = 0; i < 10; i++) {
+    const a = (i / 10) * Math.PI * 2 + 0.3;
+    const r1 = m.r * 0.25, r2 = m.r * (0.55 + (i%3)*0.12);
+    ctx.beginPath();
+    ctx.moveTo(m.x + Math.cos(a)*r1, m.y + Math.sin(a)*r1);
+    ctx.lineTo(m.x + Math.cos(a+0.12)*r2, m.y + Math.sin(a+0.12)*r2);
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+
+// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// DRAW GAME HUD
+// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+function drawHUD() {
+  ctx.fillStyle = 'rgba(0,0,0,0.38)'; ctx.fillRect(0, 0, CW, 30);
+  ctx.font = 'bold 13px monospace'; ctx.textAlign = 'center';
+  // �簿ｰ�ｬ�ｩ �ｬ��: 夋�ｴ�ｸ �ｨ��ラ + ��懍垈
+  if (gs.precision) {
+    const pulse = 0.75 + Math.sin(Date.now() * 0.006) * 0.25;
+    ctx.fillStyle = `rgba(255,${Math.round(80 + pulse * 40)},80,${pulse.toFixed(2)})`;
+    ctx.shadowColor = '#ff4040'; ctx.shadowBlur = 6;
+  } else if (gameMode === 'endless' && gs.breathe) {
+    // �ｨ ���ｴ�ｰ �ｬ��: 夋�ｴ�ｸ �晧捩 﨑俯釜�餓愍�� (�壱巡��)
+    ctx.fillStyle = '#88ddff'; ctx.shadowBlur = 0;
+  } else {
+    ctx.fillStyle = '#ddd'; ctx.shadowBlur = 0;
+  }
+  ctx.fillText(gs.time.toFixed(2) + 's', CW/2, 20);
+  ctx.shadowBlur = 0;
+  ctx.textAlign = 'left';
+  if (gameMode === 'normal') {
+    const pct = Math.min(1, gs.time / CFG.FINALE_SEC);
+    ctx.fillStyle = '#222233'; ctx.fillRect(10, 25, CW - 20, 3);
+    if (gs.finale) {
+      // RGB �ｴ��� ���壱ｩ肥擽�� 窶� 增ｴ�ｬ�ｴ �懋ｰ� 嵓ｼ�罹ｰｱ
+      const t = Date.now() * 0.004;
+      const bw = CW - 20;
+      const grad = ctx.createLinearGradient(10, 0, 10 + bw, 0);
+      for (let i = 0; i <= 6; i++) {
+        grad.addColorStop(i/6, `hsl(${(t * 180 + i * 60) % 360},100%,65%)`);
+      }
+      ctx.fillStyle = grad;
+      // ��懍垈
+      ctx.shadowColor = `hsl(${(t * 180) % 360},100%,70%)`;
+      ctx.shadowBlur = 8;
+      ctx.fillRect(10, 24, bw, 5);
+      ctx.shadowBlur = 0;
+    } else {
+      ctx.fillStyle = `hsl(${200 + pct*90},80%,62%)`;
+      ctx.fillRect(10, 25, (CW-20)*pct, 3);
+    }
+  }
+}
+
+// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// VIRTUAL JOYSTICK
+// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+const JR = 75;
+function drawJoystick() {
+  if (!touch.on || scene !== 'game') return;
+  const ox = touch.ox, oy = touch.oy;
+  const dx = touch.cx - ox, dy = touch.cy - oy;
+  const dist = Math.hypot(dx, dy);
+  const clamp = Math.min(dist, JR);
+  const kx = dist > 0 ? ox + (dx / dist) * clamp : ox;
+  const ky = dist > 0 ? oy + (dy / dist) * clamp : oy;
+
+  ctx.save();
+  // �ｸ�ｽ ��
+  ctx.beginPath(); ctx.arc(ox, oy, JR, 0, Math.PI * 2);
+  ctx.strokeStyle = 'rgba(180,160,220,0.35)';
+  ctx.lineWidth = 1.5; ctx.stroke();
+  // �ｸ�ｽ ��它
+  ctx.beginPath(); ctx.arc(ox, oy, JR, 0, Math.PI * 2);
+  ctx.fillStyle = 'rgba(80,60,120,0.12)'; ctx.fill();
+  // �ｸ��
+  ctx.beginPath(); ctx.arc(kx, ky, 22, 0, Math.PI * 2);
+  ctx.fillStyle = 'rgba(160,140,220,0.40)'; ctx.fill();
+  ctx.beginPath(); ctx.arc(kx, ky, 22, 0, Math.PI * 2);
+  ctx.strokeStyle = 'rgba(200,180,255,0.55)';
+  ctx.lineWidth = 1.2; ctx.stroke();
+  ctx.restore();
+}
+
+// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// DRAW GAME
+// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+function drawGame() {
+  const bg = ctx.createLinearGradient(0, 0, 0, CH);
+  bg.addColorStop(0, '#04040f'); bg.addColorStop(1, '#080418');
+  ctx.fillStyle = bg; ctx.fillRect(0, 0, CW, CH);
+  if (gs.earthAlpha > 0) drawEarth(gs.earthAlpha);
+  drawStars(); drawLines(); drawBullets(); drawLasers(); drawParts();
+  if (gs.forcedM) drawForcedMeteor(gs.forcedM);
+  if (gs.alive) { drawTrail(); drawShip(gs.ship.x, gs.ship.y); }
+  drawJoystick();
+  drawHUD();
+  drawBubble(gs.ship.x, gs.ship.y - 10);
+  if (gs.flash > 0) {
+    ctx.fillStyle = `rgba(255,255,255,${gs.flash})`; ctx.fillRect(0, 0, CW, CH);
+  }
+}
+
+// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// INTRO / START SCENE ANIMATION
+// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+let ia = null; // intro animation state
+function resetIA() {
+  ia = {
+    t: 0,
+    netA: 0,      // net alpha
+    glowR: 0,     // pre-burst glow radius
+    bulge: 0,     // net bulge factor 0竊�1
+    bursted: false,
+    shockwaves: [],
+    frags: [],
+    shipY: CH / 2,
+    voiceA: 0,    // "�ｸ��共�ｴ �ｴ�ｬ�ｼ �､�� 﨑罹ｲ�!" �ｴ�ｴ �ｩ�誤ｦｬ alpha
+    voiceDone: false,
+    ready: false,
+    tapA: 0,
+  };
+  bubble = null; parts.length = 0;
+}
+resetIA();
+
+function tickIA(dt) {
+  ia.t += dt;
+  const t = ia.t;
+
+  // Net fade in
+  ia.netA = t < 500 ? 0 : Math.min(1, (t - 500) / 700);
+
+  // Glow + bulge build-up
+  if (t > 2100 && !ia.bursted) {
+    const prog = Math.min(1, (t - 2100) / 1000);
+    ia.glowR  = prog * 65;
+    ia.bulge  = prog;           // 0竊�1, �ｸ�ｼ�ｴ �川�� �壱｣ｩ﨑俾ｲ�
+  }
+
+  // Burst at 3100ms
+  if (t > 3100 && !ia.bursted) {
+    ia.bursted = true;
+    playSfx('warp');
+    ia.shockwaves.push({ r: 0, a: 1 }, { r: 0, a: 0.6 });
+    for (let i = 0; i < 32; i++) {
+      const ang = Math.random() * Math.PI * 2;
+      const spd = Math.random() * 5.5 + 1.8;
+      ia.frags.push({
+        x: CW/2, y: CH / 2,
+        vx: Math.cos(ang)*spd, vy: Math.sin(ang)*spd,
+        r: Math.random()*3.5+0.8, a: 1,
+        c: Math.random() < 0.55 ? '#8888aa' : '#ccccff',
+      });
+    }
+    spawn(CW/2, CH/2, 55, { c: '#ff6688', spd: 9, dc: 0.013, r: 2.5 });
+    spawn(CW/2, CH/2, 30, { c: '#4466ff', spd: 6, dc: 0.011, r: 1.8 });
+    gs.flash = 1;
+  }
+
+  // Shockwaves
+  ia.shockwaves.forEach(sw => { sw.r += 8; sw.a = Math.max(0, sw.a - 0.038); });
+
+  // Ship slide in 窶� 嶹罷ｩｴ �卓蕗�川� �護桷 �懍梠 ��ｹ�(660)�� �懍�德� �ｴ��
+  if (t > 3300) ia.shipY += (660 - ia.shipY) * 0.06;
+
+  // Fragments
+  ia.frags = ia.frags.filter(f => {
+    f.x += f.vx; f.y += f.vy; f.a -= 0.022; return f.a > 0;
+  });
+
+  // �ｴ�ｴ�� �ｩ�誤ｦｬ: 寬們擽�懍攤 竊� ��� 竊� 寬們擽�懍符��
+  if (t > 4400) {
+    const elapsed = t - 4400;
+    if (elapsed < 600)        ia.voiceA = elapsed / 600;          // 0.6�� 寬們擽�懍攤
+    else if (elapsed < 2600)  ia.voiceA = 1;                      // 2�� ���
+    else if (elapsed < 3200)  ia.voiceA = 1 - (elapsed - 2600) / 600; // 0.6�� 寬們擽�懍符��
+    else                      ia.voiceA = 0;
+  }
+
+  // Tap hint
+  if (t > 5800) { ia.ready = true; ia.tapA = Math.min(1, (t - 5800) / 500); }
+
+  // Auto advance
+  if (t > 8500) advanceIA();
+
+  if (gs.flash > 0) gs.flash -= 0.05;
+  tickParts(dt); tickStars(dt); tickLines(dt); tickBubble(dt);
+}
+
+function drawIA() {
+  const bg = ctx.createLinearGradient(0, 0, 0, CH);
+  bg.addColorStop(0, '#04040f'); bg.addColorStop(1, '#0a0618');
+  ctx.fillStyle = bg; ctx.fillRect(0, 0, CW, CH);
+  drawStars(); drawLines(); drawParts();
+
+  // Net mesh
+  const na = ia.netA * (ia.bursted ? Math.max(0, 1 - (ia.t - 3100) / 350) : 1);
+  if (na > 0) drawNet(na, ia.bursted ? 0 : ia.bulge);
+
+  // Pre-burst glow
+  if (ia.glowR > 0 && !ia.bursted) {
+    const g = ctx.createRadialGradient(CW/2, CH/2, 0, CW/2, CH/2, ia.glowR);
+    g.addColorStop(0, 'rgba(255,255,255,0.85)'); g.addColorStop(1, 'rgba(94,82,84,0)');
+    ctx.beginPath(); ctx.arc(CW/2, CH/2, ia.glowR, 0, Math.PI*2);
+    ctx.fillStyle = g; ctx.fill();
+  }
+
+  // Shockwaves
+  ia.shockwaves.forEach(sw => {
+    if (sw.a <= 0) return;
+    ctx.beginPath(); ctx.arc(CW/2, CH/2, sw.r, 0, Math.PI*2);
+    ctx.strokeStyle = `rgba(255,110,160,${sw.a})`; ctx.lineWidth = 3; ctx.stroke();
+  });
+
+  // Fragments
+  ia.frags.forEach(f => {
+    ctx.save(); ctx.globalAlpha = f.a;
+    ctx.beginPath(); ctx.arc(f.x, f.y, f.r, 0, Math.PI*2);
+    ctx.fillStyle = f.c; ctx.fill(); ctx.restore();
+  });
+
+  // Ship
+  if (ia.t > 3300) drawShip(CW/2, ia.shipY);
+
+  // �ｴ�ｴ�� �ｩ�誤ｦｬ 窶� 嶹罷ｩｴ �卓蕗 ���ｸ 奛作侃孖ｸ
+  if (ia.voiceA > 0) {
+    ctx.save();
+    ctx.globalAlpha = ia.voiceA;
+    ctx.textAlign = 'center';
+    ctx.font = 'bold 19px sans-serif';
+    ctx.fillStyle = `rgb(210,70,70)`;
+    // �ｸ�ｸ﨑� �溢ｧ� 巐ｨ�ｼ
+    ctx.shadowColor = 'rgba(200,50,50,0.5)';
+    ctx.shadowBlur  = 12;
+    ctx.fillText(T.start, CW/2, CH / 2 - 30);
+    ctx.restore();
+    ctx.textAlign = 'left';
+  }
+
+  // Tap hint
+  if (ia.tapA > 0) {
+    ctx.font = '12px sans-serif'; ctx.fillStyle = `rgba(170,170,200,${ia.tapA * 0.75})`;
+    ctx.textAlign = 'center'; ctx.fillText(T.tap_start, CW/2, CH - 44); ctx.textAlign = 'left';
+  }
+
+  // Flash
+  if (gs.flash > 0) { ctx.fillStyle = `rgba(255,255,255,${gs.flash})`; ctx.fillRect(0, 0, CW, CH); }
+}
+
+function drawNet(alpha, bulge) {
+  bulge = bulge || 0;
+  // 嶹罷ｩｴ �野愍�� 30% �� 嶹菩棗
+  const mg  = 0.30;
+  const ox  = -CW * mg, oy = -CH * mg;
+  const nw  = CW * (1 + mg * 2), nh = CH * (1 + mg * 2);
+  const cols = 11, rows = 14;
+  const cw  = nw / cols, ch = nh / rows;
+
+  const bx = CW/2, by = CH / 2;         // �懋ｳ｡ �卓峡 窶� 嶹罷ｩｴ �菩､卓蕗
+  const maxDisp = 280 * bulge;           // �懋ｳ｡ �肥怱 �尞ｭ 嶹簿劇
+
+  function pt(c, r) {
+    const x = ox + c * cw, y = oy + r * ch;
+    if (bulge <= 0) return { x, y };
+    const dx = x - bx, dy = y - by;
+    const d  = Math.hypot(dx, dy) || 1;
+    const falloff = Math.max(0, 1 - d / 440);  // ��箕 �俾ｲｽ 嶹簿劇
+    const disp    = maxDisp * falloff * falloff;
+    return { x: x + (dx/d) * disp, y: y + (dy/d) * disp };
+  }
+
+  ctx.save();
+  ctx.globalAlpha = alpha * 0.65;
+  ctx.strokeStyle = '#8888aa'; ctx.lineWidth = 0.8;
+
+  for (let r = 0; r <= rows; r++) {
+    ctx.beginPath();
+    for (let c = 0; c <= cols; c++) {
+      const p = pt(c, r);
+      c === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y);
+    }
+    ctx.stroke();
+  }
+  for (let c = 0; c <= cols; c++) {
+    ctx.beginPath();
+    for (let r = 0; r <= rows; r++) {
+      const p = pt(c, r);
+      r === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y);
+    }
+    ctx.stroke();
+  }
+  ctx.globalAlpha = alpha * 0.22; ctx.strokeStyle = '#ccccff'; ctx.lineWidth = 0.4;
+  for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
+    const p0 = pt(c, r), p1 = pt(c+1, r+1);
+    ctx.beginPath(); ctx.moveTo(p0.x, p0.y); ctx.lineTo(p1.x, p1.y); ctx.stroke();
+  }
+  ctx.restore();
+}
+
+function advanceIA() {
+  if (scene !== 'intro' && scene !== 'startScene') return;
+  if (introTarget === 'modeSelect') { goState('modeSelect'); }
+  else { goState('game'); initGame(); }
+}
+
+// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// SHIP COLOR PICKER (modeSelect ��圸)
+// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+function drawColorPicker(alpha) {
+  ctx.save(); ctx.globalAlpha = alpha;
+
+  const swY = _getSwatchY();
+
+  // 嶹簿劇 嵓�ｦｬ�ｰ
+  ctx.save();
+  ctx.translate(CW / 2, swY - 55); ctx.scale(1.3, 1.3);
+  _drawShipShape(18);
+  ctx.restore();
+
+  // �ｹ�� �溢擽��
+  ctx.textAlign = 'center';
+  ctx.font = '10px sans-serif'; ctx.fillStyle = '#666688';
+  ctx.fillText(T.color_label, CW / 2, swY - 25);
+
+  // �､���
+  const n = SHIP_COLORS.length;
+  SHIP_COLORS.forEach(function(col, i) {
+    const sx = CW / 2 + (i - (n - 1) / 2) * SWATCH_SP;
+    const sy = swY;
+    const sel = col.id === shipColorId;
+
+    // ��夋� ��
+    if (sel) {
+      ctx.beginPath(); ctx.arc(sx, sy, SWATCH_R + 3, 0, Math.PI * 2);
+      ctx.strokeStyle = col.stroke; ctx.lineWidth = 1.2;
+      ctx.globalAlpha = alpha * 0.5; ctx.stroke(); ctx.globalAlpha = alpha;
+    }
+
+    // �､��� ��
+    ctx.beginPath(); ctx.arc(sx, sy, SWATCH_R, 0, Math.PI * 2);
+    ctx.fillStyle = col.body; ctx.fill();
+    ctx.strokeStyle = sel ? col.stroke : 'rgba(90,80,110,0.6)';
+    ctx.lineWidth = sel ? 1.5 : 0.8; ctx.stroke();
+
+    // �ｸ�� ���ｴ
+    ctx.save(); ctx.translate(sx, sy);
+    _drawShipShape(5, col);
+    ctx.restore();
+  });
+
+  ctx.textAlign = 'left';
+  ctx.restore();
+}
+
+// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// SCENE: MODE SELECT
+// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+let msAlpha = 0;
+const BTN_NORMAL  = { x: CW/2 - 130, y: 430, w: 260, h: 56 };
+const BTN_ENDLESS = { x: CW/2 - 130, y: 530, w: 260, h: 56 };
+
+function drawModeSelect(dt) {
+  msAlpha = Math.min(1, msAlpha + 0.032);
+  const bg = ctx.createLinearGradient(0, 0, 0, CH);
+  bg.addColorStop(0, '#04040f'); bg.addColorStop(1, '#0a0618');
+  ctx.fillStyle = bg; ctx.fillRect(0, 0, CW, CH);
+  tickStars(dt); tickLines(dt); drawStars(); drawLines();
+  tickBubble(dt);
+
+  ctx.save(); ctx.globalAlpha = msAlpha;
+  ctx.textAlign = 'center';
+
+  // Title
+  ctx.font = 'bold 24px sans-serif'; ctx.fillStyle = '#ddd';
+  ctx.fillText(T.title, CW/2, 150);
+  ctx.font = '13px sans-serif'; ctx.fillStyle = '#9999cc';
+  // wrap subtitle if needed
+  const subLines = wrapLines(T.subtitle, 300);
+  subLines.forEach((l, i) => ctx.fillText(l, CW/2, 177 + i * 18));
+
+  // Buttons
+  const cleared = !!localStorage.getItem(CFG.NORMAL_KEY);
+  drawBtn(BTN_NORMAL, T.mode_normal, false);
+  if (cleared) drawBtn(BTN_ENDLESS, T.mode_endless, false);
+
+  // �醐葺�ｨ 墲､ 德醐敢
+  ctx.save(); ctx.globalAlpha = msAlpha * 0.75;
+  ctx.textAlign = 'left'; ctx.font = '11px sans-serif'; ctx.fillStyle = '#aaaacc';
+  ctx.fillText(T.key_hint, 14, CH - 14);
+  ctx.restore(); ctx.textAlign = 'left';
+
+  drawColorPicker(msAlpha);
+  drawBubble(CW/2, 520);
+}
+
+function drawBtn(r, label, locked) {
+  roundRect(ctx, r.x, r.y, r.w, r.h, 13);
+  ctx.fillStyle = locked ? 'rgba(36,28,46,0.7)' : 'rgba(60,48,76,0.7)'; ctx.fill();
+  ctx.strokeStyle = locked ? '#3a3350' : '#5E5254'; ctx.lineWidth = 1.5; ctx.stroke();
+  ctx.font = locked ? '14px sans-serif' : 'bold 15px sans-serif';
+  ctx.fillStyle = locked ? '#666677' : '#eaeaea';
+  ctx.fillText((locked ? '白 ' : '') + label, r.x + r.w/2, r.y + r.h/2 + 5);
+}
+
+// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// SCENE: QUICK RESTART
+// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+let qrState = { t: 0 };
+function drawQuickRestart() {
+  qrState.t += 16;
+  const t = qrState.t;
+
+  // �ｰ�ｽ �肥��
+  ctx.fillStyle = 'rgba(4,4,15,0.92)'; ctx.fillRect(0, 0, CW, CH);
+
+  // "�ｸ��共�ｴ �ｴ�ｬ�ｼ �､�� 﨑罹ｲ�!" 窶� 寬們擽�懍攤 弡� ���
+  const textA = t < 180 ? 0 : t < 500 ? (t - 180) / 320 : t < 1000 ? 1 : Math.max(0, 1 - (t - 1000) / 300);
+  if (textA > 0) {
+    ctx.save(); ctx.globalAlpha = textA;
+    ctx.textAlign = 'center'; ctx.font = 'bold 19px sans-serif';
+    ctx.fillStyle = 'rgb(210,70,70)';
+    ctx.shadowColor = 'rgba(200,50,50,0.5)'; ctx.shadowBlur = 12;
+    ctx.fillText(T.start, CW/2, CH/2 - 30);
+    ctx.restore(); ctx.textAlign = 'left';
+  }
+
+  if (t > 1500) { qrState.t = 0; goState('game'); initGame(); }
+}
+
+// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// SCENE: GAME OVER
+// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+let goAlpha = 0;
+const BTN_RETRY = { x: 70, y: 560, w: 140, h: 50 };
+const BTN_MENU  = { x: 270, y: 560, w: 140, h: 50 };
+
+function goState_gameoverInit() {
+  goAlpha = 0;
+  if (gameMode === 'endless') setTimeout(() => showNameInput(gs.time), 700);
+}
+
+function drawGameover(dt) {
+  goAlpha = Math.min(1, goAlpha + 0.022 * (dt/8.333));
+  drawGame();
+  ctx.fillStyle = 'rgba(4,4,15,0.75)'; ctx.fillRect(0, 0, CW, CH);
+  ctx.save(); ctx.globalAlpha = goAlpha; ctx.textAlign = 'center';
+
+  // �肥攤 �ｬ�� �肥┷�
+  ctx.font = 'bold 17px sans-serif'; ctx.fillStyle = '#eaeaea';
+  const dlines = wrapLines(T.death, CW - 80);
+  dlines.forEach((l, i) => ctx.fillText(l, CW/2, 285 + i * 24));
+
+  ctx.font = '12px sans-serif'; ctx.fillStyle = '#666688';
+  ctx.fillText(T.time_label + ': ' + gs.time.toFixed(2) + 's', CW/2, 370);
+  if (gameMode === 'endless') {
+    const best = parseFloat(localStorage.getItem(CFG.BEST_KEY) || 0);
+    ctx.fillText(T.best_label + ': ' + best.toFixed(2) + 's', CW/2, 390);
+  }
+
+  drawBtn(BTN_RETRY, T.retry, false);
+  drawBtn(BTN_MENU,  T.menu,  false);
+  ctx.restore(); ctx.textAlign = 'left';
+}
+
+// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// SCENE: CLEAR 80
+// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+let c80Alpha = 0;
+function drawClear80(dt) {
+  c80Alpha = Math.min(1, c80Alpha + 0.018 * (dt/8.333));
+  tickParts(dt); tickStars(dt); tickLines(dt);
+  const bg = ctx.createLinearGradient(0, 0, 0, CH);
+  bg.addColorStop(0, '#04040f'); bg.addColorStop(1, '#0a0618');
+  ctx.fillStyle = bg; ctx.fillRect(0, 0, CW, CH);
+  drawStars(); drawLines(); drawParts();
+  ctx.save(); ctx.globalAlpha = c80Alpha; ctx.textAlign = 'center';
+
+  ctx.font = 'bold 20px sans-serif'; ctx.fillStyle = '#eaeaea';
+  ctx.fillText(T.clear80, CW/2, 255);
+  ctx.font = '15px sans-serif'; ctx.fillStyle = '#c8c8dd';
+  ctx.fillText(T.clear80b, CW/2, 278);
+
+  if (c80Alpha > 0.5) {
+    ctx.font = 'bold 13px sans-serif'; ctx.fillStyle = '#c8a86a';
+    ctx.fillText('嫌 ' + T.ach_name, CW/2, 320);
+    ctx.font = '12px sans-serif'; ctx.fillStyle = '#8888aa';
+    ctx.fillText(T.mode_endless + ' ' + T.unlocked, CW/2, 348);
+  }
+
+  drawBtn(BTN_MENU, T.menu, false);
+  ctx.restore(); ctx.textAlign = 'left';
+}
+
+// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// SCENE NAVIGATION
+// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+function goState(s) { scene = s; }
+
+function onTap(x, y) {
+  if (_nameInputOverlay.style.display === 'flex') return;
+  if (scene === 'leaderboard') {
+    if (lbState && lbState.btnAlpha > 0.1) {
+      if (lbState.viewOnly) {
+        if (inR(x, y, {x:160, y:660, w:160, h:44})) { goState('modeSelect'); msAlpha = 0; bubble = null; }
+      } else {
+        if (inR(x, y, BTN_LB_RETRY)) { goState('quickRestart'); qrState.t = 0; }
+        if (inR(x, y, BTN_LB_MENU))  { stopBGM(); goState('modeSelect'); msAlpha = 0; bubble = null; }
+      }
+    }
+    return;
+  }
+  if (scene === 'intro' || scene === 'startScene') {
+    if (ia.ready) advanceIA();
+    return;
+  }
+  if (scene === 'modeSelect') {
+    // �餓メ �､��� ��夋�
+    const _n = SHIP_COLORS.length;
+    for (let _i = 0; _i < _n; _i++) {
+      const _sx = CW / 2 + (_i - (_n - 1) / 2) * SWATCH_SP;
+      if (Math.hypot(x - _sx, y - _getSwatchY()) <= SWATCH_R + 6) {
+        shipColorId = SHIP_COLORS[_i].id;
+        localStorage.setItem('kaguya_ship_color', shipColorId);
+        return;
+      }
+    }
+    if (inR(x, y, BTN_NORMAL)) {
+      introTarget = 'game'; gameMode = 'normal';
+      resetIA(); initLines(14); goState('startScene');
+    } else if (inR(x, y, BTN_ENDLESS) && localStorage.getItem(CFG.NORMAL_KEY)) {
+      introTarget = 'game'; gameMode = 'endless';
+      resetIA(); initLines(14); goState('startScene');
+    }
+    return;
+  }
+  if (scene === 'gameover') {
+    if (inR(x, y, BTN_RETRY)) { goState('quickRestart'); qrState.t = 0; }
+    if (inR(x, y, BTN_MENU))  { stopBGM(); goState('modeSelect'); msAlpha = 0; bubble = null; }
+    return;
+  }
+  if (scene === 'clear80') {
+    if (inR(x, y, BTN_MENU)) { stopBGM(); goState('modeSelect'); msAlpha = 0; bubble = null; }
+    return;
+  }
+}
+function inR(x, y, r) { return x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h; }
+
+// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// MAIN LOOP
+// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+const _langBar = document.getElementById('langBar');
+let last = 0;
+function loop(now) {
+  const dt = Math.min(48, now - last); last = now;
+  ctx.clearRect(0, 0, CW, CH);
+  _langBar.style.display = scene === 'modeSelect' ? 'block' : 'none';
+
+  if (scene === 'intro') {
+    tickIA(dt); drawIA();
+  } else if (scene === 'startScene') {
+    tickIA(dt); drawIA();
+  } else if (scene === 'modeSelect') {
+    drawModeSelect(dt);
+  } else if (scene === 'game') {
+    if (!gs.paused) tickGame(dt);
+    drawGame();
+  } else if (scene === 'gameover') {
+    drawGameover(dt);
+  } else if (scene === 'leaderboard') {
+    tickLeaderboard(dt); drawLeaderboard();
+  } else if (scene === 'clear80') {
+    drawClear80(dt);
+  } else if (scene === 'quickRestart') {
+    drawQuickRestart();
+  }
+
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(t => { last = t; requestAnimationFrame(loop); });
+</script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" integrity="sha512-iIg7k2xntmwu6/uSb5tpc/hySgZc4eoL31yB29W6tJFo2akwjPWcEqnCEdJvGexCL0KEQwVYv5BlowfhVz26hg==" data-cf-beacon="{&quot;version&quot;:&quot;2024.11.0&quot;,&quot;token&quot;:&quot;d0f6343621a2446d9c18601e2ada3d70&quot;,&quot;r&quot;:1,&quot;spa&quot;:2}" crossorigin="anonymous"></script>
+
+
+<script src="//cdn.jsdelivr.net/npm/eruda"></script></body><div id="eruda" style="all: initial;"></div><div class="__chobitsu-hide__" style="all: initial;"></div></html>
