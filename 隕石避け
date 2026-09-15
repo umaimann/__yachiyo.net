@@ -1,7 +1,7 @@
 <html lang="ja"><head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>髫慕浹繧医￠</title>
+  <title>隕石よけ</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body {
@@ -20,7 +20,6 @@
     #gameWrap {
       position: relative;
       display: inline-block;
-      /* 嶹罷ｩｴ�� �� �ｨ�� ��惠 ��� */
       width:  min(480px, 100vw, calc(100svh * 0.6), calc(100vh * 0.6));
       height: min(800px, calc(min(480px, 100vw, calc(100svh * 0.6), calc(100vh * 0.6)) * 800 / 480));
     }
@@ -51,7 +50,7 @@
       cursor: pointer;
       font-size: 11px;
       font-family: sans-serif;
-      touch-action: manipulation;  /* ��款 夋ｭ �罹�溢擽 �懋ｱｰ */
+      touch-action: manipulation;
     }
     .lbtn.on { color: #eaeaea; border-color: #5E5254; background: rgba(94,82,84,0.5); }
     #rankingBtn { color: #bb99ff; border-color: rgba(136,85,204,0.5); }
@@ -214,7 +213,7 @@
   </div>
   <div id="langBar" style="display: block;">
     <div id="rankingBtnWrap">
-      <button class="lbtn" id="rankingBtn">繝ｩ繝ｳ繧ｭ繝ｳ繧ｰ</button>
+      <button class="lbtn" id="rankingBtn">ランキング</button>
       <button class="lbtn" data-l="ko">KO</button>
       <button class="lbtn on" data-l="ja">JA</button>
       <button class="lbtn" data-l="en">EN</button>
@@ -224,104 +223,104 @@
 <script>
 'use strict';
 
-// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
-// I18N
-// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// ══════════════════════════════════════════════════════
+//セリフ一覧
+// ══════════════════════════════════════════════════════
 const I18N = {
   ko: {
-    start:        '�ｸ��共�ｴ �ｴ�ｬ�ｼ �､�� 﨑罹ｲ�!',
-    phase2:       '�ｴ�晤豆�ｴ �川�� �珠符��� �溢牟...',
-    phase4:       '﨑ｭ�� �語ｳ��ｬ�� �誤蕩�� ��ｵｬ�ｼ!?',
-    phase4b:      '��...�懋ｰ?',
-    death:        '�語ｳｼ �ｩ�醐紛 ��ｦｬ�� �川葺�ｴ��.. (縺｣笊･_笊･)縺｣',
-    clear80:      '增ｴ�ｬ�ｴ!',
-    clear80b:     '﨑ｴ嵓ｼ�罷畠�護ｧ �ｰ�､� �ｼ���ｴ?',
-    endless_msg:  '�ｰ�ｬ�� �ｸ �､巐護乱�� �霊牟�� �� ��来�ｴ��.',
-    restart:      '�ｸ��共�ｴ �ｴ�ｬ�ｼ �､�� 﨑罹ｲ�!',
-    ach_name:     '�呷捩 �､巐誤･ｼ �俯ｳｵ﨑俾ｳ� �溢牟',
-    ach_desc:     '夋�ｧ� �逸桁�川� 80�壱･ｼ ����､',
-    title:        '�ｴ�晨半﨑俾ｸｰ',
-    subtitle:     '�ｬ�� ��~ 奛醐〓��懍ｧ�� �懋ｰ�巡 �ｰ�ｴ�俯株�ｵ�壱共.',
-    mode_normal:  '�ｴ�懦葺�専ｲ� �護符��ｰ',
-    mode_endless: '�罷糖�ｬ�､ �ｨ��',
-    mode_locked:  '�ｸ� �ｨ�罹･ｼ 增ｴ�ｬ�ｴ﨑俯ｩｴ 﨑ｴ�壱松��',
-    time_label:        '�晧｡ｴ �懋ｰ�',
-    best_label:        '�懋ｳ� �ｰ��',
-    retry:             '�､�� �懍梠',
-    menu:              '�罷俺��',
-    tap_start:         '增ｴ�ｭ �尖株 夋ｭ�ｼ�� �懍梠',
-    unlocked:          '﨑ｴ��!',
-    color_label:       '�ｰ�ｴ �餓メ',
-    key_hint:          '�ｴ��: WASD / �ｩ嵂･墲､   |   �ｼ�懍�菩ｧ: ESC',
-    pause_title:       '�ｼ�懍�菩ｧ',
-    pause_resume:      '���﨑俾ｸｰ',
-    bgm_label:         '�ｰ�ｽ��',
-    sfx_label:         '巐ｨ�ｼ��',
-    rank_1st_msg:      '1�ｱ�ｴ�ｼ!! �ｭ�� �ｰ�ｬ 甯醐敢�� �懋ｳ��ｼ!! 笨ｨ',
-    rank_top3_msg:     '��ｨ﨑ｴ! 夋� 3�ｴ�ｼ! 脂',
-    rank_top10_msg:    '�ｭ墲ｹ�� �ｬ�川牟! �駆ｧ�ｱｸ~ 嫌',
-    rank_out_msg:      '�､�護濫 �ｭ TOP 10�ｴ�ｼ! �卓寳﨑��護囈 笙ｪ',
-    name_placeholder:  '�雅└�� ���･ (�罹劇 10��)',
-    name_submit:       '�ｱ��',
-    name_skip:         '�ｴ�壱峅�ｰ',
-    ranking_btn:       '�ｭ墲ｹ',
-    ranking_title:     '笨ｦ �罷糖�ｬ�､ �ｭ墲ｹ 笨ｦ',
-    ranking_close:     '�ｫ�ｰ',
-    ranking_empty:     '��ｧ� �ｰ�晧擽 ��牟��',
-    ranking_loading:   '�壱洳�､�� ��...',
+    start:        '그렇다면 카구야 다시 한번!',
+    phase2:       '운석들이 점점 많아지고 있어...',
+    phase4:       '항법 알고리즘 만든게 누구야!?',
+    phase4b:      '아...난가?',
+    death:        '돌과 충돌해 버리고 말았어요.. (っ╥_╥)っ',
+    clear80:      '클리어!',
+    clear80b:     '해피엔딩까지 데려가 주겠어?',
+    endless_msg:  '우리는 그 윤회에서 벗어날 수 없었어요.',
+    restart:      '그렇다면 카구야 다시 한번!',
+    ach_name:     '같은 윤회를 반복하고 있어',
+    ach_desc:     '탄막 슈팅에서 80초를 버텼다',
+    title:        '운석피하기',
+    subtitle:     '달의 초~ 테크놀로지는 시간도 뛰어넘는답니다.',
+    mode_normal:  '이로하에게 돌아가기',
+    mode_endless: '엔드리스 모드',
+    mode_locked:  '노멀 모드를 클리어하면 해금돼요',
+    time_label:        '생존 시간',
+    best_label:        '최고 기록',
+    retry:             '다시 시작',
+    menu:              '메뉴로',
+    tap_start:         '클릭 또는 탭으로 시작',
+    unlocked:          '해금!',
+    color_label:       '기체 색상',
+    key_hint:          '이동: WASD / 방향키   |   일시정지: ESC',
+    pause_title:       '일시정지',
+    pause_resume:      '계속하기',
+    bgm_label:         '배경음',
+    sfx_label:         '효과음',
+    rank_1st_msg:      '1등이야!! 역시 우리 파트너 최고야!! ✨',
+    rank_top3_msg:     '대단해! 탑 3이야! 🎉',
+    rank_top10_msg:    '랭킹에 올랐어! 멋진걸~ 🌙',
+    rank_out_msg:      '다음엔 꼭 TOP 10이야! 응원할게요 ♪',
+    name_placeholder:  '닉네임 입력 (최대 10자)',
+    name_submit:       '등록',
+    name_skip:         '건너뛰기',
+    ranking_btn:       '랭킹',
+    ranking_title:     '✦ 엔드리스 랭킹 ✦',
+    ranking_close:     '닫기',
+    ranking_empty:     '아직 기록이 없어요',
+    ranking_loading:   '불러오는 중...',
   },
   ja: {
-    start:        '縺ｪ繧峨�縺九＄繧�√ｂ縺�ｸ蠎ｦ��',
-    phase2:       '髫慕浹縺後←繧薙←繧灘｢励∴縺ｦ縺�ｋ窶ｦ',
-    phase4:       '闊ｪ豕輔い繝ｫ繧ｴ繝ｪ繧ｺ繝�菴懊▲縺溘�隱ｰ繧�!?',
-    phase4b:      '縺�...遘√°?',
-    death:        '遏ｳ縺ｫ縺ｶ縺､縺九▲縺ｦ縺励∪縺�∪縺励◆窶ｦ (縺｣笊･_笊･)縺｣',
-    clear80:      '繧ｯ繝ｪ繧｢��',
-    clear80b:     '繝上ャ繝斐�繧ｨ繝ｳ繝峨∪縺ｧ騾｣繧後※陦後▲縺ｦ縺上ｌ繧具ｼ�',
-    endless_msg:  '遘√◆縺｡縺ｯ縺昴�霈ｪ蟒ｻ縺九ｉ騾�ｌ繧九％縺ｨ縺後〒縺阪↑縺九▲縺溘�',
-    restart:      '縺ｪ繧峨�縺九＄繧�√ｂ縺�ｸ蠎ｦ��',
-    ach_name:     '蜷後§霈ｪ蟒ｻ繧堤ｹｰ繧願ｿ斐＠縺ｦ縺�ｋ',
-    ach_desc:     '蠑ｾ蟷輔す繝･繝ｼ繝�ぅ繝ｳ繧ｰ縺ｧ80遘堤函縺榊ｻｶ縺ｳ縺�',
-    title:        '髫慕浹繧医￠',
-    subtitle:     '譛医�雜�ユ繧ｯ繝弱Ο繧ｸ繝ｼ縺ｯ譎る俣繧偵ｂ雜�∴繧九ｓ縺ｧ縺吶�',
-    mode_normal:  '縺�ｍ縺ｯ縺ｮ蜈�∈蟶ｰ繧�',
-    mode_endless: '繧ｨ繝ｳ繝峨Ξ繧ｹ繝｢繝ｼ繝�',
-    mode_locked:  '繝弱�繝槭Ν繝｢繝ｼ繝峨ｒ繧ｯ繝ｪ繧｢縺吶ｋ縺ｨ隗｣謾ｾ縺輔ｌ縺ｾ縺�',
-    time_label:        '逕溷ｭ俶凾髢�',
-    best_label:        '繝吶せ繝郁ｨ倬鹸',
-    retry:             '繧ゅ≧荳蠎ｦ',
-    menu:              '繝｡繝九Η繝ｼ縺ｸ',
-    tap_start:         '繧ｯ繝ｪ繝�け縺ｾ縺溘�繧ｿ繝��縺ｧ髢句ｧ�',
-    unlocked:          '隗｣謾ｾ��',
-    color_label:       '讖滉ｽ薙�濶ｲ',
-    key_hint:          '遘ｻ蜍�: WASD / 遏｢蜊ｰ繧ｭ繝ｼ   |   荳譎ょ●豁｢: ESC',
-    pause_title:       '荳譎ょ●豁｢',
-    pause_resume:      '蜀埼幕',
+    start:        'ならばかぐや、もう一度！',
+    phase2:       '隕石がどんどん増えている…',
+    phase4:       '航法アルゴリズム作ったの誰よ!?',
+    phase4b:      'あ...私か?',
+    death:        '石にぶつかってしまいました… (っ╥_╥)っ',
+    clear80:      'クリア！',
+    clear80b:     'ハッピーエンドまで連れて行ってくれる？',
+    endless_msg:  '私たちはその輪廻から逃れることができなかった。',
+    restart:      'ならばかぐや、もう一度！',
+    ach_name:     '同じ輪廻を繰り返している',
+    ach_desc:     '弾幕シューティングで80秒生き延びた',
+    title:        '隕石よけ',
+    subtitle:     '月の超テクノロジーは時間をも超えるんです。',
+    mode_normal:  'いろはの元へ帰る',
+    mode_endless: 'エンドレスモード',
+    mode_locked:  'ノーマルモードをクリアすると解放されます',
+    time_label:        '生存時間',
+    best_label:        'ベスト記録',
+    retry:             'もう一度',
+    menu:              'メニューへ',
+    tap_start:         'クリックまたはタップで開始',
+    unlocked:          '解放！',
+    color_label:       '機体の色',
+    key_hint:          '移動: WASD / 矢印キー   |   一時停止: ESC',
+    pause_title:       '一時停止',
+    pause_resume:      '再開',
     bgm_label:         'BGM',
     sfx_label:         'SE',
-    rank_1st_msg:      '1菴阪□!! 縺輔☆縺檎ｧ√�繝代�繝医リ繝ｼ譛鬮�!! 笨ｨ',
-    rank_top3_msg:     '縺吶＃縺�! 繝医ャ繝�3縺�繧�! 脂',
-    rank_top10_msg:    '繝ｩ繝ｳ繧ｯ繧､繝ｳ縺励◆繧�! 邏�謨ｵ縺�縺ｭ~ 嫌',
-    rank_out_msg:      '谺｡縺ｯ縺阪▲縺ｨTOP10! 蠢懈抄縺励※繧九ｈ 笙ｪ',
-    name_placeholder:  '繝九ャ繧ｯ繝阪�繝�蜈･蜉� (譛螟ｧ10譁�ｭ�)',
-    name_submit:       '逋ｻ骭ｲ',
-    name_skip:         '繧ｹ繧ｭ繝��',
-    ranking_btn:       '繝ｩ繝ｳ繧ｭ繝ｳ繧ｰ',
-    ranking_title:     '笨ｦ 繧ｨ繝ｳ繝峨Ξ繧ｹ繝ｩ繝ｳ繧ｭ繝ｳ繧ｰ 笨ｦ',
-    ranking_close:     '髢峨§繧�',
-    ranking_empty:     '縺ｾ縺�險倬鹸縺後≠繧翫∪縺帙ｓ',
-    ranking_loading:   '隱ｭ縺ｿ霎ｼ縺ｿ荳ｭ...',
+    rank_1st_msg:      '1位だ!! さすが私のパートナー最高!! ✨',
+    rank_top3_msg:     'すごい! トップ3だよ! 🎉',
+    rank_top10_msg:    'ランクインしたよ! 素敵だね~ 🌙',
+    rank_out_msg:      '次はきっとTOP10! 応援してるよ ♪',
+    name_placeholder:  'ニックネーム入力 (最大10文字)',
+    name_submit:       '登録',
+    name_skip:         'スキップ',
+    ranking_btn:       'ランキング',
+    ranking_title:     '✦ エンドレスランキング ✦',
+    ranking_close:     '閉じる',
+    ranking_empty:     'まだ記録がありません',
+    ranking_loading:   '読み込み中...',
   },
   en: {
-    start:        'Then, Kaguya 窶� one more time!',
+    start:        'Then, Kaguya — one more time!',
     phase2:       'The meteors are getting more and more...',
     phase4:       'Who built this nav algorithm!?',
     phase4b:      'Oh... was it me?',
-    death:        'Crashed into a rock... (縺｣笊･_笊･)縺｣',
+    death:        'Crashed into a rock... (っ╥_╥)っ',
     clear80:      'Clear!',
     clear80b:     'Will you take me to the happy ending?',
     endless_msg:  'We could not escape from the cycle of reincarnation.',
-    restart:      'Then, Kaguya 窶� one more time!',
+    restart:      'Then, Kaguya — one more time!',
     ach_name:     'Repeating the Same Reincarnation',
     ach_desc:     'Survived 80 seconds in the bullet shooter',
     title:        'Meteor Dodge',
@@ -341,24 +340,24 @@ const I18N = {
     pause_resume:      'Resume',
     bgm_label:         'BGM',
     sfx_label:         'SFX',
-    rank_1st_msg:      '1st place!! Our partner is the best!! 笨ｨ',
-    rank_top3_msg:     'Amazing! Top 3! 脂',
-    rank_top10_msg:    'You made the ranking! So cool~ 嫌',
-    rank_out_msg:      'Next time you\'ll hit TOP 10! Rooting for you 笙ｪ',
+    rank_1st_msg:      '1st place!! Our partner is the best!! ✨',
+    rank_top3_msg:     'Amazing! Top 3! 🎉',
+    rank_top10_msg:    'You made the ranking! So cool~ 🌙',
+    rank_out_msg:      'Next time you\'ll hit TOP 10! Rooting for you ♪',
     name_placeholder:  'Enter nickname (max 10 chars)',
     name_submit:       'Submit',
     name_skip:         'Skip',
     ranking_btn:       'RANKING',
-    ranking_title:     '笨ｦ Endless Ranking 笨ｦ',
+    ranking_title:     '✦ Endless Ranking ✦',
     ranking_close:     'Close',
     ranking_empty:     'No records yet',
     ranking_loading:   'Loading...',
   },
 };
 
-// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// ══════════════════════════════════════════════════════
 // CANVAS / RESIZE
-// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// ══════════════════════════════════════════════════════
 const CW = 480, CH = 800;
 const canvas = document.getElementById('gameCanvas');
 const ctx    = canvas.getContext('2d');
@@ -375,25 +374,25 @@ function resize() {
 window.addEventListener('resize', resize);
 resize();
 
-// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// ══════════════════════════════════════════════════════
 // CONFIG
-// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// ══════════════════════════════════════════════════════
 const CFG = {
   SHIP_SPEED:      3.0,
   HITBOX_R:        4,
   NORMAL_SEC:      80,
-  METEOR_START:    75,   // forced meteor appears at this second
-  METEOR_R:        340,  // radius (~680px diameter)
+  METEOR_START:    75,
+  METEOR_R:        340,
   NORMAL_KEY:      'kaguya_normal_cleared',
   BEST_KEY:        'kaguya_endless_best',
   ACH_KEY:         'tuku_ach_kaguya_normal',
-  FINALE_SEC:      80,   // 嵓ｼ���� �懍梠 (夋�ｧ� �瀧卿, ��ｬ �ｱ�･)
-  FINALE_METEOR:   10,   // 嵓ｼ���� �懍梠 弡� �� �溢乱 �ｴ�� �ｱ�･ (=90��)
+  FINALE_SEC:      80,
+  FINALE_METEOR:   10,
 };
 
-// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// ══════════════════════════════════════════════════════
 // SHIP COLOR PRESETS
-// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// ══════════════════════════════════════════════════════
 const SHIP_COLORS = [
   { id: 'default', body: '#2B2839', stroke: '#5E5254', stripe: '#5C3A1E' },
   { id: 'blue',    body: '#1a2038', stroke: '#5a8ad8', stripe: '#2a3a60' },
@@ -409,19 +408,19 @@ const SWATCH_R  = 10;
 const SWATCH_SP = 27;
 function _getSwatchY() {
   const s = _canvasScale;
-  const gwH = CH * Math.min(1, s);   // gameWrap CSS height (CH ��復)
-  const lbTop = (gwH - 34) / s;      // langBar top�� �罷ｲ�侃 �醐像�� �嶹�
+  const gwH = CH * Math.min(1, s);   // gameWrap CSS height (CH 상한)
+  const lbTop = (gwH - 34) / s;      // langBar top을 캔버스 좌표로 변환
   return Math.floor(lbTop - 12 - SWATCH_R);
 }
 
-// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// ══════════════════════════════════════════════════════
 // SHIP GHOST TRAIL
-// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
-const shipTrail = [];   // { x, y, age }
-const TRAIL_MAX    = 7;   // �肥メ �罹劇 �懍�
-const TRAIL_LIFE   = 380;  // ms 窶� �肥メ 﨑� �川攪 �俯ｪ�
-const TRAIL_ALPHA  = 0.23; // ��･ �懋ｷｼ �肥メ�� �罹劇 �逸握��巡
-const TRAIL_SKIP   = 2;    // N嵓��溢桷�壱共 �肥メ 1�･ (�廷擽 增ｴ�俯｡� ��ｲｩ �南搆)
+// ══════════════════════════════════════════════════════
+const shipTrail = [];
+const TRAIL_MAX    = 7;
+const TRAIL_LIFE   = 380;
+const TRAIL_ALPHA  = 0.23;
+const TRAIL_SKIP   = 2;
 let   _trailFrame  = 0;
 
 function pushTrail(x, y) {
@@ -442,9 +441,8 @@ function tickTrail(dt) {
 function drawTrail() {
   for (let i = 0; i < shipTrail.length; i++) {
     const t = shipTrail[i];
-    // �懍侠�ｼ�俯｡� �ｸ�ｱ�､� 增ｬ�� �逸握��
-    const frac  = 1 - t.age / TRAIL_LIFE;          // 1竊�0 (�晧｡ｴ ��惠)
-    const order = (i + 1) / shipTrail.length;       // 0竊�1 (�ｰ�ｴ �ｴ �懍�)
+    const frac  = 1 - t.age / TRAIL_LIFE;
+    const order = (i + 1) / shipTrail.length;
     const alpha = frac * order * TRAIL_ALPHA;
     if (alpha < 0.005) continue;
     ctx.save();
@@ -455,7 +453,6 @@ function drawTrail() {
   }
 }
 
-// ���ｴ ����� �ｸ�ｬ�ｰ (globalAlphaﾂｷtransform� 嶸ｸ�懍梵� �､��)
 function _drawShipShape(s, col) {
   col = col || getShipColor();
   ctx.beginPath();
@@ -477,9 +474,9 @@ function _drawShipShape(s, col) {
   ctx.restore();
 }
 
-// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// ══════════════════════════════════════════════════════
 // LANGUAGE
-// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// ══════════════════════════════════════════════════════
 let lang = localStorage.getItem('kaguya_lang') || 'ko';
 if (!I18N[lang]) lang = 'ko';
 let T    = I18N[lang];
@@ -502,31 +499,30 @@ document.getElementById('langBar').addEventListener('touchstart', e => {
   e.stopPropagation();
 }, { passive: false });
 
-// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// ══════════════════════════════════════════════════════
 // RANKING VIEW BUTTON
-// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// ══════════════════════════════════════════════════════
 const _rankingBtn = document.getElementById('rankingBtn');
 
 const RANKING_FALLBACK = [
-  {rank:1, name:'CometGirl', score:40.0, country:'KR'},
-  {rank:2, name:'Tsukiko',   score:35.2, country:'JP'},
-  {rank:3, name:'StarDust',  score:31.8, country:'US'},
-  {rank:4, name:'Iroha',     score:28.4, country:'KR'},
-  {rank:5, name:'Yukine',    score:25.9, country:'JP'},
-  {rank:6, name:'MoonChild', score:22.0, country:'TW'},
-  {rank:7, name:'Kagura',    score:19.3, country:'JP'},
-  {rank:8, name:'NovaStar',  score:17.1, country:'US'},
-  {rank:9, name:'Celeste',   score:14.8, country:'FR'},
-  {rank:10,name:'Yachiyoo',  score:12.5, country:'KR'},
+  {rank:1,  name:'umaimann', score:480016.8, country:'JP'},
+  {rank:2,  name:'CometGirl', score:40.0, country:'KR'},
+  {rank:3,  name:'Tsukiko',   score:35.2, country:'JP'},
+  {rank:4,  name:'StarDust',  score:31.8, country:'US'},
+  {rank:5,  name:'Iroha',     score:28.4, country:'KR'},
+  {rank:6,  name:'Yukine',    score:25.9, country:'JP'},
+  {rank:7,  name:'MoonChild', score:22.0, country:'TW'},
+  {rank:8,  name:'Kagura',    score:19.3, country:'JP'},
+  {rank:9,  name:'NovaStar',  score:17.1, country:'US'},
+  {rank:10,name:'yachiyo8000◆oCrOwWQM5w',   score:252455616000.0, country:'JP'},
 ];
 
 function goRankingView(scores) {
-  // scores�� isPlayer ��搆 窶� �懍� �ｰ�ｴ �ｨ��
   const ranked = scores.map((s, i) => ({...s, rank: s.rank || i + 1}));
   lbState = {
     t: 0,
     scores: ranked,
-    playerRank:     999,   // 嵓誤�溢擽�ｴ 嵂� ��搆
+    playerRank:     999,
     playerName:     null,
     playerRowIdx:   -1,
     playerRevealed: false,
@@ -534,7 +530,7 @@ function goRankingView(scores) {
     flashAlpha:     0,
     glowPulse:      0,
     btnAlpha:       0,
-    viewOnly:       true,  // �､�懋ｰ�ｰ ��款�� 岺懍亨
+    viewOnly:       true,
   };
   bubble = null; parts.length = 0;
   goState('leaderboard');
@@ -552,9 +548,9 @@ async function showRankingView() {
 _rankingBtn.textContent = T.ranking_btn;
 _rankingBtn.addEventListener('click', e => { e.stopPropagation(); showRankingView(); });
 
-// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// ══════════════════════════════════════════════════════
 // INPUT
-// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// ══════════════════════════════════════════════════════
 const keys = {};
 document.addEventListener('keydown', e => {
   keys[e.code] = true;
@@ -574,7 +570,6 @@ function toCanvas(clientX, clientY) {
 let _audioUnlocked = false;
 canvas.addEventListener('touchstart', e => {
   e.preventDefault();
-  // iOS �､�肥丶 �ｸ�ｽ 窶� �懍ｴ� 1巐誤ｧ�
   if (!_audioUnlocked) {
     _audioUnlocked = true;
     getAC(); ensureDecoded();
@@ -593,20 +588,19 @@ canvas.addEventListener('touchmove', e => {
 }, { passive: false });
 canvas.addEventListener('touchend', e => { e.preventDefault(); touch.on = false; }, { passive: false });
 canvas.addEventListener('click', e => {
-  if (e.target !== canvas) return;   // langBar ��款 增ｴ�ｭ�ｴ �罷ｲ�侃�護ｧ ��血�們ｧ �危巡��
+  if (e.target !== canvas) return;
   const p = toCanvas(e.clientX, e.clientY);
   onTap(p.x, p.y);
 });
 
-// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
-// AUDIO / SFX  (OGG 甯護攵 �ｰ��, �ｼ�ｨ 20%)
-// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// ══════════════════════════════════════════════════════
+// AUDIO / SFX
+// ══════════════════════════════════════════════════════
 let audioCtx = null;
-let muted = localStorage.getItem('kaguya_mute') !== '0';  // �ｰ�ｸ��: �､孖ｸ
+let muted = localStorage.getItem('kaguya_mute') !== '0';
 
 let sfxVolume = parseFloat(localStorage.getItem('kaguya_sfx_vol') ?? '0.20');
 
-// sfx/ 尞ｴ�� OGG 甯護攵 �ｩ��
 const SFX_FILES = {
   death:         'sfx/death.ogg',
   laserWarn:     'sfx/laser_warn.ogg',
@@ -620,10 +614,9 @@ const SFX_FILES = {
   scatterWhite:  'sfx/scatter_white.ogg',
   scatterBlue:   'sfx/scatter_blue.ogg',
   warp:          'sfx/warp.ogg',
-  // meteor_appear�� �ｨ嵓� �ｬ�� 窶� SFX_FILES ��旧 ��巡 Audio �晧ｲｴ �ｬ�ｩ
 };
 
-// 笏笏 BGM 笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏
+// ── BGM ────────────────────────────────────────────────
 let bgmVolume = parseFloat(localStorage.getItem('kaguya_bgm_vol') ?? '0.40');
 let bgmMuted = localStorage.getItem('kaguya_bgm_mute') === '1';
 const bgm = {
@@ -632,7 +625,6 @@ const bgm = {
 };
 let activeBgm = null;
 
-// 嵓ｼ���� �ｴ�� �ｱ�･ �ｨ嵓� �ｬ�ｴ��
 const meteorAudio = Object.assign(new Audio('sfx/meteor_appear.ogg'), { loop: true });
 function playMeteorSound() {
   if (muted) return;
@@ -658,11 +650,10 @@ function stopBGM() {
   activeBgm.pause(); activeBgm.currentTime = 0; activeBgm = null;
 }
 
-const _sfxRaw = {};   // 嵓�ｦｬ甯ｨ�俯頗 ArrayBuffer
-const sfxBuf  = {};   // �肥ｽ罷畠�� AudioBuffer
+const _sfxRaw = {};
+const sfxBuf  = {};
 let _sfxDecoding = false, _sfxDecoded = false;
 
-// 寬們擽� �罹糖 �� OGG �肥擽孖ｸ �ｸ�ｬ �幀ｸｰ (AudioContext ��擽 ��･)
 (async function prefetchSfx() {
   await Promise.all(Object.entries(SFX_FILES).map(async ([key, url]) => {
     try {
@@ -678,7 +669,6 @@ function getAC() {
   return audioCtx;
 }
 
-// �ｫ �ｬ�� �肥ｲｭ �� AudioBuffer �肥ｽ罷畠 (user gesture �ｴ弡�)
 async function ensureDecoded() {
   if (_sfxDecoded || _sfxDecoding) return;
   _sfxDecoding = true;
@@ -704,9 +694,9 @@ function playSfx(key) {
 }
 
 
-// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// ══════════════════════════════════════════════════════
 // PAUSE OVERLAY
-// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// ══════════════════════════════════════════════════════
 const _pauseOverlay    = document.getElementById('pauseOverlay');
 const _pauseTitle      = document.getElementById('pauseTitle');
 const _pauseBgmLabel   = document.getElementById('pauseBgmLabel');
@@ -724,8 +714,8 @@ function _syncPauseUI() {
   _pauseSfxLabel.textContent  = T.sfx_label;
   _pauseResumeBtn.textContent = T.pause_resume;
   _pauseMenuBtn.textContent   = T.menu;
-  _pauseBgmMute.textContent   = bgmMuted ? '這' : '七';
-  _pauseSfxMute.textContent   = muted    ? '這' : '矧';
+  _pauseBgmMute.textContent   = bgmMuted ? '🔇' : '🎵';
+  _pauseSfxMute.textContent   = muted    ? '🔇' : '🔊';
   _pauseBgmMute.style.opacity = bgmMuted ? '0.45' : '1';
   _pauseSfxMute.style.opacity = muted    ? '0.45' : '1';
   _pauseBgmSlider.value       = Math.round(bgmVolume * 100);
@@ -746,7 +736,6 @@ function resumeGame() {
     gs.paused = false;
     _pauseOverlay.style.display = 'none';
     if (activeBgm) activeBgm.play().catch(() => {});
-    // meteorAudio�� 嵓ｼ���� �ｬ��乱�罹ｧ� �ｬ�� 窶� ��� �ｸ��� ��
   }
 }
 
@@ -754,7 +743,7 @@ _pauseBgmMute.addEventListener('click', e => {
   e.stopPropagation();
   bgmMuted = !bgmMuted;
   localStorage.setItem('kaguya_bgm_mute', bgmMuted ? '1' : '0');
-  _pauseBgmMute.textContent   = bgmMuted ? '這' : '七';
+  _pauseBgmMute.textContent   = bgmMuted ? '🔇' : '🎵';
   _pauseBgmMute.style.opacity = bgmMuted ? '0.45' : '1';
   if (activeBgm) activeBgm.volume = bgmMuted ? 0 : bgmVolume;
 });
@@ -762,7 +751,7 @@ _pauseSfxMute.addEventListener('click', e => {
   e.stopPropagation();
   muted = !muted;
   localStorage.setItem('kaguya_mute', muted ? '1' : '0');
-  _pauseSfxMute.textContent   = muted ? '這' : '矧';
+  _pauseSfxMute.textContent   = muted ? '🔇' : '🔊';
   _pauseSfxMute.style.opacity = muted ? '0.45' : '1';
   meteorAudio.volume = muted ? 0 : sfxVolume;
 });
@@ -791,13 +780,13 @@ _pauseMenuBtn.addEventListener('click', e => {
 });
 _pauseOverlay.addEventListener('touchstart', e => e.stopPropagation(), { passive: false });
 
-// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// ══════════════════════════════════════════════════════
 // LEADERBOARD UTILS
-// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// ══════════════════════════════════════════════════════
 function countryFlag(code) {
-  if (!code || code.length !== 2) return '倹';
+  if (!code || code.length !== 2) return '🌐';
   const c0 = code.charCodeAt(0), c1 = code.charCodeAt(1);
-  if (c0 < 65 || c0 > 90 || c1 < 65 || c1 > 90) return '倹';
+  if (c0 < 65 || c0 > 90 || c1 < 65 || c1 > 90) return '🌐';
   const b = 0x1F1E6 - 65;
   return String.fromCodePoint(b + c0, b + c1);
 }
@@ -816,14 +805,47 @@ function _hexToRgb(hex) {
   return parseInt(hex.slice(1,3),16)+','+parseInt(hex.slice(3,5),16)+','+parseInt(hex.slice(5,7),16);
 }
 
-// 笏笏 �ｱ�� �懍侃奛� 笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏
 const LB_TIERS = [
-  { key:'gm',       min:240, label:'GM',   col:'#ffffff', glow:'#ff44aa', bg:'#0a0010', border:'#cc44ff', rainbow:true  },
+  { key:'gm',       min:240, label: `( ˙꒳​˙ ) =>yachiyo.net/game/minigame/kaguya?lang=ja
+   ⠀⠀⠀⠀⠀         ⠀⠀⠀⠀⠀⠀⠀⠀⠀ ⠀⠀⢀⣀⠀⠤⠤⠤⠤⠤⠤⠤⠄⢀⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+  ⠀⠀⠀⠀⠀⠀        ⠀⠀⠀⠀⠀⠀⢀⡠⠔⠂⠉⠀⠀⠀⣰⡇⠀⠀⠀⠀⠀⠀⠀⠀⠈⠉⠐⠂⠤⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+  ⠀⠀⠀⠀⠀⠀        ⠀⠀⠀⠀⡠⡒⠳⣤⡀⠀⠀⠀⢀⣴⣿⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⠒⢤⡀⠀⠀⠀⠀⠀
+  ⠀⠀⠀⠀⠀⠀        ⠀⠀⡠⠊⠀⠀⠀⠹⠝⣦⡀⢠⢮⣿⣿⠀⠀⠀⠀⢀⣀⠀⢀⣠⣤⡶⠶⠶⠶⠶⠶⢶⣤⣌⡢⡀⠀⠀⠀
+  ⠀⠀⠀⠀⠀⠀        ⠀⡔⠀⠀⠀⠀⠀⠀⢧⡈⠻⣁⣾⣟⣿⣶⣶⣿⠟⠋⢠⡶⠛⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠙⠿⠀⠀⠀
+  ⠀⠀⠀⠀⠀⠀        ⡘⠀⠀⠀⠀⠀⠀⢀⣬⠷⣾⣯⢿⣿⡿⠋⠉⠀⠀⢰⠏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+  ⠀⠀⠀⠀⠀⠀        ⡇⠀⠀⠀⢀⣤⣾⣽⣷⡶⢱⣿⡬⣻⣧⠀⠀⠀⠀⡏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+  ⠀⠀⠀⠀⠀⠀        ⡇⠀⠠⠶⠛⠉⠉⠁⠸⣆⣿⡿⠛⠧⣿⣧⠀⠀⠀⢡⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+  ⠀⠀⠀⠀⠀⠀        ⢻⡀⠀⠀⠀⠀⠀⠀⡏⣿⡟⠀⠀⠀⠙⠿⣦⠀⠀⠀⠣⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+  ⠀⠀⠀⠀⠀⠀        ⠈⢷⡀⠀⠀⠀⠀⢠⣾⠏⠀⠀⠀⠀⠀⠀⠙⠀⠀⠀⠀⠙⠤⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+  ⠀⠀⠀⠀⠀⠀        ⠀⠈⢿⣄⠀⠀⠀⢸⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠒⠤⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣠⡄
+  ⠀⠀⠀⠀⠀⠀        ⠀⠀⠀⠹⣷⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠉⠐⠒⠒⠒⠒⠈⠉⣠⠟⠀
+  ⠀⠀⠀⠀⠀⠀        ⠀⠀⠀⠀⠈⠻⢷⣤⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣤⡾⠋⠀⠀
+  ⠀⠀⠀⠀⠀⠀        ⠀⠀⠀⠀⠀⠀⠀⠙⠻⢶⣤⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣤⡾⠟⠉⠀⠀⠀⠀
+   ⠀⠀⠀⠀⠀        ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠙⠻⠶⣤⣤⣄⣄⣀⣀⣀⣀⣀⣀⣠⣤⣤⣶⠾⠟⠛⠉⠀⠀⠀⠀⠀⠀⠀
+    ⠀⠀⠀⠀⠀       ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠉⠉⠙⠛⠛⠛⠉⠉⠉⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+
+
+⠀⠀ ⠀⠀        ⠠⢶⣤⣤⣤⣄⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣤⣤⣤⣤⣴⡶⠄
+⠀⠀ ⠀⠀       ⠀⠀⠿⣟⣻⡿⠿⠿⠿⠿⠿⠿⠿⡿⠿⢿⠿⢿⡿⣿⡿⣿⡿⣿⣿⣿⣿⣿⣿⣿⣿⠿⠿⢿⣿⣿⣿⠿⠀⠀
+⠀⠀ ⠀⠀        ⠀⠀⠀⠈⢏⣉⣉⣙⣻⣛⡛⠛⣻⣛⣛⣛⣛⣛⣛⣛⣛⣛⣛⣛⣛⣛⣛⣛⠛⣻⣟⣛⣋⣉⣩⡽⠁⠀⠀⠀
+⠀⠀ ⠀⠀        ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⢻⡟⠁⠀⠀⠀⠀⠁⠏⠉⠁⠀⠀⠀⠀⠀⢹⣟⡏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀ ⠀⠀        ⠀⠀⠀⠀⠠⣤⣤⣤⣤⣽⡋⢸⣟⣷⣤⣤⣤⣤⣤⣤⣤⣤⣤⣤⣤⣤⣾⣻⠝⢻⣯⣤⣤⣤⣤⡄⠀⠀⠀⠀
+⠀⠀ ⠀⠀        ⠀⠀⠀⠀⠀⣀⣨⣀⣠⣍⡀⢸⣏⣀⣀⣀⣀⣀⣀⣀⣠⣀⣠⣠⣄⣀⣤⣩⡄⢸⣉⣀⣉⣀⣹⠀⠀⠀⠀⠀
+⠀⠀ ⠀⠀        ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣷⢸⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⡇⢸⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀ ⠀⠀        ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⢺⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣷⣼⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀ ⠀⠀        ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢁⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡿⠟⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀ ⠀⠀        ⠀⠀⠀⠀⠀⠀⠀⠀⠀⢰⡜⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡇⠀⡆⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀ ⠀⠀        ⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⠇⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣷⢈⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀ ⠀⠀        ⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⢰⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀ ⠀⠀        ⠀⠀⠀⠀⠀⠀⠀⠀⠀⣾⣼⡿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣿⣷⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀ ⠀⠀        ⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢹⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀ ⠀⠀        ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠛⠿⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⠿⠿⠀⠀⠀⠀⠀⠀⠀⠀⠀
+`,   col:'#333333', glow:'#ff44aa', bg:'#0a0010', border:'#cc44ff', rainbow:true  },
   { key:'diamond',  min:150, label:'DIA',  col:'#7ec8e3', glow:'#2a90b8', bg:'#001828', border:'#2a6888', rainbow:false },
   { key:'platinum', min:90,  label:'PLAT', col:'#00e5cc', glow:'#009a88', bg:'#003030', border:'#007a70', rainbow:false },
   { key:'gold',     min:60,  label:'GOLD', col:'#ffd84a', glow:'#b87800', bg:'#1a1000', border:'#b87800', rainbow:false },
   { key:'silver',   min:40,  label:'SILV', col:'#c0d0e0', glow:'#6a8a9a', bg:'#10202a', border:'#5a7a9a', rainbow:false },
-  { key:'bronze',   min:20,  label:'BRZ',  col:'#e09040', glow:'#7a3800', bg:'#1a0e04', border:'#7a4010', rainbow:false },
+  { key:'bronze',   min:20,  label:'owner',  col:'#e09040', glow:'#7a3800', bg:'#1a0e04', border:'#7a4010', rainbow:true },
 ];
 function getScoreTier(sec) {
   for (const tier of LB_TIERS) if (sec >= tier.min) return tier;
@@ -859,7 +881,11 @@ function _drawTierBadge(tier, x, y) {
   ctx.strokeStyle = tier.border; ctx.lineWidth = 0.8; ctx.stroke();
   ctx.fillStyle = tier.col;
   ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
-  ctx.fillText(tier.label, x + 4, y);
+
+const lines = tier.label.split('\n');
+lines.forEach((line, i) => {
+  ctx.fillText(line, x + 4, y + i * 12);
+});
   ctx.textBaseline = 'alphabetic';
   ctx.restore();
 }
@@ -877,17 +903,15 @@ function _gmName(text, x, y, t) {
   ctx.shadowBlur = 0;
 }
 function _diamondName(text, x, y, t) {
-  // �､�ｴ��ｪｬ��: �們梔�們梔 �ｴ�� 﨑們擽�ｼ�ｴ孖ｸ
   const tw = ctx.measureText(text).width;
-  // ���ｴ�､ �被ヨ�ｭ �ｭ巐護ラ
   const base = ctx.createLinearGradient(x, 0, x + tw, 0);
   base.addColorStop(0,    '#6ab8d0');
   base.addColorStop(0.5,  '#c8eaf8');
   base.addColorStop(1,    '#6ab8d0');
   ctx.shadowColor = '#44ccff'; ctx.shadowBlur = 14;
   ctx.fillStyle = base; ctx.fillText(text, x, y);
-  // �們ｧ晧桷 �､���溢擽 (�ｴ�呰葺�� �晧捩 �､甯�)
-  const sp = ((t * 0.0018) % 1.4) - 0.2; // -0.2 ~ 1.2 cycle
+
+  const sp = ((t * 0.0018) % 1.4) - 0.2;
   const sx = x + sp * tw;
   const hw = tw * 0.18;
   const sg = ctx.createLinearGradient(sx - hw, 0, sx + hw, 0);
@@ -898,9 +922,8 @@ function _diamondName(text, x, y, t) {
   ctx.shadowBlur = 0;
 }
 function _emeraldDiamondName(text, x, y, t) {
-  // �尖ｩ罷桷��+�､�ｴ��ｪｬ��: �壱｡�-�ｭ�� �溢� ��徐
   const tw = ctx.measureText(text).width;
-  const p  = (Math.sin(t * 0.0025) + 1) / 2; // 0~1 ��徐
+  const p  = (Math.sin(t * 0.0025) + 1) / 2;
   const g  = ctx.createLinearGradient(x, 0, x + tw, 0);
   g.addColorStop(0,    `rgb(${Math.round(20+p*30)},${Math.round(170+p*40)},${Math.round(120+p*60)})`);
   g.addColorStop(0.3,  `rgb(${Math.round(140+p*80)},${Math.round(220+p*35)},${Math.round(200+p*55)})`);
@@ -911,9 +934,9 @@ function _emeraldDiamondName(text, x, y, t) {
   ctx.shadowBlur = 0;
 }
 
-// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// ══════════════════════════════════════════════════════
 // NAME INPUT OVERLAY
-// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// ══════════════════════════════════════════════════════
 const _nameInputOverlay = document.getElementById('nameInputOverlay');
 const _nameInput        = document.getElementById('nameInput');
 const _nameInputTime    = document.getElementById('nameInputTime');
@@ -923,10 +946,9 @@ const _nameSkipBtn      = document.getElementById('nameSkipBtn');
 
 function showNameInput(timeSec) {
   _nameInputTime.textContent = fmtScore(timeSec);
-  // �ｱ�� 岺懍亨
   const tier = getScoreTier(timeSec);
   if (tier) {
-    _nameInputTier.textContent = '笨ｦ ' + tier.label + ' 笨ｦ';
+    _nameInputTier.textContent = '✦ ' + tier.label + ' ✦';
     _nameInputTier.className   = tier.rainbow ? 'tier-gm' : '';
     _nameInputTier.style.color = tier.rainbow ? '' : tier.col;
     _nameInputTier.style.display = 'block';
@@ -958,8 +980,8 @@ async function _submitScore(name) {
     if (!data.ok) throw 0;
     goLeaderboard(data.scores, data.rank, playerName);
   } catch (_) {
-    // API �ｸ�ｰ�ｰ �� �ｩ�� 尞ｴ�ｱ
     const mockBase = [
+      {name:'umaimann', score:480016.8, country:'JP'},
       {name:'CometGirl', score:40.0, country:'KR'},
       {name:'Tsukiko',   score:35.2, country:'JP'},
       {name:'StarDust',  score:31.8, country:'US'},
@@ -968,8 +990,7 @@ async function _submitScore(name) {
       {name:'MoonChild', score:22.0, country:'TW'},
       {name:'Himari',    score:19.7, country:'KR'},
       {name:'NovaBurst', score:17.3, country:'US'},
-      {name:'Selene',    score:14.6, country:'FR'},
-      {name:'AkaNebula', score:12.1, country:'JP'},
+      {name:'yachiyo8000◆oCrOwWQM5w',    score: 252455616000.0, country:'JP'},,
     ];
     const playerEntry = {name: playerName, score: gs.time, country: '??', isPlayer: true};
     const all = [...mockBase, playerEntry].sort((a,b) => b.score - a.score);
@@ -986,9 +1007,9 @@ _nameInput.addEventListener('keydown', e => {
 _nameInputOverlay.addEventListener('touchstart', e => e.stopPropagation(), {passive:false});
 _nameInputOverlay.addEventListener('click',      e => e.stopPropagation());
 
-// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// ══════════════════════════════════════════════════════
 // SCENE: LEADERBOARD
-// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// ══════════════════════════════════════════════════════
 const LB_ROW_Y0    = 126;
 const LB_ROW_H     = 46;
 const LB_TITLE_DUR = 500;
@@ -1046,7 +1067,7 @@ function tickLeaderboard(dt) {
     lbState.flashAlpha = since < 300 ? (1 - since/300) * 0.75 : 0;
     lbState.glowPulse  = (Math.sin(lbState.t * 0.005) + 1) / 2;
   }
-  // viewOnly: ��ｲｴ 嵂� �ｵ�� 弡� ��款 岺懍亨 (�溢ｧ�� 嵂� + 600ms)
+
   const lastRowT = LB_ROW_START + (_lbRows().length - 1) * LB_ROW_DT;
   const btnT = lbState.viewOnly
     ? lastRowT + 600
@@ -1059,7 +1080,6 @@ function _rankBadge(rank, cx, cy, t) {
   const r = rank === 1 ? 16 : rank === 2 ? 13 : rank === 3 ? 11 : 10;
   ctx.save();
 
-  // 1�� ��圸: �緋ｹ･ 巐護�� ��
   if (rank === 1 && t != null) {
     const ang = (t * 0.0014) % (Math.PI * 2);
     ctx.save(); ctx.translate(cx, cy);
@@ -1140,25 +1160,23 @@ function drawLeaderboard() {
   if (!lbState) return;
   const t = lbState.t;
 
-  // �ｰ�ｽ
   const bg = ctx.createLinearGradient(0,0,0,CH);
   bg.addColorStop(0,'#04040f'); bg.addColorStop(1,'#080418');
   ctx.fillStyle = bg; ctx.fillRect(0,0,CW,CH);
   drawStars(); drawLines(); drawParts();
 
-  // 夋�ｴ寀
   const titleA = Math.min(1, t / LB_TITLE_DUR);
   ctx.save(); ctx.globalAlpha = titleA; ctx.textAlign = 'center';
   if (Math.sin(t * 0.0031) > 0.87) {
     ctx.globalAlpha = titleA * 0.5;
     ctx.font = 'bold 24px sans-serif';
-    ctx.fillStyle = '#ff2244'; ctx.fillText('笨ｦ RANKING 笨ｦ', CW/2-2, 68);
-    ctx.fillStyle = '#22ffee'; ctx.fillText('笨ｦ RANKING 笨ｦ', CW/2+2, 68);
+    ctx.fillStyle = '#ff2244'; ctx.fillText('✦ RANKING ✦', CW/2-2, 68);
+    ctx.fillStyle = '#22ffee'; ctx.fillText('✦ RANKING ✦', CW/2+2, 68);
     ctx.globalAlpha = titleA;
   }
   ctx.shadowColor = '#8855ff'; ctx.shadowBlur = 20;
   ctx.font = 'bold 24px sans-serif'; ctx.fillStyle = '#e8e8fc';
-  ctx.fillText('笨ｦ RANKING 笨ｦ', CW/2, 68);
+  ctx.fillText('✦ RANKING ✦', CW/2, 68);
   ctx.shadowBlur = 0;
   ctx.font = '11px sans-serif'; ctx.fillStyle = '#55556e';
   const best = parseFloat(localStorage.getItem(CFG.BEST_KEY) || 0);
@@ -1167,7 +1185,6 @@ function drawLeaderboard() {
   ctx.beginPath(); ctx.moveTo(20,104); ctx.lineTo(CW-20,104); ctx.stroke();
   ctx.restore();
 
-  // 嵂� �誤鵠��
   const rows = _lbRows();
   rows.forEach((row, i) => {
     const rowT  = LB_ROW_START + i * LB_ROW_DT;
@@ -1177,24 +1194,21 @@ function drawLeaderboard() {
     const slide = Math.max(0, (1 - Math.min(1, age/200)) * 16);
     const ry    = LB_ROW_Y0 + i * LB_ROW_H;
     const rcy   = ry + LB_ROW_H/2 + slide;
-    const nameY = rcy + 2;       // �ｴ�� �ｰ��� (�ｽ�� ��)
-    const tierY = nameY + 13;    // �ｱ�� ��ｧ �ｰ��� (�ｴ�� �罷｡� ��椈)
+    const nameY = rcy + 2;
+    const tierY = nameY + 13;
     const isP   = row.isPlayer;
-    // �ｬ�ｱ: �護垈 22px
     const RX = 22, RW = CW - 44;
 
     ctx.save(); ctx.globalAlpha = alpha;
 
-    // �ｬ��│
     if (row.isSep) {
       ctx.textAlign = 'center'; ctx.font = '12px sans-serif'; ctx.fillStyle = '#2a2a40';
-      ctx.fillText('ﾂｷ ﾂｷ ﾂｷ ﾂｷ ﾂｷ ﾂｷ ﾂｷ ﾂｷ ﾂｷ', CW/2, rcy + 5);
+      ctx.fillText('· · · · · · · · ·', CW/2, rcy + 5);
       ctx.restore(); return;
     }
 
     const rowTier = getRankTier(row.rank);
 
-    // 嵂� �ｰ�ｽ
     if (isP) {
       const sc  = getShipColor();
       const rgb = _hexToRgb(sc.stroke);
@@ -1215,10 +1229,8 @@ function drawLeaderboard() {
       roundRect(ctx, RX, ry+4, RW, LB_ROW_H-8, 8); ctx.fill();
     }
 
-    // �懍怱 ��ｧ (cx=38)
     _rankBadge(row.rank, 38, rcy + slide, t);
 
-    // �雅└�� (x=60)
     ctx.textAlign = 'left';
     ctx.font = row.rank===1 ? 'bold 15px sans-serif' :
                row.rank<=3  ? 'bold 13px sans-serif' :
@@ -1235,17 +1247,14 @@ function drawLeaderboard() {
       ctx.fillStyle = '#b8b9cc'; ctx.fillText(row.name, 60, nameY);
     }
 
-    // YOU 夋懋ｷｸ
     if (isP) {
       const nw = ctx.measureText(row.name).width;
       ctx.font = '9px sans-serif'; ctx.fillStyle = getShipColor().stroke;
-      ctx.fillText('笆ｶ YOU', 60 + nw + 6, nameY);
+      ctx.fillText('▶ YOU', 60 + nw + 6, nameY);
     }
 
-    // �ｱ�� ��ｧ (�ｴ�� ��椈)
     _drawTierBadge(rowTier, 60, tierY + slide);
 
-    // �川� (�ｰ�簿�ｬ, x=362)
     ctx.textAlign = 'right';
     ctx.font = row.rank<=3 ? 'bold 12px sans-serif' : '11px sans-serif';
     if (row.rank === 1) {
@@ -1282,18 +1291,15 @@ function drawLeaderboard() {
       ctx.fillText(fmtScore(row.score), 362, nameY);
     }
 
-    // �ｭ� 嵓誤椈�ｸ (x=366)
     ctx.textAlign = 'left'; ctx.font = '13px sans-serif';
     ctx.fillText(countryFlag(row.country), 367, nameY);
 
     ctx.restore();
   });
 
-  // ��款
   if (lbState.btnAlpha > 0) {
     ctx.save(); ctx.globalAlpha = lbState.btnAlpha; ctx.textAlign = 'center';
     if (lbState.viewOnly) {
-      // �ｰ�ｴ �ｨ��: ��ｴ�ｰ �罷俺 ��款��
       drawBtn({x:160, y:660, w:160, h:44}, T.menu, false);
     } else {
       drawBtn(BTN_LB_RETRY, T.retry, false);
@@ -1302,7 +1308,6 @@ function drawLeaderboard() {
     ctx.restore();
   }
 
-  // �ｸ�� ���ｴ + �ｼ�們囈 �戦注��
   const shipAX = 52, shipAY = 630;
   if (bubble) {
     ctx.save(); ctx.translate(shipAX, shipAY); _drawShipShape(9); ctx.restore();
@@ -1310,17 +1315,16 @@ function drawLeaderboard() {
   drawBubble(shipAX, shipAY - 9);
 }
 
-// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// ══════════════════════════════════════════════════════
 // SCENE STATE MACHINE
-// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
-// scenes: 'intro' | 'modeSelect' | 'startScene' | 'game' | 'gameover' | 'clear80' | 'quickRestart'
+// ══════════════════════════════════════════════════════
 let scene       = 'modeSelect';
-let gameMode    = 'normal';   // 'normal' | 'endless'
-let introTarget = 'modeSelect'; // where intro animation leads
+let gameMode    = 'normal';
+let introTarget = 'modeSelect';
 
-// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// ══════════════════════════════════════════════════════
 // STARS
-// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// ══════════════════════════════════════════════════════
 const stars = [];
 function initStars() {
   stars.length = 0;
@@ -1343,9 +1347,9 @@ function drawStars() {
   });
 }
 
-// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// ══════════════════════════════════════════════════════
 // ENERGY LINES
-// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// ══════════════════════════════════════════════════════
 const eLines = [];
 function mkLine() {
   const angle = (Math.random() * 50 - 25) * Math.PI / 180;
@@ -1381,9 +1385,9 @@ function drawLines() {
   });
 }
 
-// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// ══════════════════════════════════════════════════════
 // PARTICLES
-// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// ══════════════════════════════════════════════════════
 const parts = [];
 function spawn(x, y, n, opts) {
   for (let i = 0; i < n; i++) {
@@ -1416,9 +1420,9 @@ function drawParts() {
   });
 }
 
-// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// ══════════════════════════════════════════════════════
 // SPEECH BUBBLE
-// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// ══════════════════════════════════════════════════════
 let bubble = null;
 function showBubble(text, ms) {
   bubble = { full: text, disp: '', ti: 0, tt: 0, a: 0, timer: ms, fin: false };
@@ -1427,7 +1431,6 @@ function tickBubble(dt) {
   if (!bubble) return;
   bubble.timer -= dt;
   if (bubble.timer < 500) {
-    // 寬們擽�� ��寃 窶� 寬們擽�� �ｸ�ｴ�､ �ｰ��
     bubble.a = Math.max(0, bubble.a - 0.055);
     if (bubble.a <= 0) { bubble = null; return; }
   } else {
@@ -1450,17 +1453,14 @@ function drawBubble(ax, ay) {
   const bx = Math.max(8, Math.min(CW - W - 8, ax - W/2));
   const by = ay - H - 20;
 
-  // Box
   roundRect(ctx, bx, by, W, H, r);
   ctx.fillStyle = 'rgba(20,12,28,0.93)'; ctx.fill();
   ctx.strokeStyle = '#5E5254'; ctx.lineWidth = 1.5; ctx.stroke();
 
-  // Tail
   ctx.beginPath();
   ctx.moveTo(ax - 7, by + H); ctx.lineTo(ax, by + H + 13); ctx.lineTo(ax + 7, by + H);
   ctx.fillStyle = 'rgba(20,12,28,0.93)'; ctx.fill();
 
-  // Text only (no name tag)
   ctx.font = '12px sans-serif'; ctx.fillStyle = '#eaeaea';
   lines.forEach((ln, i) => ctx.fillText(ln, bx + pad, by + pad + lh + i * lh - 2));
 
@@ -1486,21 +1486,20 @@ function roundRect(ctx, x, y, w, h, r) {
   ctx.closePath();
 }
 
-// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// ══════════════════════════════════════════════════════
 // DRAW SHIP
-// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// ══════════════════════════════════════════════════════
 function drawShip(x, y, alpha) {
   ctx.save(); ctx.globalAlpha = alpha ?? 1; ctx.translate(x, y);
   _drawShipShape(18);
-  // Hitbox dot
   ctx.beginPath(); ctx.arc(0, 0, CFG.HITBOX_R, 0, Math.PI*2);
   ctx.fillStyle = 'rgba(255,255,255,0.85)'; ctx.fill();
   ctx.restore();
 }
 
-// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// ══════════════════════════════════════════════════════
 // BULLET SYSTEM
-// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// ══════════════════════════════════════════════════════
 const BCOL = {
   basic:  '#4FC3F7', wave:  '#CE93D8', homing: '#FFCC02',
   burst:  '#FF7043', meteor: '#A1887F', accel_homing: '#FF6D00',
@@ -1517,19 +1516,19 @@ function mkBullet(type, x, y, vx, vy, opts) {
     alive: true,
     wAmp: opts.wAmp || 2,
     wFrq: opts.wFrq || 0.08,
-    bvx: vx, bvy: vy,          // wave base velocity
+    bvx: vx, bvy: vy,
     burstAt: opts.burstAt || 0,
     hspd,
-    hspdMax:   opts.hspdMax   || hspd,   // accel_homing �罹劇 �鷺巡
-    accelRate: opts.accelRate || 0,      // accel_homing �壱胸 ��鷺汢
-    warnMs: opts.warnMs || 0,   // �ｴ �懋ｰ� �呷譜 �懍梵�ｬ �ｽ�� 岺懍亨 弡� �ｴ�� �懍梠
-    rampMs: opts.rampMs || 0,   // �ｴ�� �懍梠 弡� �ｴ �懋ｰ� �呷譜 0竊�1 ��� (�ｩ嵂･ �一ｳ�)
-    tvx: vx, tvy: vy,           // ramp �ｰ� �ｩ岺� �鷺巡
+    hspdMax:   opts.hspdMax   || hspd,
+    accelRate: opts.accelRate || 0,
+    warnMs: opts.warnMs || 0,
+    rampMs: opts.rampMs || 0,
+    tvx: vx, tvy: vy,
   };
 }
 function tickBullets(dt) {
   const ship = gs.ship;
-  const dtN = dt / 8.333;  // 60fps �母ｷ懦剩 窶� �ｨ�� �ｴ�呷乱 ��圸
+  const dtN = dt / 8.333;
   for (let i = bullets.length - 1; i >= 0; i--) {
     const b = bullets[i]; if (!b.alive) { bullets.splice(i,1); continue; }
     b.age += dt;
@@ -1540,7 +1539,6 @@ function tickBullets(dt) {
       b.x += (b.bvx + px * Math.sin(t) * b.wAmp) * dtN;
       b.y += (b.bvy + py * Math.sin(t) * b.wAmp) * dtN;
     } else if (b.type === 'homing' || b.type === 'accel_homing') {
-      // accel_homing: hspd�ｼ �壱胸 accelRate�醐⊂ hspdMax�護ｧ ���
       if (b.accelRate > 0) {
         b.hspd = Math.min(b.hspdMax, b.hspd + b.accelRate * dt / 1000);
       }
@@ -1552,7 +1550,6 @@ function tickBullets(dt) {
         const fade = Math.max(0, 1 - (b.age - trackDur) / trackFade);
         steerBase *= fade;
       }
-      // 嵓��溢桷�溢擽孖ｸ�� �樓ｲ� steer �ｴ��
       const steer = steerBase > 0 ? 1 - Math.pow(1 - steerBase, dtN) : 0;
       if (steer > 0) {
         const dx = ship.x - b.x, dy = ship.y - b.y;
@@ -1566,7 +1563,6 @@ function tickBullets(dt) {
       if (spd > b.hspd) { b.vx *= b.hspd / spd; b.vy *= b.hspd / spd; }
       b.x += b.vx * dtN; b.y += b.vy * dtN;
     } else if (b.type === 'burst') {
-      // warnMs �呷譜� �懍梵�ｬ ��ｰ 窶� �ｴ弡� �ｴ�� �懍梠
       if (b.age >= b.warnMs) {
         b.x += b.vx * dtN; b.y += b.vy * dtN;
       }
@@ -1574,7 +1570,7 @@ function tickBullets(dt) {
         for (let a = 0; a < 5; a++) {
           const ang = (a / 5) * Math.PI * 2;
           bullets.push(mkBullet('basic', b.x, b.y, Math.cos(ang)*2.2, Math.sin(ang)*2.2,
-            { rampMs: 420 }));  // �ｩ嵂･ �ｼ� �ｴ�ｴ�� �懍�德� ���
+            { rampMs: 420 }));
         }
         playSfx('surroundBurst');
         bullets.splice(i, 1); continue;
@@ -1596,17 +1592,14 @@ function drawBullets() {
   bullets.forEach(b => {
     ctx.save();
 
-    // burst �ｽ�� 寬們擽��: 寬�侃 �� + �倆握�� �肥牟
     if (b.type === 'burst' && b.warnMs > 0 && b.age < b.warnMs) {
-      const prog  = b.age / b.warnMs;                       // 0竊�1
-      const pulse = (Math.sin(b.age * 0.018) + 1) * 0.5;   // 0~1 ��徐
-      // �緋ｹ･ �� (�川�� �們ｶ倣葺�ｰ �懍ぎ �一ｳ�)
+      const prog  = b.age / b.warnMs;
+      const pulse = (Math.sin(b.age * 0.018) + 1) * 0.5;
       const ringR = b.r * (3.8 - prog * 2.2);
       ctx.globalAlpha = 0.18 + pulse * 0.28;
       ctx.strokeStyle = BCOL.burst;
       ctx.lineWidth = 1.4;
       ctx.beginPath(); ctx.arc(b.x, b.y, ringR, 0, Math.PI * 2); ctx.stroke();
-      // �肥牟 (�川�� �晧符��)
       ctx.globalAlpha = 0.25 + prog * 0.55;
       const grd = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, b.r * 2.0);
       grd.addColorStop(0, BCOL.burst); grd.addColorStop(1, 'transparent');
@@ -1616,7 +1609,6 @@ function drawBullets() {
       return;
     }
 
-    // �ｼ�� 夋� �誤鵠
     const grd = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, b.r * 2.4);
     grd.addColorStop(0, b.col); grd.addColorStop(1, 'transparent');
     ctx.beginPath(); ctx.arc(b.x, b.y, b.r * 2.4, 0, Math.PI*2);
@@ -1627,9 +1619,9 @@ function drawBullets() {
   });
 }
 
-// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// ══════════════════════════════════════════════════════
 // LASER SYSTEM
-// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// ══════════════════════════════════════════════════════
 const lasers = [];
 function spawnLaser(x1, y1, x2, y2, warn) {
   const fireMax = 1100;
@@ -1652,22 +1644,21 @@ function drawLasers() {
       ctx.beginPath(); ctx.moveTo(l.x1, l.y1); ctx.lineTo(l.x2, l.y2); ctx.stroke();
       ctx.setLineDash([]);
     } else {
-      // �尖ц�尞ｬ �罷ｲｨ�懦売: elapsed �ｰ�
-      const elapsed  = l.fireMax - l.fire;       // �懍ぎ 弡� �ｽ�ｼ ms
-      const rampUp   = 160;                       // ����ｵ: 0~160ms
-      const sustain  = l.fireMax - rampUp - 380;  // �ｵ�ｰ ��� �ｬ��
-      const rampDown = 380;                       // �ｵ竊廷枚+寬們擽��: �溢ｧ�� 380ms
+      const elapsed  = l.fireMax - l.fire;
+      const rampUp   = 160;
+      const sustain  = l.fireMax - rampUp - 380;
+      const rampDown = 380;
       let lw, alpha;
       if (elapsed < rampUp) {
         const t = elapsed / rampUp;
-        lw    = 0.4 + t * t * 7.6;    // ��� �｡���ｼ�� ����ｵ
+        lw    = 0.4 + t * t * 7.6;
         alpha = 0.5 + t * 0.5;
       } else if (elapsed < rampUp + sustain) {
         lw    = 8; alpha = 1;
       } else {
         const t = (elapsed - rampUp - sustain) / rampDown;
-        lw    = 8 * Math.pow(1 - t, 1.4);  // �懍�德� ��符��
-        alpha = 1 - t * t;                  // �醐血�� �懍�德� �川�
+        lw    = 8 * Math.pow(1 - t, 1.4);
+        alpha = 1 - t * t;
       }
       lw = Math.max(0.3, lw);
       ctx.strokeStyle = `rgba(255,68,68,${alpha.toFixed(2)})`;
@@ -1690,9 +1681,9 @@ function laserHit(sx, sy) {
   return false;
 }
 
-// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// ══════════════════════════════════════════════════════
 // PATTERNS
-// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// ══════════════════════════════════════════════════════
 const PATTERN_SETS = [
   ['debris_arc', 'debris_arc', 'radial_slow'],
   ['debris_arc', 'radial_slow', 'scatter'],
@@ -1703,7 +1694,6 @@ const PATTERN_SETS = [
   ['surround', 'cross_laser', 'homing_rush', 'wall'],
   ['surround', 'cross_laser', 'homing_rush', 'radial_slow', 'scatter'],
   ['surround', 'cross_laser', 'homing_rush', 'radial_slow', 'scatter', 'spiral', 'wall'],
-  // phase 9~: �簿ｰ�ｬ�ｩ 甯ｨ奓ｴ (168�� �ｴ弡�)
   ['precision_homing', 'accel_homing', 'cross_laser', 'surround', 'scatter'],
   ['precision_homing', 'accel_homing', 'surround', 'cross_laser', 'spiral', 'wall'],
   ['precision_homing', 'accel_homing', 'precision_homing', 'surround', 'cross_laser', 'scatter'],
@@ -1711,14 +1701,13 @@ const PATTERN_SETS = [
 let patCycle = 0;
 let patTimer = 0;
 let debrisTimer = 0;
-let basicTimer = 0;   // �罷糖�ｬ�､ 120s~ �ｰ�ｸ夋� �ｰ尞ｬ 夋�ｴ�ｸ
+let basicTimer = 0;
 
 function patInterval(phase) { return Math.max(420, 1400 - phase * 90); }
 
 function firePat(phase) {
   const set = PATTERN_SETS[Math.min(phase, PATTERN_SETS.length - 1)];
   let name = set[patCycle % set.length]; patCycle++;
-  // wall� 20% 嶹簿･��罹ｧ� 窶� �俯ｨｸ��� scatter�� ��ｴ
   if (name === 'wall' && Math.random() > 0.20) name = 'scatter';
   execPat(name, phase);
 }
@@ -1726,9 +1715,8 @@ function firePat(phase) {
 function execPat(name, phase) {
   const cx = CW / 2;
   const spd  = 1.5 + phase * 0.22;
-  const bspd = spd * 0.80;   // 甯誤梳 basic 夋� ��圸 窶� �鷺巡 20% �ｮ�､
+  const bspd = spd * 0.80;
   switch (name) {
-    // 笏笏 �壱ｰ� ��圸: �尖ｦｰ �ｴ�� �被紛 嶸ｸ(arc) 笏笏
     case 'debris_arc': {
       const n = 9 + phase;
       const offset = Math.random() * Math.PI * 2;
@@ -1743,7 +1731,6 @@ function execPat(name, phase) {
       }
       break;
     }
-    // 笏笏 �尖ｦｰ �ｩ�ｬ嶸� (�ｴ�� �被紛 �尖ｌ) 笏笏
     case 'radial_slow': {
       playSfx('scatterWhite');
       const n = 12 + phase * 2;
@@ -1757,7 +1744,7 @@ function execPat(name, phase) {
       break;
     }
     case 'radial': {
-      const n = 9 + phase;   // 12+phase*2 竊� 9+phase
+      const n = 9 + phase;
       for (let i = 0; i < n; i++) {
         const a = (i / n) * Math.PI * 2;
         bullets.push(mkBullet('basic', cx, -10, Math.cos(a)*bspd, Math.sin(a)*bspd));
@@ -1766,7 +1753,7 @@ function execPat(name, phase) {
     }
     case 'scatter': {
       playSfx('scatterBlue');
-      const n = 7 + phase * 2;   // 10+phase*3 竊� 7+phase*2
+      const n = 7 + phase * 2;
       for (let i = 0; i < n; i++) {
         const x = 30 + Math.random() * (CW - 60);
         const a = Math.PI/2 + (Math.random()-0.5)*0.85;
@@ -1807,12 +1794,12 @@ function execPat(name, phase) {
       break;
     }
     case 'homing_rush': {
-      const n = Math.min(2 + Math.floor(phase * 0.6), 4);   // �罹劇 4��
+      const n = Math.min(2 + Math.floor(phase * 0.6), 4);
       for (let i = 0; i < n; i++) {
         setTimeout(() => {
           playSfx('homing');
           bullets.push(mkBullet('homing', 30 + Math.random() * (CW - 60), -10, 0, 1, { hspd: 1.4 + phase * 0.15 }));
-        }, i * 320);   // 320ms ��ｲｩ
+        }, i * 320);
       }
       break;
     }
@@ -1821,9 +1808,9 @@ function execPat(name, phase) {
       const { x: sx, y: sy } = gs.ship;
       const n      = 6;
       const d      = 340;
-      const ss     = spd * 0.50;          // �ｴ�� �鷺巡 50% �緋ｰ �逸売
-      const warnMs = 800;                 // 800ms �ｽ�� 岺懍亨 弡� �懍ぎ
-      const fuse   = Math.max(700, 1100 - phase * 30);  // �ｽ�� �晤� 弡� �ｴ�吮�尞ｭ�� �懋ｰ�
+      const ss     = spd * 0.50;
+      const warnMs = 800;
+      const fuse   = Math.max(700, 1100 - phase * 30);
       for (let i = 0; i < n; i++) {
         const a = (i / n) * Math.PI * 2;
         const ox = sx + Math.cos(a) * d, oy = sy + Math.sin(a) * d;
@@ -1833,7 +1820,6 @@ function execPat(name, phase) {
       }
       break;
     }
-    // 笏笏 �簿ｰ�ｬ�ｩ: ���ｸ ����ヤ �卓､� 笏笏
     case 'precision_homing': {
       const extra = phase - 9;
       const n = Math.min(3 + Math.floor(extra * 0.5), 6);
@@ -1848,7 +1834,6 @@ function execPat(name, phase) {
       }
       break;
     }
-    // 笏笏 ��� ����ヤ: �尖ｦｬ�� �懍梠﨑ｴ�� �川�� �ｨ�ｼ�� 笏笏
     case 'accel_homing': {
       const extra = phase - 9;
       const n = Math.min(2 + Math.floor(extra * 0.4), 4);
@@ -1866,30 +1851,29 @@ function execPat(name, phase) {
   }
 }
 
-// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// ══════════════════════════════════════════════════════
 // GAME STATE
-// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// ══════════════════════════════════════════════════════
 const gs = {
   ship: { x: CW/2, y: 660 },
   time: 0, phase: 0,
   alive: true,
   forcedM: null,
   flash: 0,
-  finale: false,      // 嵓ｼ���� �ｬ�� (80s~)
-  finaleTime: 0,      // 嵓ｼ���� �ｽ�ｼ �懋ｰ�(��)
-  earthAlpha: 0,      // ��ｬ 妤ｬ��巡
-  precision: false,   // �簿ｰ�ｬ�ｩ �ｬ�� (180s~, �罷糖�ｬ�､ ��圸)
-  breathe: false,     // �ｨ ���ｴ�ｰ �ｬ�� �� �ｬ� (�罷糖�ｬ�､ ��圸)
-  breatheTimer: 0,    // �ｨ ���ｴ�ｰ �ｽ�ｼ ms
+  finale: false,
+  finaleTime: 0,
+  earthAlpha: 0,
+  precision: false,
+  breathe: false,
+  breatheTimer: 0,
   paused: false,
 };
 
-let _sessionToken = null; // �護桷 �懍梠 �� �ｸ�ｬ �懋ｸ雅ｰ幗捩 奝�增ｰ
+let _sessionToken = null;
 
 function initGame() {
   gs.ship.x = CW/2; gs.ship.y = 660;
   gs.time = 0; gs.phase = 0;
-  // �護桷 �懍梠 �懍�川乱 奝�增ｰ �懋ｸ� (�罹ｲ� ���: elapsed >= score)
   _sessionToken = null;
   fetch('/api/kaguya/token').then(r => r.ok ? r.json() : null).then(d => { _sessionToken = d; }).catch(() => {});
   gs.alive = true; gs.forcedM = null; gs.flash = 0;
@@ -1901,7 +1885,6 @@ function initGame() {
   bubble = null;
   initStars(); initLines(12);
   playBGM(gameMode === 'endless' ? 'endless' : 'normal');
-  // �懍ｴ� 嵓誤�溢擽 �溢ｻ､ 窶� ���� "�､�懦復��!" 孖ｸ�ｬ�ｰ�ｩ
   localStorage.setItem('tuku_kaguya_played', '1');
   try {
     if (window.parent && typeof window.parent.onKaguyaPlayed === 'function') {
@@ -1913,9 +1896,7 @@ function initGame() {
 function getPhase(t, mode) {
   if (mode === 'endless') {
     if (t < 60)  return Math.min(5, Math.floor(t / 12));
-    // 24�壱ｧ壱共 +1 (�ｰ�ｴ 18�� 竊� ��剩), �罹劇 8�� cap
     if (t < 180) return Math.min(8, 5 + Math.floor((t - 60) / 24));
-    // 180��~: �簿ｰ�ｬ�ｩ 寬們擽�� (9�奓ｰ �懍梠, 25�壱ｧ壱共 +1)
     return 9 + Math.floor((t - 180) / 25);
   }
   if (t < 15) return 0; if (t < 30) return 1; if (t < 45) return 2;
@@ -1944,7 +1925,6 @@ function checkHit() {
   if (!gs.alive) return;
   const { x: sx, y: sy } = gs.ship;
 
-  // 嵓ｼ���� �卓濫 �ｼ�� 夋�/�溢擽� �ｴ�� 窶� �ｴ�晤ｧ� 甯川��
   if (!gs.finale) {
     for (const b of bullets) {
       const d = Math.hypot(b.x - sx, b.y - sy);
@@ -1955,7 +1935,6 @@ function checkHit() {
 
   if (gs.forcedM) {
     const m = gs.forcedM;
-    // �ｴ�� �｣� �ｰ� 嵓ｼ�ｩ (m.y + m.r�ｴ ���� y�ｼ ��們ｹ俯ｩｴ �ｩ��)
     const dist = Math.hypot(m.x - sx, m.y - sy);
     if (dist < m.r * 1.00 + CFG.HITBOX_R) {
       if (gs.finale) { doClear80(); } else { doDie(); }
@@ -2007,10 +1986,8 @@ function tickGame(dt) {
     tickParts(dt); if (gs.flash > 0) gs.flash -= 0.05 * (dt/8.333); tickStars(dt); tickLines(dt);
     return;
   }
-  // 嵓ｼ���� �卓濫 �護桷 �懋ｰ� �晝ｰ �瀧卿 (夋�ｴ�ｸ 80.0�川� �溢ｶ､)
   if (!gs.finale) gs.time += dt / 1000;
 
-  // Phase change
   const np = getPhase(gs.time, gameMode);
   if (np !== gs.phase) {
     gs.phase = np;
@@ -2021,19 +1998,15 @@ function tickGame(dt) {
     }
   }
 
-  // 笏笏 �罷糖�ｬ�､ ��圸 �溢攵�､奝､ �ｰ�� 笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏
   if (gameMode === 'endless') {
-    // 60s: 嶹罷ｩｴ �� 﨑懍､�ｸｰ 嵓誤椈��
     if (gs.time >= 60 && !gs._mile60) {
       gs._mile60 = true;
       gs.flash = Math.max(gs.flash, 0.18);
     }
-    // 120s: �� �鷺巡 1.6�ｰ (�ｰ�ｽ �ｴ�･��)
     if (gs.time >= 120 && !gs._mile120) {
       gs._mile120 = true;
       stars.forEach(s => { s.spd *= 1.6; });
     }
-    // �ｴ夋�� �溢攵�､奝､ (168��) 窶� ���� �溢ｻ､
     if (gs.time >= 168 && !gs.precision) {
       gs.precision = true;
       try { localStorage.setItem('tuku_kaguya_newtype', '1'); } catch (_) {}
@@ -2045,10 +2018,9 @@ function tickGame(dt) {
     }
   }
 
-  // 笏笏 �罷糖�ｬ�､ �ｨ ���ｴ�ｰ (�､ 45�壱ｧ壱共 5�一ｰ� 甯ｨ奓ｴ �瀧卿) 笏笏
   if (gameMode === 'endless' && !gs.finale) {
-    const cycle = 45000; // 45�� �ｼ�ｰ
-    const rest  =  5000; // 5�� 弴ｴ��
+    const cycle = 45000;
+    const rest  =  5000;
     const phase_ms = (gs.time * 1000) % cycle;
     gs.breathe = phase_ms < rest;
     if (gs.breathe) {
@@ -2058,26 +2030,21 @@ function tickGame(dt) {
     }
   }
 
-  // ��ｬ 窶� 60�壱ｶ奓ｰ �懍�德� 寬們擽�懍攤 (�ｸ� �ｨ��)
   if (gameMode === 'normal' && gs.time >= 60) {
     gs.earthAlpha = Math.min(0.85, (gs.time - 60) / 18);
   }
 
-  // BGM 寬們擽�� ��寃 窶� 60�壱ｶ奓ｰ 80�溢乱 0�ｼ�� (�ｸ� �ｨ��)
   if (gameMode === 'normal' && activeBgm && !bgmMuted && gs.time >= 60) {
     const fadeRatio = Math.max(0, 1 - (gs.time - 60) / 20);
     activeBgm.volume = bgmVolume * fadeRatio;
   }
 
-  // 笏笏 嵓ｼ���� ��桿 (�ｸ� 80��) 笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏
   if (gameMode === 'normal' && gs.time >= CFG.FINALE_SEC && !gs.finale) {
     gs.finale = true;
-    // ���� �晧┳�� �瀧卿 窶� �ｰ�ｴ 夋�/�溢擽��� �川硫�､�ｽ�� 奣ｴ�･
   }
 
   if (gs.finale) {
     gs.finaleTime += dt / 1000;
-    // 嵓ｼ﨑� �� ��株 �ｴ�� �ｱ�･ (finaleTime >= FINALE_METEOR)
     if (gs.finaleTime >= CFG.FINALE_METEOR && !gs.forcedM) {
       gs.forcedM = { x: CW/2, y: -(CFG.METEOR_R), r: CFG.METEOR_R, a: 0, vy: 65 };
       playMeteorSound();
@@ -2092,10 +2059,8 @@ function tickGame(dt) {
 
   moveShip(dt);
 
-  // ��亨 �ｴ�� �被紛 窶� 嵓ｼ���� �卓濫 �晧┳ �瀧卿
   if (!gs.finale) {
     debrisTimer += dt;
-    // �壱ｰ�(phase 0~3): �被紛 峵作┳﨑俾ｲ� / phase 4+(�溢擽� �ｱ�･ �ｴ弡�): 弡ｨ�ｬ �ｸ﨑俾ｲ�
     const debrisInterval = gs.phase < 4
       ? Math.max(1000, 2400 - gs.phase * 220)
       : 4200 + gs.phase * 300;
@@ -2127,16 +2092,13 @@ function tickGame(dt) {
     }
   }
 
-  // 甯ｨ奓ｴ �懍ぎ 窶� 嵓ｼ���� �瀧卿, �罷糖�ｬ�､ �ｨ ���ｴ�ｰ �ｬ��巡 �瀧卿
   if (!gs.finale && !gs.breathe) {
     patTimer += dt;
     if (patTimer >= patInterval(gs.phase)) { patTimer = 0; firePat(gs.phase); }
   }
 
-  // �罷糖�ｬ�､ 135��~: �ｰ�ｸ夋�(basic) �ｰ尞ｬ 窶� 甯ｨ奓ｴ�ｼ ��ｰ罹｡� �ｸ�德� �ｴ�､�ｴ
   if (gameMode === 'endless' && gs.time >= 135 && !gs.finale && !gs.breathe) {
     basicTimer += dt;
-    // 135s=2000ms ��ｲｩ 竊� �懋ｰ�擽 �溢��� ��符�� (�懍� 800ms)
     const basicInterval = Math.max(800, 2000 - (gs.time - 135) * 7);
     if (basicTimer >= basicInterval) {
       basicTimer = 0;
@@ -2156,25 +2118,24 @@ function tickGame(dt) {
   if (gs.flash > 0) gs.flash -= 0.05;
 }
 
-// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
-// DRAW EARTH (嵓ｼ���� �ｰ�ｽ)
-// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// ══════════════════════════════════════════════════════
+// DRAW EARTH
+// ══════════════════════════════════════════════════════
 function drawEarth(alpha) {
   if (!earthImg.complete || !earthImg.naturalWidth) return;
-  const size = 72;                        // �滝ｲ� 窶� ��ｬ �壱株 �尖ｌ
+  const size = 72;
   const ex = CW / 2 - size / 2;
-  const ey = 36;                          // HUD �罷｡� ��椈 ��卿
+  const ey = 36;
   ctx.save();
   ctx.globalAlpha = alpha;
-  // �戦� 增ｴ�ｽ�ｼ�� ��罹淇��
   ctx.beginPath(); ctx.arc(ex + size/2, ey + size/2, size/2, 0, Math.PI*2); ctx.clip();
   ctx.drawImage(earthImg, ex, ey, size, size);
   ctx.restore();
 }
 
-// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// ══════════════════════════════════════════════════════
 // DRAW FORCED METEOR
-// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// ══════════════════════════════════════════════════════
 function drawForcedMeteor(m) {
   ctx.save(); ctx.globalAlpha = m.a;
   // Dark shadow vignette
@@ -2182,12 +2143,10 @@ function drawForcedMeteor(m) {
   sh.addColorStop(0, 'rgba(20,8,4,0.55)'); sh.addColorStop(1, 'rgba(0,0,0,0)');
   ctx.beginPath(); ctx.arc(m.x, m.y, m.r * 1.8, 0, Math.PI*2);
   ctx.fillStyle = sh; ctx.fill();
-  // Body
   const grd = ctx.createRadialGradient(m.x - m.r*0.28, m.y - m.r*0.28, 0, m.x, m.y, m.r);
   grd.addColorStop(0, '#8D6E63'); grd.addColorStop(0.5, '#5D4037'); grd.addColorStop(1, '#3E2723');
   ctx.beginPath(); ctx.arc(m.x, m.y, m.r, 0, Math.PI*2);
   ctx.fillStyle = grd; ctx.fill();
-  // Cracks
   ctx.strokeStyle = '#BCAAA4'; ctx.lineWidth = 0.9; ctx.globalAlpha = m.a * 0.5;
   for (let i = 0; i < 10; i++) {
     const a = (i / 10) * Math.PI * 2 + 0.3;
@@ -2200,19 +2159,17 @@ function drawForcedMeteor(m) {
   ctx.restore();
 }
 
-// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// ══════════════════════════════════════════════════════
 // DRAW GAME HUD
-// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// ══════════════════════════════════════════════════════
 function drawHUD() {
   ctx.fillStyle = 'rgba(0,0,0,0.38)'; ctx.fillRect(0, 0, CW, 30);
   ctx.font = 'bold 13px monospace'; ctx.textAlign = 'center';
-  // �簿ｰ�ｬ�ｩ �ｬ��: 夋�ｴ�ｸ �ｨ��ラ + ��懍垈
   if (gs.precision) {
     const pulse = 0.75 + Math.sin(Date.now() * 0.006) * 0.25;
     ctx.fillStyle = `rgba(255,${Math.round(80 + pulse * 40)},80,${pulse.toFixed(2)})`;
     ctx.shadowColor = '#ff4040'; ctx.shadowBlur = 6;
   } else if (gameMode === 'endless' && gs.breathe) {
-    // �ｨ ���ｴ�ｰ �ｬ��: 夋�ｴ�ｸ �晧捩 﨑俯釜�餓愍�� (�壱巡��)
     ctx.fillStyle = '#88ddff'; ctx.shadowBlur = 0;
   } else {
     ctx.fillStyle = '#ddd'; ctx.shadowBlur = 0;
@@ -2224,7 +2181,6 @@ function drawHUD() {
     const pct = Math.min(1, gs.time / CFG.FINALE_SEC);
     ctx.fillStyle = '#222233'; ctx.fillRect(10, 25, CW - 20, 3);
     if (gs.finale) {
-      // RGB �ｴ��� ���壱ｩ肥擽�� 窶� 增ｴ�ｬ�ｴ �懋ｰ� 嵓ｼ�罹ｰｱ
       const t = Date.now() * 0.004;
       const bw = CW - 20;
       const grad = ctx.createLinearGradient(10, 0, 10 + bw, 0);
@@ -2232,7 +2188,6 @@ function drawHUD() {
         grad.addColorStop(i/6, `hsl(${(t * 180 + i * 60) % 360},100%,65%)`);
       }
       ctx.fillStyle = grad;
-      // ��懍垈
       ctx.shadowColor = `hsl(${(t * 180) % 360},100%,70%)`;
       ctx.shadowBlur = 8;
       ctx.fillRect(10, 24, bw, 5);
@@ -2244,9 +2199,9 @@ function drawHUD() {
   }
 }
 
-// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// ══════════════════════════════════════════════════════
 // VIRTUAL JOYSTICK
-// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// ══════════════════════════════════════════════════════
 const JR = 75;
 function drawJoystick() {
   if (!touch.on || scene !== 'game') return;
@@ -2258,14 +2213,11 @@ function drawJoystick() {
   const ky = dist > 0 ? oy + (dy / dist) * clamp : oy;
 
   ctx.save();
-  // �ｸ�ｽ ��
   ctx.beginPath(); ctx.arc(ox, oy, JR, 0, Math.PI * 2);
   ctx.strokeStyle = 'rgba(180,160,220,0.35)';
   ctx.lineWidth = 1.5; ctx.stroke();
-  // �ｸ�ｽ ��它
   ctx.beginPath(); ctx.arc(ox, oy, JR, 0, Math.PI * 2);
   ctx.fillStyle = 'rgba(80,60,120,0.12)'; ctx.fill();
-  // �ｸ��
   ctx.beginPath(); ctx.arc(kx, ky, 22, 0, Math.PI * 2);
   ctx.fillStyle = 'rgba(160,140,220,0.40)'; ctx.fill();
   ctx.beginPath(); ctx.arc(kx, ky, 22, 0, Math.PI * 2);
@@ -2274,9 +2226,9 @@ function drawJoystick() {
   ctx.restore();
 }
 
-// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// ══════════════════════════════════════════════════════
 // DRAW GAME
-// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// ══════════════════════════════════════════════════════
 function drawGame() {
   const bg = ctx.createLinearGradient(0, 0, 0, CH);
   bg.addColorStop(0, '#04040f'); bg.addColorStop(1, '#080418');
@@ -2293,21 +2245,21 @@ function drawGame() {
   }
 }
 
-// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// ══════════════════════════════════════════════════════
 // INTRO / START SCENE ANIMATION
-// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
-let ia = null; // intro animation state
+// ══════════════════════════════════════════════════════
+let ia = null;
 function resetIA() {
   ia = {
     t: 0,
-    netA: 0,      // net alpha
-    glowR: 0,     // pre-burst glow radius
-    bulge: 0,     // net bulge factor 0竊�1
+    netA: 0,
+    glowR: 0,
+    bulge: 0,
     bursted: false,
     shockwaves: [],
     frags: [],
     shipY: CH / 2,
-    voiceA: 0,    // "�ｸ��共�ｴ �ｴ�ｬ�ｼ �､�� 﨑罹ｲ�!" �ｴ�ｴ �ｩ�誤ｦｬ alpha
+    voiceA: 0,
     voiceDone: false,
     ready: false,
     tapA: 0,
@@ -2320,17 +2272,14 @@ function tickIA(dt) {
   ia.t += dt;
   const t = ia.t;
 
-  // Net fade in
   ia.netA = t < 500 ? 0 : Math.min(1, (t - 500) / 700);
 
-  // Glow + bulge build-up
   if (t > 2100 && !ia.bursted) {
     const prog = Math.min(1, (t - 2100) / 1000);
     ia.glowR  = prog * 65;
-    ia.bulge  = prog;           // 0竊�1, �ｸ�ｼ�ｴ �川�� �壱｣ｩ﨑俾ｲ�
+    ia.bulge  = prog;
   }
 
-  // Burst at 3100ms
   if (t > 3100 && !ia.bursted) {
     ia.bursted = true;
     playSfx('warp');
@@ -2350,30 +2299,24 @@ function tickIA(dt) {
     gs.flash = 1;
   }
 
-  // Shockwaves
   ia.shockwaves.forEach(sw => { sw.r += 8; sw.a = Math.max(0, sw.a - 0.038); });
 
-  // Ship slide in 窶� 嶹罷ｩｴ �卓蕗�川� �護桷 �懍梠 ��ｹ�(660)�� �懍�德� �ｴ��
   if (t > 3300) ia.shipY += (660 - ia.shipY) * 0.06;
 
-  // Fragments
   ia.frags = ia.frags.filter(f => {
     f.x += f.vx; f.y += f.vy; f.a -= 0.022; return f.a > 0;
   });
 
-  // �ｴ�ｴ�� �ｩ�誤ｦｬ: 寬們擽�懍攤 竊� ��� 竊� 寬們擽�懍符��
   if (t > 4400) {
     const elapsed = t - 4400;
-    if (elapsed < 600)        ia.voiceA = elapsed / 600;          // 0.6�� 寬們擽�懍攤
-    else if (elapsed < 2600)  ia.voiceA = 1;                      // 2�� ���
-    else if (elapsed < 3200)  ia.voiceA = 1 - (elapsed - 2600) / 600; // 0.6�� 寬們擽�懍符��
+    if (elapsed < 600)        ia.voiceA = elapsed / 600;
+    else if (elapsed < 2600)  ia.voiceA = 1;
+    else if (elapsed < 3200)  ia.voiceA = 1 - (elapsed - 2600) / 600;
     else                      ia.voiceA = 0;
   }
 
-  // Tap hint
   if (t > 5800) { ia.ready = true; ia.tapA = Math.min(1, (t - 5800) / 500); }
 
-  // Auto advance
   if (t > 8500) advanceIA();
 
   if (gs.flash > 0) gs.flash -= 0.05;
@@ -2386,11 +2329,9 @@ function drawIA() {
   ctx.fillStyle = bg; ctx.fillRect(0, 0, CW, CH);
   drawStars(); drawLines(); drawParts();
 
-  // Net mesh
   const na = ia.netA * (ia.bursted ? Math.max(0, 1 - (ia.t - 3100) / 350) : 1);
   if (na > 0) drawNet(na, ia.bursted ? 0 : ia.bulge);
 
-  // Pre-burst glow
   if (ia.glowR > 0 && !ia.bursted) {
     const g = ctx.createRadialGradient(CW/2, CH/2, 0, CW/2, CH/2, ia.glowR);
     g.addColorStop(0, 'rgba(255,255,255,0.85)'); g.addColorStop(1, 'rgba(94,82,84,0)');
@@ -2398,31 +2339,26 @@ function drawIA() {
     ctx.fillStyle = g; ctx.fill();
   }
 
-  // Shockwaves
   ia.shockwaves.forEach(sw => {
     if (sw.a <= 0) return;
     ctx.beginPath(); ctx.arc(CW/2, CH/2, sw.r, 0, Math.PI*2);
     ctx.strokeStyle = `rgba(255,110,160,${sw.a})`; ctx.lineWidth = 3; ctx.stroke();
   });
 
-  // Fragments
   ia.frags.forEach(f => {
     ctx.save(); ctx.globalAlpha = f.a;
     ctx.beginPath(); ctx.arc(f.x, f.y, f.r, 0, Math.PI*2);
     ctx.fillStyle = f.c; ctx.fill(); ctx.restore();
   });
 
-  // Ship
   if (ia.t > 3300) drawShip(CW/2, ia.shipY);
 
-  // �ｴ�ｴ�� �ｩ�誤ｦｬ 窶� 嶹罷ｩｴ �卓蕗 ���ｸ 奛作侃孖ｸ
   if (ia.voiceA > 0) {
     ctx.save();
     ctx.globalAlpha = ia.voiceA;
     ctx.textAlign = 'center';
     ctx.font = 'bold 19px sans-serif';
     ctx.fillStyle = `rgb(210,70,70)`;
-    // �ｸ�ｸ﨑� �溢ｧ� 巐ｨ�ｼ
     ctx.shadowColor = 'rgba(200,50,50,0.5)';
     ctx.shadowBlur  = 12;
     ctx.fillText(T.start, CW/2, CH / 2 - 30);
@@ -2430,34 +2366,31 @@ function drawIA() {
     ctx.textAlign = 'left';
   }
 
-  // Tap hint
   if (ia.tapA > 0) {
     ctx.font = '12px sans-serif'; ctx.fillStyle = `rgba(170,170,200,${ia.tapA * 0.75})`;
     ctx.textAlign = 'center'; ctx.fillText(T.tap_start, CW/2, CH - 44); ctx.textAlign = 'left';
   }
 
-  // Flash
   if (gs.flash > 0) { ctx.fillStyle = `rgba(255,255,255,${gs.flash})`; ctx.fillRect(0, 0, CW, CH); }
 }
 
 function drawNet(alpha, bulge) {
   bulge = bulge || 0;
-  // 嶹罷ｩｴ �野愍�� 30% �� 嶹菩棗
   const mg  = 0.30;
   const ox  = -CW * mg, oy = -CH * mg;
   const nw  = CW * (1 + mg * 2), nh = CH * (1 + mg * 2);
   const cols = 11, rows = 14;
   const cw  = nw / cols, ch = nh / rows;
 
-  const bx = CW/2, by = CH / 2;         // �懋ｳ｡ �卓峡 窶� 嶹罷ｩｴ �菩､卓蕗
-  const maxDisp = 280 * bulge;           // �懋ｳ｡ �肥怱 �尞ｭ 嶹簿劇
+  const bx = CW/2, by = CH / 2;
+  const maxDisp = 280 * bulge;
 
   function pt(c, r) {
     const x = ox + c * cw, y = oy + r * ch;
     if (bulge <= 0) return { x, y };
     const dx = x - bx, dy = y - by;
     const d  = Math.hypot(dx, dy) || 1;
-    const falloff = Math.max(0, 1 - d / 440);  // ��箕 �俾ｲｽ 嶹簿劇
+    const falloff = Math.max(0, 1 - d / 440);
     const disp    = maxDisp * falloff * falloff;
     return { x: x + (dx/d) * disp, y: y + (dy/d) * disp };
   }
@@ -2496,46 +2429,40 @@ function advanceIA() {
   else { goState('game'); initGame(); }
 }
 
-// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
-// SHIP COLOR PICKER (modeSelect ��圸)
-// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// ══════════════════════════════════════════════════════
+// SHIP COLOR PICKER
+// ══════════════════════════════════════════════════════
 function drawColorPicker(alpha) {
   ctx.save(); ctx.globalAlpha = alpha;
 
   const swY = _getSwatchY();
 
-  // 嶹簿劇 嵓�ｦｬ�ｰ
   ctx.save();
   ctx.translate(CW / 2, swY - 55); ctx.scale(1.3, 1.3);
   _drawShipShape(18);
   ctx.restore();
 
-  // �ｹ�� �溢擽��
   ctx.textAlign = 'center';
   ctx.font = '10px sans-serif'; ctx.fillStyle = '#666688';
   ctx.fillText(T.color_label, CW / 2, swY - 25);
 
-  // �､���
   const n = SHIP_COLORS.length;
   SHIP_COLORS.forEach(function(col, i) {
     const sx = CW / 2 + (i - (n - 1) / 2) * SWATCH_SP;
     const sy = swY;
     const sel = col.id === shipColorId;
 
-    // ��夋� ��
     if (sel) {
       ctx.beginPath(); ctx.arc(sx, sy, SWATCH_R + 3, 0, Math.PI * 2);
       ctx.strokeStyle = col.stroke; ctx.lineWidth = 1.2;
       ctx.globalAlpha = alpha * 0.5; ctx.stroke(); ctx.globalAlpha = alpha;
     }
 
-    // �､��� ��
     ctx.beginPath(); ctx.arc(sx, sy, SWATCH_R, 0, Math.PI * 2);
     ctx.fillStyle = col.body; ctx.fill();
     ctx.strokeStyle = sel ? col.stroke : 'rgba(90,80,110,0.6)';
     ctx.lineWidth = sel ? 1.5 : 0.8; ctx.stroke();
 
-    // �ｸ�� ���ｴ
     ctx.save(); ctx.translate(sx, sy);
     _drawShipShape(5, col);
     ctx.restore();
@@ -2545,9 +2472,9 @@ function drawColorPicker(alpha) {
   ctx.restore();
 }
 
-// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// ══════════════════════════════════════════════════════
 // SCENE: MODE SELECT
-// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// ══════════════════════════════════════════════════════
 let msAlpha = 0;
 const BTN_NORMAL  = { x: CW/2 - 130, y: 430, w: 260, h: 56 };
 const BTN_ENDLESS = { x: CW/2 - 130, y: 530, w: 260, h: 56 };
@@ -2567,16 +2494,13 @@ function drawModeSelect(dt) {
   ctx.font = 'bold 24px sans-serif'; ctx.fillStyle = '#ddd';
   ctx.fillText(T.title, CW/2, 150);
   ctx.font = '13px sans-serif'; ctx.fillStyle = '#9999cc';
-  // wrap subtitle if needed
   const subLines = wrapLines(T.subtitle, 300);
   subLines.forEach((l, i) => ctx.fillText(l, CW/2, 177 + i * 18));
 
-  // Buttons
   const cleared = !!localStorage.getItem(CFG.NORMAL_KEY);
   drawBtn(BTN_NORMAL, T.mode_normal, false);
   if (cleared) drawBtn(BTN_ENDLESS, T.mode_endless, false);
 
-  // �醐葺�ｨ 墲､ 德醐敢
   ctx.save(); ctx.globalAlpha = msAlpha * 0.75;
   ctx.textAlign = 'left'; ctx.font = '11px sans-serif'; ctx.fillStyle = '#aaaacc';
   ctx.fillText(T.key_hint, 14, CH - 14);
@@ -2592,21 +2516,19 @@ function drawBtn(r, label, locked) {
   ctx.strokeStyle = locked ? '#3a3350' : '#5E5254'; ctx.lineWidth = 1.5; ctx.stroke();
   ctx.font = locked ? '14px sans-serif' : 'bold 15px sans-serif';
   ctx.fillStyle = locked ? '#666677' : '#eaeaea';
-  ctx.fillText((locked ? '白 ' : '') + label, r.x + r.w/2, r.y + r.h/2 + 5);
+  ctx.fillText((locked ? '🔒 ' : '') + label, r.x + r.w/2, r.y + r.h/2 + 5);
 }
 
-// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// ══════════════════════════════════════════════════════
 // SCENE: QUICK RESTART
-// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// ══════════════════════════════════════════════════════
 let qrState = { t: 0 };
 function drawQuickRestart() {
   qrState.t += 16;
   const t = qrState.t;
 
-  // �ｰ�ｽ �肥��
   ctx.fillStyle = 'rgba(4,4,15,0.92)'; ctx.fillRect(0, 0, CW, CH);
 
-  // "�ｸ��共�ｴ �ｴ�ｬ�ｼ �､�� 﨑罹ｲ�!" 窶� 寬們擽�懍攤 弡� ���
   const textA = t < 180 ? 0 : t < 500 ? (t - 180) / 320 : t < 1000 ? 1 : Math.max(0, 1 - (t - 1000) / 300);
   if (textA > 0) {
     ctx.save(); ctx.globalAlpha = textA;
@@ -2620,9 +2542,9 @@ function drawQuickRestart() {
   if (t > 1500) { qrState.t = 0; goState('game'); initGame(); }
 }
 
-// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// ══════════════════════════════════════════════════════
 // SCENE: GAME OVER
-// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// ══════════════════════════════════════════════════════
 let goAlpha = 0;
 const BTN_RETRY = { x: 70, y: 560, w: 140, h: 50 };
 const BTN_MENU  = { x: 270, y: 560, w: 140, h: 50 };
@@ -2638,7 +2560,6 @@ function drawGameover(dt) {
   ctx.fillStyle = 'rgba(4,4,15,0.75)'; ctx.fillRect(0, 0, CW, CH);
   ctx.save(); ctx.globalAlpha = goAlpha; ctx.textAlign = 'center';
 
-  // �肥攤 �ｬ�� �肥┷�
   ctx.font = 'bold 17px sans-serif'; ctx.fillStyle = '#eaeaea';
   const dlines = wrapLines(T.death, CW - 80);
   dlines.forEach((l, i) => ctx.fillText(l, CW/2, 285 + i * 24));
@@ -2655,9 +2576,9 @@ function drawGameover(dt) {
   ctx.restore(); ctx.textAlign = 'left';
 }
 
-// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// ══════════════════════════════════════════════════════
 // SCENE: CLEAR 80
-// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// ══════════════════════════════════════════════════════
 let c80Alpha = 0;
 function drawClear80(dt) {
   c80Alpha = Math.min(1, c80Alpha + 0.018 * (dt/8.333));
@@ -2675,7 +2596,7 @@ function drawClear80(dt) {
 
   if (c80Alpha > 0.5) {
     ctx.font = 'bold 13px sans-serif'; ctx.fillStyle = '#c8a86a';
-    ctx.fillText('嫌 ' + T.ach_name, CW/2, 320);
+    ctx.fillText('🌙 ' + T.ach_name, CW/2, 320);
     ctx.font = '12px sans-serif'; ctx.fillStyle = '#8888aa';
     ctx.fillText(T.mode_endless + ' ' + T.unlocked, CW/2, 348);
   }
@@ -2684,9 +2605,9 @@ function drawClear80(dt) {
   ctx.restore(); ctx.textAlign = 'left';
 }
 
-// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// ══════════════════════════════════════════════════════
 // SCENE NAVIGATION
-// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// ══════════════════════════════════════════════════════
 function goState(s) { scene = s; }
 
 function onTap(x, y) {
@@ -2707,7 +2628,6 @@ function onTap(x, y) {
     return;
   }
   if (scene === 'modeSelect') {
-    // �餓メ �､��� ��夋�
     const _n = SHIP_COLORS.length;
     for (let _i = 0; _i < _n; _i++) {
       const _sx = CW / 2 + (_i - (_n - 1) / 2) * SWATCH_SP;
@@ -2738,9 +2658,9 @@ function onTap(x, y) {
 }
 function inR(x, y, r) { return x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h; }
 
-// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// ══════════════════════════════════════════════════════
 // MAIN LOOP
-// 笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武笊絶武
+// ══════════════════════════════════════════════════════
 const _langBar = document.getElementById('langBar');
 let last = 0;
 function loop(now) {
