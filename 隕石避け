@@ -7,16 +7,6 @@
     html, body {
       height: 100%;
     }
-    body {
-      margin: 0; padding: 0;
-      background: #000;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      width: 100%;
-      overflow: hidden;
-      touch-action: none;
-    }
     #gameWrap {
       position: relative;
       display: inline-block;
@@ -236,7 +226,7 @@ const I18N = {
     clear80:      '클리어!',
     clear80b:     '해피엔딩까지 데려가 주겠어?',
     endless_msg:  '우리는 그 윤회에서 벗어날 수 없었어요.',
-    restart:      '그렇다면 카구야 다시 한번!',
+    restart:      '그럼 카구야, 한 번 더!',
     ach_name:     '같은 윤회를 반복하고 있어',
     ach_desc:     '탄막 슈팅에서 80초를 버텼다',
     title:        '운석피하기',
@@ -278,11 +268,11 @@ const I18N = {
     clear80:      'クリア！',
     clear80b:     'ハッピーエンドまで連れて行ってくれる？',
     endless_msg:  '私たちはその輪廻から逃れることができなかった。',
-    restart:      'ならばかぐや、もう一度！',
+    restart:      'そんならかぐや、もう一回！',
     ach_name:     '同じ輪廻を繰り返している',
     ach_desc:     '弾幕シューティングで80秒生き延びた',
     title:        '隕石よけ',
-    subtitle:     '月の超テクノロジーは時間をも超えるんです。',
+    subtitle:     '月の超テクノロジーは時間も超えられます。',
     mode_normal:  'いろはの元へ帰る',
     mode_endless: 'エンドレスモード',
     mode_locked:  'ノーマルモードをクリアすると解放されます',
@@ -408,8 +398,8 @@ const SWATCH_R  = 10;
 const SWATCH_SP = 27;
 function _getSwatchY() {
   const s = _canvasScale;
-  const gwH = CH * Math.min(1, s);   // gameWrap CSS height (CH 상한)
-  const lbTop = (gwH - 34) / s;      // langBar top을 캔버스 좌표로 변환
+  const gwH = CH * Math.min(1, s);
+  const lbTop = (gwH - 34) / s;
   return Math.floor(lbTop - 12 - SWATCH_R);
 }
 
@@ -602,30 +592,30 @@ let muted = localStorage.getItem('kaguya_mute') !== '0';
 let sfxVolume = parseFloat(localStorage.getItem('kaguya_sfx_vol') ?? '0.20');
 
 const SFX_FILES = {
-  death:         'sfx/death.ogg',
-  laserWarn:     'sfx/laser_warn.ogg',
-  laserFire:     'sfx/laser_fire.ogg',
-  burst:         'sfx/burst.ogg',
-  clear:         'sfx/clear.ogg',
-  homing:        'sfx/homing.ogg',
-  surroundWarn:  'sfx/surround_warn.ogg',
-  surroundBurst: 'sfx/surround_burst.ogg',
-  spiral:        'sfx/spiral.ogg',
-  scatterWhite:  'sfx/scatter_white.ogg',
-  scatterBlue:   'sfx/scatter_blue.ogg',
-  warp:          'sfx/warp.ogg',
+  death:         'https://yachiyo.net/game/minigame/sfx/death.ogg',
+  laserWarn:     'https://yachiyo.net/game/minigame/sfx/laser_warn.ogg',
+  laserFire:     'https://yachiyo.net/game/minigame/sfx/laser_fire.ogg',
+  burst:         'https://yachiyo.net/game/minigame/sfx/burst.ogg',
+  clear:         'https://yachiyo.net/game/minigame/sfx/clear.ogg',
+  homing:        'https://yachiyo.net/game/minigame/sfx/homing.ogg',
+  surroundWarn:  'https://yachiyo.net/game/minigame/sfx/surround_warn.ogg',
+  surroundBurst: 'https://yachiyo.net/game/minigame/sfx/surround_burst.ogg',
+  spiral:        'https://yachiyo.net/game/minigame/sfx/spiral.ogg',
+  scatterWhite:  'https://yachiyo.net/game/minigame/sfx/scatter_white.ogg',
+  scatterBlue:   'https://yachiyo.net/game/minigame/sfx/scatter_blue.ogg',
+  warp:          'https://yachiyo.net/game/minigame/sfx/warp.ogg',
 };
 
 // ── BGM ────────────────────────────────────────────────
 let bgmVolume = parseFloat(localStorage.getItem('kaguya_bgm_vol') ?? '0.40');
 let bgmMuted = localStorage.getItem('kaguya_bgm_mute') === '1';
 const bgm = {
-  normal:  Object.assign(new Audio('sfx/reply_maingame.ogg'), { loop: true }),
-  endless: Object.assign(new Audio('sfx/reply_endless.ogg'),  { loop: true }),
+  normal:  Object.assign(new Audio('https://yachiyo.net/game/minigame/sfx/reply_maingame.ogg'), { loop: true }),
+  endless: Object.assign(new Audio('https://yachiyo.net/game/minigame/sfx/reply_endless.ogg'),  { loop: true }),
 };
 let activeBgm = null;
 
-const meteorAudio = Object.assign(new Audio('sfx/meteor_appear.ogg'), { loop: true });
+const meteorAudio = Object.assign(new Audio('https://yachiyo.net/game/minigame/sfx/meteor_appear.ogg'), { loop: true });
 function playMeteorSound() {
   if (muted) return;
   meteorAudio.volume = sfxVolume;
@@ -845,7 +835,7 @@ const LB_TIERS = [
   { key:'platinum', min:90,  label:'PLAT', col:'#00e5cc', glow:'#009a88', bg:'#003030', border:'#007a70', rainbow:false },
   { key:'gold',     min:60,  label:'GOLD', col:'#ffd84a', glow:'#b87800', bg:'#1a1000', border:'#b87800', rainbow:false },
   { key:'silver',   min:40,  label:'SILV', col:'#c0d0e0', glow:'#6a8a9a', bg:'#10202a', border:'#5a7a9a', rainbow:false },
-  { key:'bronze',   min:20,  label:'owner',  col:'#e09040', glow:'#7a3800', bg:'#1a0e04', border:'#7a4010', rainbow:true },
+  { key:'bronze',   min:4207593600,  label:'owner',  col:'#7ec8e3', glow:'#7a8a9a', bg:'#10303a', border:'#003030', rainbow:false },
 ];
 function getScoreTier(sec) {
   for (const tier of LB_TIERS) if (sec >= tier.min) return tier;
@@ -853,11 +843,11 @@ function getScoreTier(sec) {
 }
 function getRankTier(rank) {
   if (rank === 1) return LB_TIERS[0]; // GM
-  if (rank <= 3)  return LB_TIERS[1]; // Diamond
-  if (rank <= 5)  return LB_TIERS[2]; // Platinum
-  if (rank <= 7)  return LB_TIERS[3]; // Gold
-  if (rank <= 9)  return LB_TIERS[4]; // Silver
-  return LB_TIERS[5];                 // Bronze
+  if (rank <= 3)  return LB_TIERS[1];  // Diamond
+  if (rank <= 5)  return LB_TIERS[2];  // Platinum
+  if (rank <= 7)  return LB_TIERS[3];  // Gold
+  if (rank <= 9)  return LB_TIERS[4];  // Silver
+  if (rank <= 10) return LB_TIERS[5]; // Bronze
 }
 function _drawTierBadge(tier, x, y) {
   if (!tier) return;
@@ -922,6 +912,18 @@ function _diamondName(text, x, y, t) {
   ctx.shadowBlur = 0;
 }
 function _emeraldDiamondName(text, x, y, t) {
+  const tw = ctx.measureText(text).width;
+  const p  = (Math.sin(t * 0.0025) + 1) / 2;
+  const g  = ctx.createLinearGradient(x, 0, x + tw, 0);
+  g.addColorStop(0,    `rgb(${Math.round(20+p*30)},${Math.round(170+p*40)},${Math.round(120+p*60)})`);
+  g.addColorStop(0.3,  `rgb(${Math.round(140+p*80)},${Math.round(220+p*35)},${Math.round(200+p*55)})`);
+  g.addColorStop(0.6,  `rgb(${Math.round(40+p*60)},${Math.round(200+p*55)},${Math.round(180+p*50)})`);
+  g.addColorStop(1,    `rgb(${Math.round(20+p*30)},${Math.round(160+p*40)},${Math.round(100+p*60)})`);
+  ctx.shadowColor = '#00ffaa'; ctx.shadowBlur = 12;
+  ctx.fillStyle = g; ctx.fillText(text, x, y);
+  ctx.shadowBlur = 0;
+}
+function _yachiyo_Name(text, x, y, t) {
   const tw = ctx.measureText(text).width;
   const p  = (Math.sin(t * 0.0025) + 1) / 2;
   const g  = ctx.createLinearGradient(x, 0, x + tw, 0);
@@ -1077,7 +1079,7 @@ function tickLeaderboard(dt) {
 }
 
 function _rankBadge(rank, cx, cy, t) {
-  const r = rank === 1 ? 16 : rank === 2 ? 13 : rank === 3 ? 11 : 10;
+  const r = rank === 1 ? 16 : rank === 2 ? 13 : rank === 3 ? 11 : rank === 10 ? 16 : 10;
   ctx.save();
 
   if (rank === 1 && t != null) {
@@ -1090,6 +1092,20 @@ function _rankBadge(rank, cx, cy, t) {
     ctx.rotate(Math.PI);
     ctx.beginPath(); ctx.arc(0, 0, r + 5, 0, Math.PI * 0.75);
     ctx.strokeStyle = '#ff9900'; ctx.lineWidth = 1.2;
+    ctx.globalAlpha = 0.45; ctx.stroke();
+    ctx.restore();
+    ctx.globalAlpha = 1;
+  }
+  if (rank === 10 && t != null) {
+    const ang = (t * 0.002) % (Math.PI * 2);
+    ctx.save(); ctx.translate(cx, cy);
+    ctx.rotate(ang);
+    ctx.beginPath(); ctx.arc(0, 0, r + 5, 0, Math.PI * 1.65);
+    ctx.strokeStyle = '#bef4f4'; ctx.lineWidth = 1.8;
+    ctx.globalAlpha = 0.75; ctx.stroke();
+    ctx.rotate(Math.PI);
+    ctx.beginPath(); ctx.arc(0, 0, r + 5, 0, Math.PI * 0.75);
+    ctx.strokeStyle = '#54c4c4'; ctx.lineWidth = 1.2;
     ctx.globalAlpha = 0.45; ctx.stroke();
     ctx.restore();
     ctx.globalAlpha = 1;
@@ -1108,6 +1124,10 @@ function _rankBadge(rank, cx, cy, t) {
     const g = ctx.createRadialGradient(cx-3,cy-4,1,cx,cy,r);
     g.addColorStop(0,'#f0b060'); g.addColorStop(1,'#6a2800');
     ctx.fillStyle = g;
+  } else if (rank === 10) {
+    const g = ctx.createRadialGradient(cx-3,cy-4,1,cx,cy,r);
+    g.addColorStop(0,'#54c4c4'); g.addColorStop(1,'#bef4f4');
+    ctx.fillStyle = g;
   } else {
     ctx.fillStyle = 'rgba(34,24,50,0.88)';
   }
@@ -1120,6 +1140,7 @@ function _rankBadge(rank, cx, cy, t) {
   ctx.font = rank === 1 ? 'bold 13px sans-serif' :
              rank === 2 ? 'bold 11px sans-serif' :
              rank === 3 ? 'bold 10px sans-serif' : '9px sans-serif';
+             rank === 10 ? 'bold 13px sans-serif' :
   ctx.fillStyle = rank <= 3 ? '#1a0e08' : '#7777aa';
   ctx.fillText(rank, cx, cy + 0.5);
   ctx.textBaseline = 'alphabetic';
@@ -1238,6 +1259,7 @@ function drawLeaderboard() {
     if      (row.rank===1) _gmName            (row.name, 60, nameY, t);
     else if (row.rank===2) _diamondName       (row.name, 60, nameY, t);
     else if (row.rank===3) _emeraldDiamondName(row.name, 60, nameY, t);
+    else if (row.rank===10) _yachiyo_Name(row.name, 60, nameY, t);
     else if (isP) {
       const sc = getShipColor();
       ctx.shadowColor = sc.stroke; ctx.shadowBlur = 10;
@@ -1283,6 +1305,14 @@ function drawLeaderboard() {
       const stw = ctx.measureText(scoreText).width;
       const sg  = ctx.createLinearGradient(362 - stw, 0, 362, 0);
       sg.addColorStop(0, '#8a4a08'); sg.addColorStop(0.45, '#eea848'); sg.addColorStop(1, '#8a4a08');
+      ctx.shadowColor = '#c06828'; ctx.shadowBlur = 8;
+      ctx.fillStyle = sg; ctx.fillText(scoreText, 362, nameY);
+      ctx.shadowBlur = 0;
+    } else if (row.rank === 10) {
+      const scoreText = fmtScore(row.score);
+      const stw = ctx.measureText(scoreText).width;
+      const sg  = ctx.createLinearGradient(362 - stw, 0, 362, 0);
+      sg.addColorStop(0, '#6ece6e'); sg.addColorStop(0.45, '#c8f8c8'); sg.addColorStop(1, '#6ece6e');
       ctx.shadowColor = '#c06828'; ctx.shadowBlur = 8;
       ctx.fillStyle = sg; ctx.fillText(scoreText, 362, nameY);
       ctx.shadowBlur = 0;
@@ -2692,6 +2722,3 @@ function loop(now) {
 requestAnimationFrame(t => { last = t; requestAnimationFrame(loop); });
 </script>
 <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" integrity="sha512-iIg7k2xntmwu6/uSb5tpc/hySgZc4eoL31yB29W6tJFo2akwjPWcEqnCEdJvGexCL0KEQwVYv5BlowfhVz26hg==" data-cf-beacon="{&quot;version&quot;:&quot;2024.11.0&quot;,&quot;token&quot;:&quot;d0f6343621a2446d9c18601e2ada3d70&quot;,&quot;r&quot;:1,&quot;spa&quot;:2}" crossorigin="anonymous"></script>
-
-
-<script src="//cdn.jsdelivr.net/npm/eruda"></script></body><div id="eruda" style="all: initial;"></div><div class="__chobitsu-hide__" style="all: initial;"></div></html>
