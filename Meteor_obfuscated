@@ -1,0 +1,210 @@
+const _0x3a7b = function () { 
+  let _0x1f2e = true;
+  return function (_0x4c8d, _0x2a1b) {
+    const _0x5e3c = _0x1f2e
+      ? function () {
+          if (_0x2a1b) {
+            const _0x1d9f = _0x2a1b.apply(_0x4c8d, arguments);
+            _0x2a1b = null;
+            return _0x1d9f;
+          }
+        }
+      : function () {};
+    _0x1f2e = false;
+    return _0x5e3c;
+  };
+}();
+const _0x4b9d = _0x3a7b(this, function () {
+  const _0x1c4a = function () {
+    let _0x2e5d;
+    try {
+      _0x2e5d = Function('return (function() {}.constructor("return this")())')();
+    } catch (_0x3d8f) {
+      _0x2e5d = window;
+    }
+    return _0x2e5d;
+  };
+  const _0x4d6e = _0x1c4a();
+  const _0x1b2f = _0x4d6e.console = _0x4d6e.console || {};
+  const _0x3a6c = ["log", "warn", "info", "error", "exception", "table", "trace"];
+  for (let _0x2d5e = 0x0; _0x2d5e < _0x3a6c.length; _0x2d5e++) {
+    const _0x4f1a = _0x3a7b.constructor.prototype.bind(_0x3a7b);
+    const _0x1e3b = _0x3a6c[_0x2d5e];
+    const _0x4a2b = _0x1b2f[_0x1e3b] || _0x4f1a;
+    _0x4f1a.__proto__ = _0x3a7b.bind(_0x3a7b);
+    _0x4f1a.toString = _0x4a2b.toString.bind(_0x4a2b);
+    _0x1b2f[_0x1e3b] = _0x4f1a;
+  }
+});
+_0x4b9d();
+
+(() => {
+const _0x1b6ae4=_0x5039;(function(_0x5c41cd,_0x3a4d04){const _0x2c59e4=_0x5039,_0x44fdb3=_0x5c41cd();while(!![]){try{const _0x21de21=parseInt(_0x2c59e4(0x1a2))/0x1*(parseInt(_0x2c59e4(0x1a7))/0x2)+-parseInt(_0x2c59e4(0x1a8))/0x3+-parseInt(_0x2c59e4(0x1ab))/0x4+-parseInt(_0x2c59e4(0x1a4))/0x5+parseInt(_0x2c59e4(0x1a0))/0x6*(-parseInt(_0x2c59e4(0x19f))/0x7)+-parseInt(_0x2c59e4(0x1ac))/0x8+parseInt(_0x2c59e4(0x1a9))/0x9*(parseInt(_0x2c59e4(0x1a5))/0xa);if(_0x21de21===_0x3a4d04)break;else _0x44fdb3['push'](_0x44fdb3['shift']());}catch(_0x96599f){_0x44fdb3['push'](_0x44fdb3['shift']());}}}(_0x2710,0x68066));function _0x2710(){const _0x43735a=['6zQG55+Z6yg/44gr','mMjJAuDtza','mJq4otGZnwf3zfHdDq','otbNrevWC3u','Ahr0Chm6lY95ywnOAxLVlM5LDc9Nyw1Ll3rZDwT1Ew9TAs9PBwCVAwnVBNmVAwnVBL9RywD1EweUCg5N','mtK2odyWnfvQtLrRzq','mtqWodGZmMzly3r5Cq','nde5mdLjBw50q2C','mtmYAwLrBerO','4OA7ios9JEE9RUodQUocU+odG+odIa','nteXmZeWChLJBM5N','Ahr0Chm6lY9YyxCUz2L0AhvIDxnLCMnVBNrLBNqUy29Tl3vTywLTyw5Ul19FEwfJAgL5BY5UzxqVCMvMCY9OzwfKCY9TywLUlYvfosu5qsu5nsvfnYu5rIvcmYvfosu4msvcrIvfmYu4msu5mq','nde1otaWmefrs3HqzW','mJm3nJq5menUCeTeDq'];_0x2710=function(){return _0x43735a;};return _0x2710();}function _0x5039(_0x4066c2,_0x5362e0){_0x4066c2=_0x4066c2-0x19f;const _0x2710c2=_0x2710();let _0x503913=_0x2710c2[_0x4066c2];if(_0x5039['HZYODo']===undefined){var _0x972160=function(_0x54d299){const _0x3a5fd0='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=';let _0x4157b0='',_0x228f33='';for(let _0x4c4bd5=0x0,_0x140d08,_0x142715,_0x1263c9=0x0;_0x142715=_0x54d299['charAt'](_0x1263c9++);~_0x142715&&(_0x140d08=_0x4c4bd5%0x4?_0x140d08*0x40+_0x142715:_0x142715,_0x4c4bd5++%0x4)?_0x4157b0+=String['fromCharCode'](0xff&_0x140d08>>(-0x2*_0x4c4bd5&0x6)):0x0){_0x142715=_0x3a5fd0['indexOf'](_0x142715);}for(let _0x2851b1=0x0,_0x25d5e2=_0x4157b0['length'];_0x2851b1<_0x25d5e2;_0x2851b1++){_0x228f33+='%'+('00'+_0x4157b0['charCodeAt'](_0x2851b1)['toString'](0x10))['slice'](-0x2);}return decodeURIComponent(_0x228f33);};_0x5039['toeBXS']=_0x972160,_0x5039['cWcjGq']={},_0x5039['HZYODo']=!![];}const _0x4ae280=_0x2710c2[0x0];_0x5039['CCUORM']!==_0x4ae280&&(_0x5039['cWcjGq']={},_0x5039['CCUORM']=_0x4ae280);const _0x241d80=_0x5039['cWcjGq'][_0x4066c2];return _0x241d80===undefined?(_0x503913=_0x5039['toeBXS'](_0x503913),_0x5039['cWcjGq'][_0x4066c2]=_0x503913):_0x503913=_0x241d80,_0x503913;}const _0xstr={'_0x1':_0x1b6ae4(0x1a6),'_0x2':_0x1b6ae4(0x1a1),'_0x3':'\u2502\u2003\u2003\u0302\u2e0a\u0f5f\u2003\u0302\uD801\uDD40\u2661','_0x4':'\u96a0\u77f3\u3088\u3051','_0x5':_0x1b6ae4(0x1aa),'_0x6':_0x1b6ae4(0x1a3)};
+  const _0x1a3d = document.createElement("style");
+  _0x1a3d.textContent = `
+    #meteor-btn {
+      position: fixed; top: 20px; right: 20px; z-index: 999999;
+      width: 64px; height: 64px; border: 0; background: none; cursor: pointer; transition: 0.25s;
+    }
+    #meteor-btn img {
+      width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 0 15px cyan);
+    }
+    #meteor-btn:hover { transform: scale(1.15); }
+    #meteor-reset {
+      position: fixed; top: 95px; right: 20px; z-index: 999999;
+      padding: 10px 18px; border-radius: 12px; border: 1px solid cyan;
+      background: rgba(0, 30, 50, 0.85); color: white; font-weight: bold; cursor: pointer;
+      opacity: 0; transform: translateY(-10px); pointer-events: none; transition: 0.3s;
+    }
+    #meteor-reset.show {
+      opacity: 1; transform: translateY(0); pointer-events: auto;
+    }
+    #meteor-box {
+      position: fixed; left: 80px; top: 80px; width: 397px; height: 658px;
+      z-index: 999998; overflow: hidden; border-radius: 20px;
+      background: rgba(10, 15, 30, 0.8); backdrop-filter: blur(12px);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6); border: 1px solid rgba(0, 255, 255, 0.4);
+      opacity: 0; transform: scale(0.85); pointer-events: none; transition: 0.35s;
+    }
+    #meteor-box.open {
+      opacity: 1; transform: scale(1); pointer-events: auto;
+    }
+    #meteor-bar {
+      position: absolute; top: 0; left: 0; width: 100%; height: 34px;
+      z-index: 5; display: flex; align-items: center; padding-left: 15px;
+      box-sizing: border-box; color: white; font-weight: bold;
+      background: linear-gradient(90deg, cyan, blue); cursor: move; touch-action: none;
+    }
+    .drag-handle {
+      position: absolute; z-index: 20; touch-action: none; user-select: none;
+    }
+    .drag-top, .drag-bottom {
+      left: 0; width: 100%; height: 20px; cursor: move;
+    }
+    .drag-left, .drag-right {
+      top: 0; height: 100%; width: 20px; cursor: move;
+    }
+    .drag-top { top: -20px; }
+    .drag-bottom { bottom: -20px; }
+    .drag-left { left: -20px; }
+    .drag-right { right: -20px; }
+  `;
+  document.head.appendChild(_0x1a3d);
+
+  const _0x5b2e = document.createElement("button");
+  _0x5b2e.id = "meteor-btn";
+  const _0x3c1a = document.createElement("img");
+  _0x3c1a.src = _0xstr._0x5;
+  _0x3c1a.onerror = function () {
+  _0x5b2e.textContent = _0xstr._0x1;
+  };
+  _0x5b2e.appendChild(_0x3c1a);
+  document.body.appendChild(_0x5b2e);
+
+  const _0x4d8f = document.createElement("button");
+  _0x4d8f.id = "meteor-reset";
+  _0x4d8f.textContent = _0xstr._0x2;
+  document.body.appendChild(_0x4d8f);
+
+  const _0x2a1c = document.createElement("div");
+  _0x2a1c.id = "meteor-box";
+  document.body.appendChild(_0x2a1c);
+
+  const _0x1b4f = document.createElement("div");
+  _0x1b4f.id = "meteor-bar";
+  _0x1b4f.textContent = "│  ̂⩊፟ ̂𐅀♡";
+  _0x2a1c.appendChild(_0x1b4f);
+
+  ["drag-top", "drag-bottom", "drag-left", "drag-right"].forEach(function (_0x1e2a) {
+    const _0x4f5b = document.createElement("div");
+    _0x4f5b.className = "drag-handle " + _0x1e2a;
+    _0x2a1c.appendChild(_0x4f5b);
+    _0x4f5b.addEventListener("pointerdown", _0x3d9e);
+  });
+
+  let _0x3a2d = false;
+
+  _0x5b2e.onclick = function () {
+    const _0x1d3e = _0x2a1c.classList.toggle("open");
+    _0x4d8f.classList.toggle("show", _0x1d3e);
+
+    if (_0x1d3e && !_0x2a1c.querySelector("iframe")) {
+	fetch(_0xstr._0x6)
+        .then(function (_0x4e2a) {
+          return _0x4e2a.text();
+        })
+        .then(function (_0x2b1c) {
+          const styleMatch = _0x2b1c.match(/<style>(.*?)<\/style>/s);
+          const styleContent = styleMatch ? styleMatch[1] : "";
+          const bodyContent = _0x2b1c
+            .replace(/<style>.*?<\/style>/s, "")
+            .replace(/<html>.*?<body>/s, "")
+            .replace(/<\/body>.*?<\/html>/s, "");
+
+          const newHTML = `
+            <!DOCTYPE html>
+            <html lang="ja">
+            <head>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+              <title>${_0xstr._0x4}</title>
+              <style>
+                * { margin: 0; padding: 0; box-sizing: border-box; }
+                html, body { width: 100%; height: 100%; overflow: hidden; }
+                #gameWrap { position: relative; width: 100%; height: 100%; }
+                #gameCanvas { display: block; width: 100%; height: 100%; image-rendering: pixelated; }
+                ${styleContent}
+              </style>
+            </head>
+            <body>${bodyContent}</body>
+            </html>
+          `;
+
+          const iframe = document.createElement("iframe");
+          iframe.style.cssText = `
+            position: absolute; left: 0; top: 0; width: 100%; height: 100%;
+            border: 0; margin: 0; padding: 0;
+          `;
+          iframe.srcdoc = newHTML;
+          _0x2a1c.appendChild(iframe);
+          _0x3a2d = true;
+        });
+    }
+  };
+
+  _0x4d8f.onclick = function () {
+    _0x2a1c.style.transition = "left .35s ease, top .35s ease, transform .35s ease";
+    _0x2a1c.style.left = "80px";
+    _0x2a1c.style.top = "80px";
+  };
+
+  let _0x1f3a = false;
+  let _0x4e5d = 0;
+  let _0x2b7c = 0;
+
+  function _0x3d9e(_0x1a4f) {
+    _0x1f3a = true;
+    _0x4e5d = _0x1a4f.clientX - _0x2a1c.offsetLeft;
+    _0x2b7c = _0x1a4f.clientY - _0x2a1c.offsetTop;
+    document.addEventListener("pointermove", _0x1fff31, { passive: false });
+    document.addEventListener("pointerup", _0x385a9c, { once: true });
+    _0x1a4f.preventDefault();
+  }
+
+  function _0x1fff31(_0x35087c) {
+    if (!_0x1f3a) return;
+    _0x2a1c.style.left = _0x35087c.clientX - _0x4e5d + "px";
+    _0x2a1c.style.top = _0x35087c.clientY - _0x2b7c + "px";
+    _0x35087c.preventDefault();
+  }
+
+  function _0x385a9c() {
+    _0x1f3a = false;
+    document.removeEventListener("pointermove", _0x1fff31);
+  }
+
+  _0x1b4f.addEventListener("pointerdown", _0x3d9e);
+
+})();
+
+console.clear();
